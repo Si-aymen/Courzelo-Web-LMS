@@ -1,5 +1,6 @@
 package org.example.courzelo.serviceImpls;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
@@ -12,13 +13,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class UserServiceImpl implements UserDetailsService, IUserService {
-    public static final String USER_NOT_FOUND = "User not found with id : ";
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
 
     @Override
@@ -41,4 +38,8 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
                 && user.isCredentialsNonExpired()
                         && user.isEnabled();
     }
+
+
+
+
 }

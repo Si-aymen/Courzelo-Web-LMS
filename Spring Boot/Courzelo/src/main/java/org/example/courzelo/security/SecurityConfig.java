@@ -58,10 +58,10 @@ public class SecurityConfig {
                         .authenticationEntryPoint(unauthorizedHandler)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
-                        .permitAll()
-                        .anyRequest().authenticated());
+                .logout(logout -> logout
+                        .logoutUrl("/api/v1/auth/logout")
+                        .clearAuthentication(true)
+                        .deleteCookies("accessToken", "refreshToken"));
 
         http.authenticationProvider(authenticationProvider());
 

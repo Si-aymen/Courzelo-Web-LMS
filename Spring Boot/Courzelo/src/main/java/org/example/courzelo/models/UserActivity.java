@@ -6,7 +6,7 @@ import java.time.Instant;
 
 @Data
 public class UserActivity {
-    private Instant CreatedAt;
+    private Instant CreatedAt = Instant.now();
     private Instant lastActivity;
     private Instant lastLogin;
     private Instant lastLogout;

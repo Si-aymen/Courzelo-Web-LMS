@@ -29,6 +29,13 @@ public class User implements UserDetails {
     private List<Role> roles = new ArrayList<>();
     private UserSecurity security = new UserSecurity();
     private UserActivity activity = new UserActivity();
+
+    public User(String email, String encode, Role role) {
+        this.email = email;
+        this.password = encode;
+        this.roles.add(role);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();

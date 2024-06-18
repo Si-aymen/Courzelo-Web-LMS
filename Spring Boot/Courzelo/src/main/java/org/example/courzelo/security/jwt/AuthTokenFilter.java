@@ -26,7 +26,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,13 +51,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("AuthTokenFilter: doFilterInternal "+ request.getRequestURI());
        //check if the user isn't authenticated
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            if (!hasAuthToken(cookies)) {
+            if (!hasAuthToken(request.getCookies())) {
+                log.info("No auth token found in cookies");
                 filterChain.doFilter(request, response);
                 return;
             }
-        }
+
         String accessToken = cookieUtil.getAccessTokenFromCookies(request);
         String refreshToken = cookieUtil.getRefreshTokenFromCookies(request);
         try {
@@ -70,13 +68,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             jwtLogger.error("Error during authentication: {}", e.getMessage());
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private boolean hasAuthToken(Cookie[] cookies) {
-    return Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("accessToken")) ||
-                Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("refreshToken"));
+    return cookies != null &&(Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("accessToken")) ||
+                Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("refreshToken")));
     }
 
     private void handleAccessToken(HttpServletRequest request, String accessToken) {
