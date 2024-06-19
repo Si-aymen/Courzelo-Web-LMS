@@ -3,6 +3,7 @@ import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../../../service/user/authentication.service';
 import {SignupRequest} from '../../../model/user/requests/SignupRequest';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-signup',
@@ -10,20 +11,26 @@ import {SignupRequest} from '../../../model/user/requests/SignupRequest';
   styleUrls: ['./signup.component.scss'],
   animations: [SharedAnimations]
 })
-export class SignupComponent {
-
+export class SignupComponent implements OnInit {
   constructor(    private authService: AuthenticationService,
-                  private formBuilder: FormBuilder) { }
+                  private formBuilder: FormBuilder,
+                  private toastr: ToastrService
+                  ) { }
   signupForm = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
       },
       {
         validator: this.ConfirmedValidator('password', 'confirmPassword'),
       }
   );
   signupRequest: SignupRequest = {};
+  ngOnInit() {
+    this.signupForm.controls.password.valueChanges.subscribe(() => {
+      this.signupForm.controls.confirmPassword.updateValueAndValidity();
+    });
+  }
   ConfirmedValidator(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
       const control = formGroup.controls[controlName];
@@ -41,16 +48,43 @@ export class SignupComponent {
   saveUser() {
     if (this.signupForm.valid) {
       this.signupRequest = this.signupForm.getRawValue();
-      console.log(this.signupRequest);
-      this.authService.register(this.signupRequest)
-          .subscribe(data => {
-                console.log('register data :', data);
-              },
-              error => {
-                console.log('register error :', error);
-              });
+      this.registerUser();
     } else {
-      console.log('Form is invalid');
+      this.showFormInvalidError();
     }
+  }
+
+  registerUser() {
+    this.authService.register(this.signupRequest)
+        .subscribe(
+            data => this.handleSuccessResponse(data),
+            error => this.handleErrorResponse(error)
+        );
+  }
+
+  handleSuccessResponse(data) {
+    this.toastr.success(data.message, 'Success!', {progressBar: true});
+  }
+
+  handleErrorResponse(error) {
+    console.error(error);
+    let errorMessage = 'An unexpected error occurred';
+    if (error.error && error.error.message) {
+      errorMessage = error.error.message;
+    }
+    switch (error.status) {
+      case 409:
+        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+        break;
+      case 400:
+        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+        break;
+      default:
+        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+    }
+  }
+
+  showFormInvalidError() {
+    this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
   }
 }
