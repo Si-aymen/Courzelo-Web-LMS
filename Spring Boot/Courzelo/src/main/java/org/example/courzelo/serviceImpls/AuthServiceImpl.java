@@ -110,7 +110,7 @@ public class AuthServiceImpl implements IAuthService {
                     , loginRequest.isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
             userRepository.save(userDetails);
             log.info("User authenticated successfully");
-            return ResponseEntity.ok(new LoginResponse("success","Login successful", UserResponse.toUserResponse(userDetails) ));
+            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
         } catch (DisabledException e) {
             log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
@@ -129,7 +129,7 @@ public class AuthServiceImpl implements IAuthService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new StatusMessageResponse("error","Email already in use"));
         }
         User user = new User(
-                signupRequest.getEmail(),
+                signupRequest.getEmail().toLowerCase(),
                 encoder.encode(signupRequest.getPassword()),
                 Role.STUDENT
         );

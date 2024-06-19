@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private List<Role> roles = new ArrayList<>();
     private UserSecurity security = new UserSecurity();
     private UserActivity activity = new UserActivity();
+    private UserProfile profile = new UserProfile();
 
     public User(String email, String encode, Role role) {
         this.email = email;
