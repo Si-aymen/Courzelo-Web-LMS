@@ -1,5 +1,6 @@
 package org.example.courzelo.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -8,6 +9,7 @@ import org.example.courzelo.dto.requests.SignupRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IAuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,11 @@ public class AuthController {
         return authService.saveUser(signupRequest);
     }
     @GetMapping("/logout")
-    void logout(Principal principal) {
-        authService.logout(principal.getName());
+    ResponseEntity<StatusMessageResponse> logout(Principal principal, HttpServletResponse response, HttpServletRequest request) {
+        if(principal != null) {
+            return authService.logout(principal.getName(), request, response);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "No user logged in"));
     }
 
 

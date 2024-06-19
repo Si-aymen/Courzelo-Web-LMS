@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {LoginRequest} from '../../models/user/requests/LoginRequest';
 import {SignupRequest} from '../../models/user/requests/SignupRequest';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 
 @Injectable({
@@ -14,7 +15,7 @@ import {Router} from '@angular/router';
 export class AuthenticationService {
   private baseUrl = 'http://localhost:8080/api/v1/auth';
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService    ) {
   }
 
   register(signupRequest: SignupRequest) {
@@ -26,13 +27,13 @@ export class AuthenticationService {
   }
 
   logout() {
-    this.http.get(`${this.baseUrl}/logout`).subscribe(
+    this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`).subscribe(
         res => {
-            console.log(res);
+            this.toastr.success(res.message, 'Success', {progressBar: true} );
           this.router.navigateByUrl('/sessions/signin');
         },
         error => {
-            console.log(error);
+            this.toastr.error(error.error.message, 'Error', {progressBar: true});
         }
     );
   }

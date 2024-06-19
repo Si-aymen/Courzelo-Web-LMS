@@ -1,5 +1,6 @@
 package org.example.courzelo.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.example.courzelo.dto.requests.LoginRequest;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface IAuthService {
 
-    void logout(String email);
+    ResponseEntity<StatusMessageResponse> logout(String email, HttpServletRequest request, HttpServletResponse response);
 
     ResponseEntity<LoginResponse> authenticateUser(LoginRequest loginRequest, @NonNull HttpServletResponse response);
     ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest);

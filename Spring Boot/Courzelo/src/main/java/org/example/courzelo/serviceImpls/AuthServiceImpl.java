@@ -1,5 +1,7 @@
 package org.example.courzelo.serviceImpls;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
@@ -28,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -59,17 +62,23 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public void logout(String email) {
+    public ResponseEntity<StatusMessageResponse> logout(String email, HttpServletRequest request, HttpServletResponse response) {
         log.info("Logging out user");
         User user = userRepository.findUserByEmail(email);
         if(user != null){
             log.info("User found");
             user.getActivity().setLastLogout(Instant.now());
             userRepository.save(user);
+            new SecurityContextLogoutHandler().logout(request, response, null);
+            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie("accessToken", 0L).toString());
+            log.info("Logout: Access Token removed");
+            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie("refreshToken", 0L).toString());
+            log.info("Logout :Refresh Token removed");
+            log.info("User logged out");
+            return ResponseEntity.ok(new StatusMessageResponse("success","User logged out successfully"));
         }else{
             throw new UsernameNotFoundException(USER_NOT_FOUND + email);
         }
-        log.info("User logged out");
     }
 
     @Override
