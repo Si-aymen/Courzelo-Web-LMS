@@ -6,11 +6,9 @@ import lombok.Data;
 import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Data
-public class QuestionDTO {
+public class ParticipationDTO {
     private String id;
-    private String questionText;
-    private String questionType;
-    private List<AnswerDTO> answers;
-    private String questionStatus;
+    private String studentId;
+    private int score;
 
 }

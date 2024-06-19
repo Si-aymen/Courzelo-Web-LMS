@@ -5,16 +5,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-import java.util.List;
 
 @Document(collection = "evaluations")
 @Data
 public class Evaluation {
     @Id
     private String id;
-    private String title;
-    private String description;
+    private String studentId;
+    private double score;// Score obtained in the quiz
+    private double quizTimeSpent;
+    private int attendanceCount;
+    private double assignmentCompletionRate;
+    private int participationScore;
+    private double academicScore;
     private Date date;
-    private String teacherId;
-    private List<Question> questions;
+
+    public Evaluation(String studentId, double quizTimeSpent, double averageQuizScore, int attendanceCount, double assignmentCompletionRate, int participationScore, double academicScore) {
+    }
 }

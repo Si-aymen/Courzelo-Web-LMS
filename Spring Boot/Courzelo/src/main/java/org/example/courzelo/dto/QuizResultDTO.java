@@ -5,10 +5,9 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Data
-public class GradeDTO {
+public class QuizResultDTO {
     private String id;
-    private Double score;
-    private String feedback;
     private String studentId;
-    private String evaluationId;
+    private double timeSpent;
+    private double score;
 }

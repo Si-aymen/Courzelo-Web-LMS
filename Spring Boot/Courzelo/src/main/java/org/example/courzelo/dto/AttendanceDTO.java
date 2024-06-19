@@ -5,8 +5,11 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Data
-public class AnswerDTO {
+public class AttendanceDTO {
     private String id;
-    private String answerText;
-    private boolean correct;// QCM questions
+    private String studentId;
+    private String sessionId;
+    private boolean present;
+    private boolean lateArrival;
+    private boolean absence;
 }

@@ -9,11 +9,14 @@ import java.util.List;
 @Data
 public class EvaluationDTO {
     private String id;
-    private String title;
-    private String description;
+    private String studentId;
+    private double score;// Score obtained in the quiz
+    private double quizTimeSpent;
+    private int attendanceCount;
+    private double assignmentCompletionRate;
+    private int participationScore;
+    private double academicScore;
     private Date date;
-    private String teacherId;
-    private List<QuestionDTO> questions;
 
 
 }
