@@ -8,7 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {Interceptor} from './service/user/Interceptor';
+import {Interceptor} from './shared/services/user/Interceptor';
 
 @NgModule({
   declarations: [

@@ -50,7 +50,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         log.info("AuthTokenFilter: doFilterInternal "+ request.getRequestURI());
-       //check if the user isn't authenticated
             if (!hasAuthToken(request.getCookies())) {
                 log.info("No auth token found in cookies");
                 filterChain.doFilter(request, response);
@@ -62,11 +61,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             if (accessToken != null) {
                 handleAccessToken(request, accessToken);
+                filterChain.doFilter(request, response);
             } else if (refreshToken != null) {
                 handleRefreshToken(response,request, refreshToken);
+                filterChain.doFilter(request, response);
             }
         } catch (Exception e) {
             jwtLogger.error("Error during authentication: {}", e.getMessage());
+            SecurityContextHolder.clearContext();
         }
     }
 
@@ -76,18 +78,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private void handleAccessToken(HttpServletRequest request, String accessToken) {
+        log.info("Handling access token");
         if (jwtUtils.validateJwtToken(accessToken)) {
             String email = jwtUtils.getEmailFromJwtToken(accessToken);
              if (userDetailsService.ValidUser(email)) {
+                 log.info("Setting authentication in security context");
                 setAuthenticationInSecurityContext(request, userDetailsService.loadUserByEmail(email));
             }
         }
     }
 
-    private void handleRefreshToken(HttpServletResponse response,HttpServletRequest request, String refreshToken) throws Exception {
+    private void handleRefreshToken(HttpServletResponse response,HttpServletRequest request, String refreshToken) {
+        log.info("Handling refresh token");
         if(iRefreshTokenService.ValidToken(refreshToken)) {
             RefreshToken token = refreshTokenRepository.findByToken(refreshToken);
             response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(token.getUser().getEmail()), jwtExpirationMs).toString());
+            log.info("Setting authentication in security context");
                 setAuthenticationInSecurityContext(request, userDetailsService.loadUserByEmail(token.getUser().getEmail()));
         }
     }

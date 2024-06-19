@@ -9,7 +9,6 @@ import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IAuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,6 @@ public class AuthController {
     ResponseEntity<StatusMessageResponse> saveUser(@RequestBody SignupRequest signupRequest) {
         return authService.saveUser(signupRequest);
     }
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/logout")
     void logout(Principal principal) {
         authService.logout(principal.getName());

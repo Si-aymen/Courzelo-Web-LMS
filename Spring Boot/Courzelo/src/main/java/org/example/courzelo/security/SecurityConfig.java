@@ -1,6 +1,8 @@
 package org.example.courzelo.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.AuthEntryPointJwt;
 import org.example.courzelo.security.jwt.AuthTokenFilter;
 import org.example.courzelo.serviceImpls.UserServiceImpl;
@@ -23,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig {
     UserServiceImpl userService;
+    UserRepository userRepository;
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
@@ -60,8 +63,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/auth/logout")
-                        .clearAuthentication(true)
-                        .deleteCookies("accessToken", "refreshToken"));
+                        .deleteCookies("accessToken", "refreshToken")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK)));
+
 
         http.authenticationProvider(authenticationProvider());
 

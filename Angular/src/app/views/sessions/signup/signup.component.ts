@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from '../../../service/user/authentication.service';
-import {SignupRequest} from '../../../model/user/requests/SignupRequest';
+import {AuthenticationService} from '../../../shared/services/user/authentication.service';
+import {SignupRequest} from '../../../shared/models/user/requests/SignupRequest';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
@@ -48,18 +48,14 @@ export class SignupComponent implements OnInit {
   saveUser() {
     if (this.signupForm.valid) {
       this.signupRequest = this.signupForm.getRawValue();
-      this.registerUser();
+      this.authService.register(this.signupRequest)
+          .subscribe(
+              data => this.handleSuccessResponse(data),
+              error => this.handleErrorResponse(error)
+          );
     } else {
       this.showFormInvalidError();
     }
-  }
-
-  registerUser() {
-    this.authService.register(this.signupRequest)
-        .subscribe(
-            data => this.handleSuccessResponse(data),
-            error => this.handleErrorResponse(error)
-        );
   }
 
   handleSuccessResponse(data) {

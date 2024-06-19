@@ -1,7 +1,6 @@
 package org.example.courzelo.serviceImpls;
 
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
 import org.example.courzelo.dto.requests.SignupRequest;
@@ -26,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,8 +60,10 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public void logout(String email) {
+        log.info("Logging out user");
         User user = userRepository.findUserByEmail(email);
         if(user != null){
+            log.info("User found");
             user.getActivity().setLastLogout(Instant.now());
             userRepository.save(user);
         }else{
@@ -72,9 +74,23 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ResponseEntity<LoginResponse> authenticateUser(LoginRequest loginRequest, HttpServletResponse response) {
+        log.info("Authenticating user");
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication != null && authentication.isAuthenticated()) {
+                if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+                    String username = userDetails.getUsername();
+                    log.info("Authenticated user's username: " + username);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error", "User already authenticated"));
+                }
+            }
+            log.info("User not authenticated");
+        }
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail().toLowerCase(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(authentication.getName()), jwtExpirationMs).toString());
             User userDetails = (User) authentication.getPrincipal();
@@ -84,12 +100,16 @@ public class AuthServiceImpl implements IAuthService {
                     iRefreshTokenService.createRefreshToken(userDetails.getEmail(), loginRequest.isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
                     , loginRequest.isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
             userRepository.save(userDetails);
+            log.info("User authenticated successfully");
             return ResponseEntity.ok(new LoginResponse("success","Login successful", UserResponse.toUserResponse(userDetails) ));
         } catch (DisabledException e) {
+            log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
         } catch (LockedException e) {
+            log.error("User account locked");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Account locked"));
         } catch (AuthenticationException e) {
+            log.error("Invalid email or password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid email or password"));
         }
     }

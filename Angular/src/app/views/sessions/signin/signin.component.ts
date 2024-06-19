@@ -3,6 +3,8 @@ import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, ResolveEnd } from '@angular/router';
+import {AuthenticationService} from '../../../shared/services/user/authentication.service';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-signin',
@@ -16,7 +18,8 @@ export class SigninComponent implements OnInit {
     signinForm: FormGroup;
     constructor(
         private fb: FormBuilder,
-        private auth: AuthService,
+        private auth: AuthenticationService,
+        private toastr: ToastrService,
         private router: Router
     ) { }
 
@@ -39,13 +42,45 @@ export class SigninComponent implements OnInit {
     }
 
     signin() {
+        if (this.signinForm.valid) {
         this.loading = true;
         this.loadingText = 'Sigining in...';
-        this.auth.signin(this.signinForm.value)
+        this.auth.login(this.signinForm.value)
             .subscribe(res => {
+                    this.loading = false;
+                    this.handleSuccessResponse(res);
                 this.router.navigateByUrl('/dashboard/v1');
-                this.loading = false;
-            });
+            },
+                error => {
+                    this.loading = false;
+                    this.handleErrorResponse(error);
+                }
+        );
+    } else {
+            this.loading = false;
+            this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
+        }
+    }
+    handleSuccessResponse(data) {
+        console.log(data);
+        this.toastr.success(data.message, 'Success!', {progressBar: true});
+    }
+    handleErrorResponse(error) {
+        console.error(error);
+        let errorMessage = 'An unexpected error occurred';
+        if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+        }
+        switch (error.status) {
+            case 409:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+                break;
+            case 400:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+                break;
+            default:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+        }
     }
 
 }
