@@ -19,10 +19,10 @@ import java.security.Principal;
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @PreAuthorize("permitAll()")
-@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
 public class AuthController {
     private final IAuthService authService;
-    @GetMapping("/login")
+    @PostMapping("/login")
     ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginRequest loginRequest, @NonNull HttpServletResponse response) {
         return authService.authenticateUser(loginRequest, response);
     }
