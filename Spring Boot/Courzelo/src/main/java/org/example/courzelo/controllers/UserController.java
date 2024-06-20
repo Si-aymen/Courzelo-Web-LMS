@@ -3,6 +3,7 @@ package org.example.courzelo.controllers;
 import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UserProfileRequest;
+import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,10 @@ public class UserController {
     @GetMapping("/image")
     public ResponseEntity<byte[]> getProfileImage(Principal principal) {
         return userService.getProfileImage(principal);
+    }
+    @GetMapping("/profile")
+    public ResponseEntity<LoginResponse> getUserProfile(Principal principal) {
+        return userService.getUserProfile(principal.getName());
     }
 
 }

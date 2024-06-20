@@ -3,7 +3,10 @@ package org.example.courzelo.serviceImpls;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
+import org.example.courzelo.dto.requests.UserProfileRequest;
+import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
+import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.UserProfile;
 import org.example.courzelo.repositories.UserRepository;
@@ -150,6 +153,15 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
             log.error("Error getting image: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> getUserProfile(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
+        }
+        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
     }
 
 

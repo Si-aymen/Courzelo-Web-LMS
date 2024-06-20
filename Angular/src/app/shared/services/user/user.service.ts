@@ -5,6 +5,7 @@ import {ProfileInformationRequest} from '../../models/user/requests/ProfileInfor
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {LoginResponse} from '../../models/user/LoginResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,9 @@ export class UserService {
   }
   getProfileImage(): Observable<ArrayBuffer> {
     return this.http.get(`${this.baseUrl}/image`, { responseType: 'arraybuffer' });
+  }
+  getUserProfile(): Observable<LoginResponse> {
+    return this.http.get<LoginResponse>(`${this.baseUrl}/profile`);
   }
   getProfileImageBlobUrl(): Observable<Blob> {
     return this.getProfileImage().pipe(

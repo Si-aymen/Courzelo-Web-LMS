@@ -5,6 +5,7 @@ import {ProfileInformationRequest} from '../../../shared/models/user/requests/Pr
 import {UserService} from '../../../shared/services/user/user.service';
 import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
+import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -31,13 +32,25 @@ export class ProfileComponent implements OnInit {
   profileInfromationRequest: ProfileInformationRequest = {};
     selectedFileName: string;
     selectedFileUrl: string | ArrayBuffer;
+  birthDate: NgbDateStruct;
 
   ngOnInit() {
+    const date = new Date(this.connectedUser.profile.birthDate);
+    this.birthDate = {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1, // JavaScript months are 0-based
+      day: date.getDate()
+    };
   }
 
   updateUserProfile() {
     this.userService.updateUserProfile(this.profileInfromationRequest).subscribe(
         res => {
+          this.userService.getUserProfile().subscribe(
+                user => {
+                    this.sessionStorageService.setUser(user.user);
+                }
+            );
           this.loading = false;
           this.toastr.success(res.message, 'Success!', {progressBar: true});
         },
