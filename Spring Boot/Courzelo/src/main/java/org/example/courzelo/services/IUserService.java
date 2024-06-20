@@ -1,8 +1,9 @@
 package org.example.courzelo.services;
 
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
-import org.example.courzelo.dto.requests.UserProfileRequest;
+import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
+import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,4 +25,9 @@ UserDetails loadUserByEmail(String email);
     ResponseEntity<byte[]> getProfileImage(Principal principal);
 
     ResponseEntity<LoginResponse> getUserProfile(String email);
+
+    ResponseEntity<StatusMessageResponse> updatePassword(UpdatePasswordRequest updatePasswordRequest, Principal principal);
+    ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(String email);
+    ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(String email,String verificationCode);
+    void disableTwoFactorAuth(String email);
 }

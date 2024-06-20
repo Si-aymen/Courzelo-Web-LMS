@@ -2,6 +2,7 @@ package org.example.courzelo.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
+import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.requests.UserProfileRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
@@ -36,6 +37,10 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<LoginResponse> getUserProfile(Principal principal) {
         return userService.getUserProfile(principal.getName());
+    }
+    @PostMapping("/updatePassword")
+    public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest , Principal principal) {
+        return userService.updatePassword(updatePasswordRequest, principal);
     }
 
 }

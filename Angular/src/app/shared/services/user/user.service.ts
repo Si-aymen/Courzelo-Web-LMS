@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {LoginResponse} from '../../models/user/LoginResponse';
+import {UpdatePasswordRequest} from '../../models/user/requests/UpdatePasswordRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,8 @@ export class UserService {
           return blob;
         })
     );
+  }
+  updatePassword(updatePasswordRequest: UpdatePasswordRequest) {
+    return this.http.post<StatusMessageResponse>(`${this.baseUrl}/updatePassword`, updatePasswordRequest);
   }
 }

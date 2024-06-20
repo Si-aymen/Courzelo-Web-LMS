@@ -5,7 +5,7 @@ import {ProfileInformationRequest} from '../../../shared/models/user/requests/Pr
 import {UserService} from '../../../shared/services/user/user.service';
 import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
-import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
