@@ -25,6 +25,8 @@ export class ProfileComponent implements OnInit {
       }
   );
   profileInfromationRequest: ProfileInformationRequest = {};
+    selectedFileName: string;
+    selectedFileUrl: string | ArrayBuffer;
 
   ngOnInit() {
   }
@@ -70,6 +72,25 @@ export class ProfileComponent implements OnInit {
         break;
       default:
         this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+    }
+  }
+  onFileSelected(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+        const reader = new FileReader();
+      this.selectedFileName = file.name;
+      reader.onload = (e) => this.selectedFileUrl = reader.result;
+        reader.readAsDataURL(file);
+      this.userService.uploadProfileImage(file).subscribe(
+          res => {
+            this.toastr.success(res.message, 'Success!', {progressBar: true});
+            event.target.value = '';
+          },
+          error => {
+            this.handleErrorResponse(error);
+            event.target.value = '';
+          }
+      );
     }
   }
 }

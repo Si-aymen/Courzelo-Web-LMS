@@ -4,6 +4,7 @@ import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -16,4 +17,5 @@ UserDetails loadUserByEmail(String email);
  ResponseEntity<StatusMessageResponse> updateUserProfile(ProfileInformationRequest profileInformationRequest, Principal principal);
 
 
+    ResponseEntity<StatusMessageResponse> uploadProfileImage(MultipartFile file, Principal principal);
 }

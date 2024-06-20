@@ -14,4 +14,9 @@ export class UserService {
   updateUserProfile(profileInfromationRequest: ProfileInformationRequest) {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/profile`, profileInfromationRequest);
   }
+  uploadProfileImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<StatusMessageResponse>(`${this.baseUrl}/image`, formData);
+  }
 }

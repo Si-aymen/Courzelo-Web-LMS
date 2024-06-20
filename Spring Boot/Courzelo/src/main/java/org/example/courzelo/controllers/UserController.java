@@ -8,6 +8,7 @@ import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -22,6 +23,10 @@ public class UserController {
     @PostMapping("/profile")
     public ResponseEntity<StatusMessageResponse> updateUserProfile(@RequestBody ProfileInformationRequest profileInformationRequest, Principal principal  ) {
     return userService.updateUserProfile(profileInformationRequest, principal);
+    }
+    @PostMapping("/image")
+    public ResponseEntity<StatusMessageResponse> uploadProfileImage(@RequestParam("file") MultipartFile file, Principal principal) {
+        return userService.uploadProfileImage(file, principal);
     }
 
 }
