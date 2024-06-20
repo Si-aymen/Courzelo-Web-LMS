@@ -36,7 +36,7 @@ public class AuthController {
         if(principal != null) {
             return authService.logout(principal.getName(), request, response);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "No user logged in"));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new StatusMessageResponse("error", "User already logged out"));
     }
 
 

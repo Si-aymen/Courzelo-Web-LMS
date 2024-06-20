@@ -33,8 +33,28 @@ export class AuthenticationService {
           this.router.navigateByUrl('/sessions/signin');
         },
         error => {
-            this.toastr.error(error.error.message, 'Error', {progressBar: true});
+            this.handleErrorResponse(error);
+            this.router.navigateByUrl('/sessions/signin');
         }
     );
   }
+    handleErrorResponse(error) {
+        console.error(error);
+        let errorMessage = 'An unexpected error occurred';
+        if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+        }
+        switch (error.status) {
+            case 409:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+                break;
+            case 400:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+                break;
+            case 403:
+                break;
+            default:
+                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+        }
+    }
 }

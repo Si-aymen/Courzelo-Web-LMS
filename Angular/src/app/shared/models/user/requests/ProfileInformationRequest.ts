@@ -3,5 +3,5 @@ export interface ProfileInformationRequest {
     lastname?: string;
     bio?: string;
     title?: string;
-    birthDate?: Date;
+    birthDate?: string;
 }

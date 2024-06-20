@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
 import {ProfileInformationRequest} from '../../../shared/models/user/requests/ProfileInformationRequest';
+import {UserService} from '../../../shared/services/user/user.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -11,7 +12,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
       private formBuilder: FormBuilder,
-      private toastr: ToastrService
+      private toastr: ToastrService,
+      private userService: UserService
   ) { }
   loading: boolean;
   informationForm = this.formBuilder.group({
@@ -27,19 +29,27 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
   }
 
-  submit() {
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      this.toastr.success('Profile updated.', 'Success!', {progressBar: true});
-    }, 3000);
+  updateUserProfile() {
+    this.userService.updateUserProfile(this.profileInfromationRequest).subscribe(
+        res => {
+          this.loading = false;
+          this.toastr.success(res.message, 'Success!', {progressBar: true});
+        },
+        error => {
+          this.loading = false;
+          this.handleErrorResponse(error);
+        }
+    );
   }
   updateProfileInformation() {
+    this.loading = true;
     if (this.informationForm.valid) {
       this.profileInfromationRequest = this.informationForm.getRawValue();
-      console.log(this.profileInfromationRequest);
-      this.submit();
+      this.profileInfromationRequest.birthDate = `${this.informationForm.controls['birthDate'].value.year}-${this.informationForm.controls['birthDate'].value.month.toString().padStart(2, '0')}-${this.informationForm.controls['birthDate'].value.day.toString().padStart(2, '0')}`;
+
+      this.updateUserProfile();
     } else {
+      this.loading = false;
       this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
     }
   }
@@ -55,6 +65,8 @@ export class ProfileComponent implements OnInit {
         break;
       case 400:
         this.toastr.error(errorMessage, 'Error!', {progressBar: true});
+        break;
+      case 401:
         break;
       default:
         this.toastr.error(errorMessage, 'Error!', {progressBar: true});

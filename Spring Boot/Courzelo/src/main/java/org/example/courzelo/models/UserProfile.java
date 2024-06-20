@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class UserProfile {
     private String name;
-    private String lastName;
+    private String lastname;
     private String profileImage;
     private Date birthDate;
     private String title;

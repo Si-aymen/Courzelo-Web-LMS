@@ -1,6 +1,7 @@
 package org.example.courzelo.controllers;
 
 import lombok.AllArgsConstructor;
+import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UserProfileRequest;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IUserService;
@@ -19,8 +20,8 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/profile")
-    public ResponseEntity<StatusMessageResponse> updateUserProfile(@RequestBody UserProfileRequest userProfileRequest, Principal principal  ) {
-    return userService.updateUserProfile(userProfileRequest, principal);
+    public ResponseEntity<StatusMessageResponse> updateUserProfile(@RequestBody ProfileInformationRequest profileInformationRequest, Principal principal  ) {
+    return userService.updateUserProfile(profileInformationRequest, principal);
     }
 
 }

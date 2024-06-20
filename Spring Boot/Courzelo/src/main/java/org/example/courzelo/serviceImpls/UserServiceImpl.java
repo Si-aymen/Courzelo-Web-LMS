@@ -2,7 +2,7 @@ package org.example.courzelo.serviceImpls;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.dto.requests.UserProfileRequest;
+import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.UserProfile;
@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Service
@@ -46,10 +49,10 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
     }
 
     @Override
-    public ResponseEntity<StatusMessageResponse> updateUserProfile(UserProfileRequest userProfileRequest, Principal principal) {
+    public ResponseEntity<StatusMessageResponse> updateUserProfile(ProfileInformationRequest profileInformationRequest, Principal principal) {
         User user = userRepository.findUserByEmail(principal.getName());
-        String name = userProfileRequest.getName().toLowerCase();
-        String lastName = userProfileRequest.getLastName().toLowerCase();
+        String name = profileInformationRequest.getName().toLowerCase();
+        String lastName = profileInformationRequest.getLastname().toLowerCase();
 
         name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
         lastName = Character.toUpperCase(lastName.charAt(0)) + lastName.substring(1);
@@ -57,10 +60,16 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
             user.setProfile(new UserProfile());
         }
         user.getProfile().setName(name);
-        user.getProfile().setLastName(lastName);
-        user.getProfile().setBirthDate(userProfileRequest.getBirthDate() != null ? userProfileRequest.getBirthDate() : user.getProfile().getBirthDate());
-        user.getProfile().setBio(userProfileRequest.getBio() != null ? userProfileRequest.getBio() : user.getProfile().getBio());
-        user.getProfile().setTitle(userProfileRequest.getTitle() != null ? userProfileRequest.getTitle() : user.getProfile().getTitle());
+        user.getProfile().setLastname(lastName);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date birthDate = formatter.parse(profileInformationRequest.getBirthDate());
+            user.getProfile().setBirthDate(profileInformationRequest.getBirthDate() != null ? birthDate: user.getProfile().getBirthDate());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        user.getProfile().setBio(profileInformationRequest.getBio());
+        user.getProfile().setTitle(profileInformationRequest.getTitle());
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Profile updated successfully"));
     }
