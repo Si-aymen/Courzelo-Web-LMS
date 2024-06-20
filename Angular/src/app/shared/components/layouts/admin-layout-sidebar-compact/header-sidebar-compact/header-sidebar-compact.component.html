@@ -105,11 +105,11 @@
             </div>
     
             <div ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
-                <img src="./assets/images/faces/1.jpg" id="userDropdown" ngbDropdownToggle alt="">
-    
+                <img [src]="imageSrc || 'assets/default-image.jpg' " id="userDropdown" ngbDropdownToggle alt="">
+
                 <div ngbDropdownMenu aria-labelledby="userDropdown">
                     <div class="dropdown-header">
-                        <i class="i-Lock-User mr-1"></i> Timothy Carlson
+                        <i class="i-Lock-User mr-1"></i> {{ (user?.profile.name + " " + user?.profile.lastname) || user?.email || " "}}
                     </div>
                     <button class="dropdown-item" routerLink="/settings/profile">Profile settings</button>
                     <button class="dropdown-item">Account settings</button>

@@ -3,6 +3,10 @@ import { NavigationService } from 'src/app/shared/services/navigation.service';
 import { SearchService } from 'src/app/shared/services/search.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import {AuthenticationService} from '../../../../services/user/authentication.service';
+import {SessionStorageService} from '../../../../services/user/session-storage.service';
+import {UserResponse} from '../../../../models/user/UserResponse';
+import {UserService} from '../../../../services/user/user.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header-sidebar-compact',
@@ -15,7 +19,11 @@ export class HeaderSidebarCompactComponent implements OnInit {
   constructor(
     private navService: NavigationService,
     public searchService: SearchService,
-    private auth: AuthenticationService
+    private auth: AuthenticationService,
+    private sessionStorageService: SessionStorageService,
+    private userService: UserService,
+    private sanitizer: DomSanitizer
+
   ) {
     this.notifications = [
       {
@@ -63,15 +71,20 @@ export class HeaderSidebarCompactComponent implements OnInit {
       }
     ];
   }
-
-  ngOnInit() {}
+  imageSrc: any;
+  user: UserResponse = this.sessionStorageService.getUser();
+  ngOnInit() {
+    this.userService.getProfileImageBlobUrl().subscribe((blob: Blob) => {
+      const objectURL = URL.createObjectURL(blob);
+      this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    });
+  }
 
   toggelSidebar() {
     const state = this.navService.sidebarState;
     state.sidenavOpen = !state.sidenavOpen;
     state.childnavOpen = !state.childnavOpen;
   }
-
   signout() {
     this.auth.logout();
   }

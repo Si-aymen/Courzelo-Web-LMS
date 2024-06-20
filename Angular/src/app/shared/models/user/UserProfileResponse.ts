@@ -1,7 +1,6 @@
 export interface UserProfileResponse {
     name: string;
-    lastName: string;
-    profileImage: string;
+    lastname: string;
     birthDate: Date;
     title: string;
     bio: string;

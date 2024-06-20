@@ -3,6 +3,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
 import {ProfileInformationRequest} from '../../../shared/models/user/requests/ProfileInformationRequest';
 import {UserService} from '../../../shared/services/user/user.service';
+import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
+import {UserResponse} from '../../../shared/models/user/UserResponse';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -13,14 +15,16 @@ export class ProfileComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private toastr: ToastrService,
-      private userService: UserService
+      private userService: UserService,
+      private sessionStorageService: SessionStorageService
   ) { }
   loading: boolean;
+  connectedUser: UserResponse = this.sessionStorageService.getUser();
   informationForm = this.formBuilder.group({
-        name: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
-        lastname: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
-        bio: ['', [Validators.maxLength(300), Validators.minLength(20)]],
-        title: ['', [  Validators.minLength(3), Validators.maxLength(20)]],
+        name: [this.connectedUser.profile.name, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+        lastname: [this.connectedUser.profile.lastname, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+        bio: [this.connectedUser.profile.bio, [Validators.maxLength(300), Validators.minLength(20)]],
+        title: [this.connectedUser.profile.title, [  Validators.minLength(3), Validators.maxLength(20)]],
         birthDate: []
       }
   );
@@ -47,7 +51,9 @@ export class ProfileComponent implements OnInit {
     this.loading = true;
     if (this.informationForm.valid) {
       this.profileInfromationRequest = this.informationForm.getRawValue();
+      if (this.informationForm.controls['birthDate'].value) {
       this.profileInfromationRequest.birthDate = `${this.informationForm.controls['birthDate'].value.year}-${this.informationForm.controls['birthDate'].value.month.toString().padStart(2, '0')}-${this.informationForm.controls['birthDate'].value.day.toString().padStart(2, '0')}`;
+        }
 
       this.updateUserProfile();
     } else {

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../../../shared/services/auth.service';
 import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, ResolveEnd } from '@angular/router';
 import {AuthenticationService} from '../../../shared/services/user/authentication.service';
-import {ToastrService} from "ngx-toastr";
+import {ToastrService} from 'ngx-toastr';
+import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
 
 @Component({
     selector: 'app-signin',
@@ -20,7 +20,8 @@ export class SigninComponent implements OnInit {
         private fb: FormBuilder,
         private auth: AuthenticationService,
         private toastr: ToastrService,
-        private router: Router
+        private router: Router,
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit() {
@@ -49,6 +50,7 @@ export class SigninComponent implements OnInit {
             .subscribe(res => {
                     this.loading = false;
                     this.handleSuccessResponse(res);
+                    this.sessionStorageService.setUser(res.user);
                 this.router.navigateByUrl('/dashboard/v1');
             },
                 error => {

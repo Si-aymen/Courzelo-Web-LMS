@@ -28,5 +28,9 @@ public class UserController {
     public ResponseEntity<StatusMessageResponse> uploadProfileImage(@RequestParam("file") MultipartFile file, Principal principal) {
         return userService.uploadProfileImage(file, principal);
     }
+    @GetMapping("/image")
+    public ResponseEntity<byte[]> getProfileImage(Principal principal) {
+        return userService.getProfileImage(principal);
+    }
 
 }

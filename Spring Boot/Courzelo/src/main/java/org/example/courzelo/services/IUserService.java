@@ -18,4 +18,6 @@ UserDetails loadUserByEmail(String email);
 
 
     ResponseEntity<StatusMessageResponse> uploadProfileImage(MultipartFile file, Principal principal);
+
+    ResponseEntity<byte[]> getProfileImage(Principal principal);
 }

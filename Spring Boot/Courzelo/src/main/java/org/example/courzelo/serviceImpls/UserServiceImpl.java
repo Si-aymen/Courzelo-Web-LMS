@@ -56,6 +56,8 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
 
     @Override
     public ResponseEntity<StatusMessageResponse> updateUserProfile(ProfileInformationRequest profileInformationRequest, Principal principal) {
+        log.info("Updating profile for user: " + principal.getName());
+        log.info("Profile information: " + profileInformationRequest.toString());
         User user = userRepository.findUserByEmail(principal.getName());
         String name = profileInformationRequest.getName().toLowerCase();
         String lastName = profileInformationRequest.getLastname().toLowerCase();
@@ -69,8 +71,12 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         user.getProfile().setLastname(lastName);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date birthDate = formatter.parse(profileInformationRequest.getBirthDate());
-            user.getProfile().setBirthDate(profileInformationRequest.getBirthDate() != null ? birthDate: user.getProfile().getBirthDate());
+            Date birthDate = null;
+            if(profileInformationRequest.getBirthDate() != null)
+            {
+              birthDate = formatter.parse(profileInformationRequest.getBirthDate());
+            }
+            user.getProfile().setBirthDate(birthDate != null ? birthDate: user.getProfile().getBirthDate());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -127,6 +133,22 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         } catch (Exception e) {
             log.error("Error uploading image: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new StatusMessageResponse("error", "Could not upload the image. Please try again."));
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getProfileImage(Principal principal) {
+        try {
+            // Get the user
+            User user = userRepository.findUserByEmail(principal.getName());
+            // Get the file path
+            String filePath = user.getProfile().getProfileImage();
+            // Read the file
+            byte[] image = Files.readAllBytes(new File(filePath).toPath());
+            return ResponseEntity.ok(image);
+        } catch (Exception e) {
+            log.error("Error getting image: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

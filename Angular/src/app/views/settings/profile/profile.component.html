@@ -1,5 +1,5 @@
 <div class="breadcrumb">
-    <h1>Profile</h1>
+    <h1>Profile settings</h1>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -53,7 +53,7 @@
                             <label for="picker1">Birth date</label>
                             <div class="input-group">
                                 <input formControlName="birthDate" id="picker1" class="form-control" placeholder="yyyy-mm-dd" name="dp"
-                                       ngbDatepicker #dp="ngbDatepicker">
+                                       ngbDatepicker #dp="ngbDatepicker" [minDate]="{year: 1900, month: 1, day: 1}">
                                 <div class="input-group-append">
                                     <button class="btn btn-secondary" (click)="dp.toggle()" type="button">
                                         <i class="icon-regular i-Calendar-4"></i>
