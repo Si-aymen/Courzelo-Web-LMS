@@ -29,5 +29,6 @@ UserDetails loadUserByEmail(String email);
     ResponseEntity<StatusMessageResponse> updatePassword(UpdatePasswordRequest updatePasswordRequest, Principal principal);
     ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(String email);
     ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(String email,String verificationCode);
-    void disableTwoFactorAuth(String email);
+    ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(String email);
+    boolean verifyTwoFactorAuth(String email, int verificationCode);
 }

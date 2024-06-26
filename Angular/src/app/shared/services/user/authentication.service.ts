@@ -16,7 +16,10 @@ import {SessionStorageService} from './session-storage.service';
 export class AuthenticationService {
   private baseUrl = 'http://localhost:8080/api/v1/auth';
 
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private sessionStorageService: SessionStorageService   ) {
+  constructor(private http: HttpClient,
+              private router: Router,
+              private toastr: ToastrService,
+              private sessionStorageService: SessionStorageService   ) {
   }
 
   register(signupRequest: SignupRequest) {
@@ -39,6 +42,9 @@ export class AuthenticationService {
             this.router.navigateByUrl('/sessions/signin');
         }
     );
+  }
+  tfa(code: string, loginRequest: LoginRequest) {
+    return this.http.post<LoginResponse>(`${this.baseUrl}/tfa`, loginRequest, {params: {code}});
   }
     handleErrorResponse(error) {
         console.error(error);

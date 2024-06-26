@@ -6,6 +6,7 @@ import lombok.Data;
 public class LoginResponse {
     String status;
     String message;
+    Boolean twoFactorAuth;
     UserResponse user;
 
     public LoginResponse(String status, String message, UserResponse user) {
@@ -17,5 +18,18 @@ public class LoginResponse {
     public LoginResponse(String status, String message) {
         this.status = status;
         this.message = message;
+    }
+
+    public LoginResponse(String status, String message, Boolean twoFactorAuth, UserResponse user) {
+        this.status = status;
+        this.message = message;
+        this.twoFactorAuth = twoFactorAuth;
+        this.user = user;
+    }
+
+    public LoginResponse(String status, String message, Boolean twoFactorAuth) {
+        this.status = status;
+        this.message = message;
+        this.twoFactorAuth = twoFactorAuth;
     }
 }

@@ -5,6 +5,7 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
 import {UpdatePasswordRequest} from '../../../shared/models/user/requests/UpdatePasswordRequest';
 import {SignupRequest} from '../../../shared/models/user/requests/SignupRequest';
+import {UserResponse} from '../../../shared/models/user/UserResponse';
 
 @Component({
   selector: 'app-account',
@@ -28,7 +29,13 @@ export class AccountComponent implements OnInit {
         validator: this.ConfirmedValidator('newPassword', 'cPassword'),
       }
   );
+  tfaForm = this.formBuilder.group({
+        code: ['', [Validators.required]]
+      }
+  );
   updatePasswordRequest: UpdatePasswordRequest;
+  qrCodeImage = '';
+  user: UserResponse = this.sessionStorageService.getUser();
   ngOnInit() {
     this.updatePasswordForm.controls.newPassword.valueChanges.subscribe(() => {
       this.updatePasswordForm.controls.cPassword.updateValueAndValidity();
@@ -86,5 +93,54 @@ export class AccountComponent implements OnInit {
       default:
         this.toastr.error(errorMessage, 'Error!', {progressBar: true});
     }
+  }
+
+  generateTwoFactorAuthQrCode() {
+    this.userService.getQRCode().subscribe(
+        qrCodeResponse => {
+          this.qrCodeImage = 'data:image/png;base64,' + qrCodeResponse.qrCodeImage;
+          this.toastr.success('QR code generated successfully', 'Success!', {progressBar: true});
+        },
+        error => {
+          this.handleErrorResponse(error);
+        }
+    );
+  }
+  enableTwoFactorAuth() {
+    if (this.tfaForm.invalid) {
+      this.toastr.error('Please fill out the form correctly', 'Error!', {progressBar: true});
+      return;
+    }
+    this.loading = true;
+    this.userService.enable2FA(this.tfaForm.controls.code.value).subscribe(
+        () => {
+          this.user.security.twoFactorAuthEnabled = true;
+          this.qrCodeImage = '';
+          this.sessionStorageService.setUser(this.user);
+          this.toastr.success('Two factor authentication enabled successfully', 'Success!', {progressBar: true});
+          this.tfaForm.reset();
+          this.loading = false;
+        },
+        error => {
+          this.handleErrorResponse(error);
+          this.loading = false;
+        }
+    );
+  }
+  disableTwoFactorAuth() {
+    this.loading = true;
+    this.userService.disable2FA().subscribe(
+        () => {
+          this.user.security.twoFactorAuthEnabled = false;
+          this.qrCodeImage = '';
+          this.sessionStorageService.setUser(this.user);
+          this.toastr.success('Two factor authentication disabled successfully', 'Success!', {progressBar: true});
+          this.loading = false;
+        },
+        error => {
+          this.handleErrorResponse(error);
+          this.loading = false;
+        }
+    );
   }
 }

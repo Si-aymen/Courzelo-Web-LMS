@@ -5,6 +5,7 @@ import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.requests.UserProfileRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
+import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,18 @@ public class UserController {
     @PostMapping("/updatePassword")
     public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest , Principal principal) {
         return userService.updatePassword(updatePasswordRequest, principal);
+    }
+    @GetMapping("/qrCode")
+    public ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(Principal principal) {
+        return userService.generateTwoFactorAuthQrCode(principal.getName());
+    }
+    @PostMapping("/enableTwoFactorAuth")
+    public ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(@RequestParam String verificationCode,Principal principal) {
+        return userService.enableTwoFactorAuth(principal.getName(), verificationCode);
+    }
+    @DeleteMapping("/disableTwoFactorAuth")
+    public ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(Principal principal) {
+     return   userService.disableTwoFactorAuth(principal.getName());
     }
 
 }

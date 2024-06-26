@@ -224,21 +224,25 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
         return pngOutputStream.toByteArray();
     }
+    @Override
     public ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(String email,String verificationCode){
         User user = userRepository.findUserByEmail(email);
-        if (verifyTwoFactorAuth(email, Integer.parseInt(verificationCode))) {
+        if (verificationCode.matches("\\d+") && verifyTwoFactorAuth(email, Integer.parseInt(verificationCode))) {
             user.getSecurity().setTwoFactorAuthEnabled(true);
             userRepository.save(user);
             return ResponseEntity.ok(new StatusMessageResponse("success", "Two-factor authentication enabled successfully"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "Invalid verification code"));
     }
-    public void disableTwoFactorAuth(String email){
+    @Override
+    public ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(String email){
         User user = userRepository.findUserByEmail(email);
         user.getSecurity().setTwoFactorAuthKey(null);
         user.getSecurity().setTwoFactorAuthEnabled(false);
         userRepository.save(user);
+        return ResponseEntity.ok(new StatusMessageResponse("success", "Two-factor authentication disabled successfully"));
     }
+    @Override
     public boolean verifyTwoFactorAuth(String email, int verificationCode) {
         log.info("Starting TFA verification for user: {}", email);
         User user = userRepository.findUserByEmail(email);

@@ -49,9 +49,15 @@ export class SigninComponent implements OnInit {
         this.auth.login(this.signinForm.value)
             .subscribe(res => {
                     this.loading = false;
-                    this.handleSuccessResponse(res);
-                    this.sessionStorageService.setUser(res.user);
-                this.router.navigateByUrl('/dashboard/v1');
+                    if (res.twoFactorAuth) {
+                        this.toastr.info(res.message, '2FA!', {progressBar: true});
+                        this.router.navigateByUrl('/sessions/tfa',
+                            {state: {loginRequest: this.signinForm.getRawValue()}});
+                    } else {
+                        this.handleSuccessResponse(res);
+                        this.sessionStorageService.setUser(res.user);
+                        this.router.navigateByUrl('/dashboard/v1');
+                    }
             },
                 error => {
                     this.loading = false;

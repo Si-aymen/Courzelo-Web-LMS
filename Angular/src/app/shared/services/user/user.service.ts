@@ -7,6 +7,7 @@ import {map} from 'rxjs/operators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {LoginResponse} from '../../models/user/LoginResponse';
 import {UpdatePasswordRequest} from '../../models/user/requests/UpdatePasswordRequest';
+import {QRCodeResponse} from '../../models/user/QRCodeResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +40,14 @@ export class UserService {
   }
   updatePassword(updatePasswordRequest: UpdatePasswordRequest) {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/updatePassword`, updatePasswordRequest);
+  }
+  getQRCode(): Observable<QRCodeResponse> {
+    return this.http.get<QRCodeResponse>(`${this.baseUrl}/qrCode`);
+  }
+  enable2FA(verificationCode: string): Observable<StatusMessageResponse> {
+    return this.http.post<StatusMessageResponse>(`${this.baseUrl}/enableTwoFactorAuth`, null, {params: {verificationCode}});
+  }
+  disable2FA(): Observable<StatusMessageResponse> {
+    return this.http.delete<StatusMessageResponse>(`${this.baseUrl}/disableTwoFactorAuth`);
   }
 }

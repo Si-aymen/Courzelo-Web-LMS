@@ -15,6 +15,7 @@ import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.JWTUtils;
 import org.example.courzelo.services.IAuthService;
 import org.example.courzelo.services.IRefreshTokenService;
+import org.example.courzelo.services.IUserService;
 import org.example.courzelo.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -45,6 +46,7 @@ public class AuthServiceImpl implements IAuthService {
     private final PasswordEncoder encoder;
     private final CookieUtil cookieUtil;
     private final AuthenticationManager authenticationManager;
+    private final IUserService userService;
     @Value("${Security.app.jwtExpirationMs}")
     private long jwtExpirationMs;
     @Value("${Security.app.refreshExpirationMs}")
@@ -52,13 +54,14 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${Security.app.refreshRememberMeExpirationMs}")
     private long refreshRememberMeExpirationMs;
 
-    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager) {
+    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService) {
         this.userRepository = userRepository;
         this.iRefreshTokenService = iRefreshTokenService;
         this.jwtUtils = jwtUtils;
         this.encoder = encoder;
         this.cookieUtil = cookieUtil;
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @Override
@@ -80,10 +83,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new UsernameNotFoundException(USER_NOT_FOUND + email);
         }
     }
-
-    @Override
-    public ResponseEntity<LoginResponse> authenticateUser(LoginRequest loginRequest, HttpServletResponse response) {
-        log.info("Authenticating user");
+    boolean isUserAuthenticated(){
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -92,22 +92,34 @@ public class AuthServiceImpl implements IAuthService {
                 if (authentication.getPrincipal() instanceof UserDetails userDetails) {
                     String username = userDetails.getUsername();
                     log.info("Authenticated user's username: " + username);
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error", "User already authenticated"));
+                    return true;
                 }
+                return false;
             }
             log.info("User not authenticated");
+            return false;
+        }
+        return false;
+    }
+    @Override
+    public ResponseEntity<LoginResponse> authenticateUser(LoginRequest loginRequest, HttpServletResponse response) {
+        log.info("Authenticating user");
+        if(isUserAuthenticated()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error", "User already authenticated"));
         }
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail().toLowerCase(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(authentication.getName()), jwtExpirationMs).toString());
             User userDetails = (User) authentication.getPrincipal();
+            if(userDetails.getSecurity().isTwoFactorAuthEnabled())
+            {
+                log.info("Two factor authentication enabled");
+                return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("succes","TFA code required",true));
+            }
+            setHeaders(response,userDetails);
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
-            response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie(
-                    iRefreshTokenService.createRefreshToken(userDetails.getEmail(), loginRequest.isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
-                    , loginRequest.isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
             userRepository.save(userDetails);
             log.info("User authenticated successfully");
             return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
@@ -123,6 +135,13 @@ public class AuthServiceImpl implements IAuthService {
         }
     }
 
+    void setHeaders(HttpServletResponse response,User userDetails){
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(userDetails.getEmail()), jwtExpirationMs).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie(
+                iRefreshTokenService.createRefreshToken(userDetails.getEmail(), userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
+                , userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
+    }
+
     @Override
     public ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest) {
         if(userRepository.existsByEmail(signupRequest.getEmail())){
@@ -135,5 +154,39 @@ public class AuthServiceImpl implements IAuthService {
         );
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success","User registered successfully"));
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> twoFactorAuthentication(String code, LoginRequest loginRequest, HttpServletResponse response) {
+        log.info("Authenticating user");
+        if(isUserAuthenticated()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error", "User already authenticated"));
+        }
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail().toLowerCase(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User userDetails = (User) authentication.getPrincipal();
+            if(!userService.verifyTwoFactorAuth(userDetails.getEmail(),Integer.parseInt(code)))
+            {
+                log.error("Invalid two factor authentication code");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid two factor authentication code"));
+            }
+            setHeaders(response,userDetails);
+            userDetails.getActivity().setLastLogin(Instant.now());
+            userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
+            userRepository.save(userDetails);
+            log.info("User authenticated successfully");
+            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
+        } catch (DisabledException e) {
+            log.error("User not verified");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
+        } catch (LockedException e) {
+            log.error("User account locked");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Account locked"));
+        } catch (AuthenticationException e) {
+            log.error("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid email or password"));
+        }
     }
 }
