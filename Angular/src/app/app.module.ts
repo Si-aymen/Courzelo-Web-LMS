@@ -13,7 +13,7 @@ import { TransportsComponent } from './views/dashboard/transports/transports.com
 @NgModule({
   declarations: [
     AppComponent,
-    TransportsComponent
+    
   ],
   imports: [
     BrowserModule,

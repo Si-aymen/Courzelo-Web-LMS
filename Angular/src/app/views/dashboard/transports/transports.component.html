@@ -1,1 +1,89 @@
 <p>transports works!</p>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row">
+    <!-- ICON BG -->
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <div class="card-body text-center">
+                <i class="i-Car-2"></i>
+                <div class="content">
+                    <p class="text-muted mt-2 mb-0">Mini Bus</p>
+                    <p class="text-primary text-24 line-height-1 mb-2">10</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ICON BG -->
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <div class="card-body text-center">
+                <i class="i-Jeep"></i>
+                <div class="content">
+                    <p class="text-muted mt-2 mb-0"> Bus</p>
+                    <p class="text-primary text-24 line-height-1 mb-2">20</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ICON BG -->
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <div class="card-body text-center">
+                <i class="i-Checked-User"></i>
+                <div class="content">
+                    <p class="text-muted mt-2 mb-0"> Clients </p>
+                    <p class="text-primary text-24 line-height-1 mb-2">1005</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <div class="card-body text-center">
+                <i class="i-Map-Marker"></i>
+                <div class="content">
+                    <p class="text-muted mt-2 mb-0"> circuits </p>
+                    <p class="text-primary text-24 line-height-1 mb-2">6</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card o-hidden mb-4">
+            <ngx-datatable style="height: calc(100vh - 150px); box-shadow: none; width: 100%;" class="material fullscreen" [columnMode]="'force'"
+                [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [limit]="10" [rows]="products$ | async">
+                <ngx-datatable-column name="photo" [maxWidth]="100">
+                    <ng-template ngx-datatable-header-template>
+                        Client
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <img height="32px" width="32px" style="border-radius: 4px" [src]="value" alt="">
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="name" [width]="300">
+                    <ng-template ngx-datatable-header-template>
+                        Full name
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="category">
+                    <ng-template ngx-datatable-header-template>
+                        Type
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="subtitle">
+                    <ng-template ngx-datatable-header-template>
+                        Directions
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>
