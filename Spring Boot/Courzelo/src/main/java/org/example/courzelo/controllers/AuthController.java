@@ -42,5 +42,13 @@ public class AuthController {
     ResponseEntity<LoginResponse> verifyTFA(@RequestParam String code,@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return authService.twoFactorAuthentication(code, loginRequest, response);
     }
+    @GetMapping("/verify-email")
+    ResponseEntity<StatusMessageResponse> verifyEmail(@RequestParam String code) {
+        return authService.verifyEmail(code);
+    }
+    @GetMapping("/resend-verification-email")
+    ResponseEntity<StatusMessageResponse> resendVerificationCode(@RequestParam String email) {
+        return authService.sendVerificationCode(email);
+    }
 
 }

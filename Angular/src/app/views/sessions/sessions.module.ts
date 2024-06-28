@@ -9,6 +9,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { TfaComponent } from './tfa/tfa.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { TfaComponent } from './tfa/tfa.component';
     SharedComponentsModule,
     SessionsRoutingModule
   ],
-  declarations: [SignupComponent, SigninComponent, ForgotComponent, TfaComponent]
+  declarations: [SignupComponent, SigninComponent, ForgotComponent, TfaComponent, VerifyEmailComponent]
 })
 export class SessionsModule { }

@@ -9,13 +9,13 @@ import org.example.courzelo.dto.requests.SignupRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.models.CodeType;
+import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.JWTUtils;
-import org.example.courzelo.services.IAuthService;
-import org.example.courzelo.services.IRefreshTokenService;
-import org.example.courzelo.services.IUserService;
+import org.example.courzelo.services.*;
 import org.example.courzelo.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -47,6 +47,8 @@ public class AuthServiceImpl implements IAuthService {
     private final CookieUtil cookieUtil;
     private final AuthenticationManager authenticationManager;
     private final IUserService userService;
+    private final IMailService mailService;
+    private final ICodeVerificationService codeVerificationService;
     @Value("${Security.app.jwtExpirationMs}")
     private long jwtExpirationMs;
     @Value("${Security.app.refreshExpirationMs}")
@@ -54,7 +56,7 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${Security.app.refreshRememberMeExpirationMs}")
     private long refreshRememberMeExpirationMs;
 
-    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService) {
+    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService) {
         this.userRepository = userRepository;
         this.iRefreshTokenService = iRefreshTokenService;
         this.jwtUtils = jwtUtils;
@@ -62,6 +64,8 @@ public class AuthServiceImpl implements IAuthService {
         this.cookieUtil = cookieUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.mailService = mailService;
+        this.codeVerificationService = codeVerificationService;
     }
 
     @Override
@@ -153,6 +157,7 @@ public class AuthServiceImpl implements IAuthService {
                 Role.STUDENT
         );
         userRepository.save(user);
+        sendVerificationCode(user.getEmail());
         return ResponseEntity.ok(new StatusMessageResponse("success","User registered successfully"));
     }
 
@@ -188,5 +193,37 @@ public class AuthServiceImpl implements IAuthService {
             log.error("Invalid email or password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid email or password"));
         }
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> sendVerificationCode(String email) {
+        if(userRepository.existsByEmail(email)){
+            CodeVerification codeVerification = codeVerificationService.saveCode(
+                    CodeType.EMAIL_VERIFICATION,
+                    email,
+                    codeVerificationService.generateCode(),
+                    Instant.now().plusSeconds(3600*24)
+            );
+            mailService.sendConfirmationEmail(userRepository.findUserByEmail(email),codeVerification);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Verification code sent successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error","User not found"));
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> verifyEmail(String code) {
+        log.info("Verifying email");
+        log.info("Code: "+code);
+        String email = codeVerificationService.verifyCode(code);
+        if(email!= null){
+            log.info("Email verified");
+            User user = userRepository.findUserByEmail(email);
+            user.getSecurity().setEnabled(true);
+            userRepository.save(user);
+            codeVerificationService.deleteCode(email,CodeType.EMAIL_VERIFICATION);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Email verified successfully"));
+        }
+        log.info("Invalid verification code");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error","Invalid verification code"));
     }
 }

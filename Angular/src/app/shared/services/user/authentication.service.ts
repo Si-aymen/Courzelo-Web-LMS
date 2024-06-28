@@ -46,6 +46,12 @@ export class AuthenticationService {
   tfa(code: string, loginRequest: LoginRequest) {
     return this.http.post<LoginResponse>(`${this.baseUrl}/tfa`, loginRequest, {params: {code}});
   }
+  verifyEmail(code: string) {
+    return this.http.get<StatusMessageResponse>(`${this.baseUrl}/verify-email`, {params: {code}});
+  }
+  resendVerificationEmail(email: string) {
+    return this.http.get<StatusMessageResponse>(`${this.baseUrl}/resend-verification-email`, {params: {email}});
+  }
     handleErrorResponse(error) {
         console.error(error);
         let errorMessage = 'An unexpected error occurred';
