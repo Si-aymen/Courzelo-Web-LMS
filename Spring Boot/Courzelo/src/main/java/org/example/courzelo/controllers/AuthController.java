@@ -36,7 +36,7 @@ public class AuthController {
         if(principal != null) {
             return authService.logout(principal.getName(), request, response);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new StatusMessageResponse("error", "User already logged out"));
+    return authService.logout(request, response);
     }
     @PostMapping("/tfa")
     ResponseEntity<LoginResponse> verifyTFA(@RequestParam String code,@RequestBody LoginRequest loginRequest, HttpServletResponse response) {

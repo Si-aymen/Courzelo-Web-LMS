@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 public interface IAuthService {
 
     ResponseEntity<StatusMessageResponse> logout(String email, HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<StatusMessageResponse> logout( HttpServletRequest request, HttpServletResponse response);
 
     ResponseEntity<LoginResponse> authenticateUser(LoginRequest loginRequest, @NonNull HttpServletResponse response);
     ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest);

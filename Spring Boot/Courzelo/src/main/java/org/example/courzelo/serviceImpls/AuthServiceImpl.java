@@ -87,6 +87,18 @@ public class AuthServiceImpl implements IAuthService {
             throw new UsernameNotFoundException(USER_NOT_FOUND + email);
         }
     }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, null);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie("accessToken", 0L).toString());
+        log.info("Logout: Access Token removed");
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie("refreshToken", 0L).toString());
+        log.info("Logout :Refresh Token removed");
+        log.info("User logged out");
+        return ResponseEntity.ok(new StatusMessageResponse("success","User logged out successfully"));
+    }
+
     boolean isUserAuthenticated(){
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
