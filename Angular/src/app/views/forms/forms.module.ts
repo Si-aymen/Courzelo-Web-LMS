@@ -5,7 +5,6 @@ import { FormsRoutingModule } from './forms-routing.module';
 import { CustomFormsModule } from 'ngx-custom-validators';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { TagInputModule } from 'ngx-chips';
 
 
@@ -20,7 +19,7 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
-
+import {CreateQuizComponent} from './create-quiz/create-quiz.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,8 +32,11 @@ import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
     ImageCropperModule,
     TextMaskModule,
     FormWizardModule,
-    FormsRoutingModule
+    FormsRoutingModule,
+
   ],
-  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent]
+
+
+  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, CreateQuizComponent],
 })
 export class AppFormsModule { }

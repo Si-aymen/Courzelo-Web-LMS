@@ -52,7 +52,7 @@ public class AssignementService {
         assignment.setAssignmentId(dto.getAssignmentId());
         assignment.setCompleted(dto.isCompleted());
         assignment.setTotalMarks(dto.getTotalMarks());
-        assignment.setMarksObtained(dto.getMarksObtained());
+        assignment.setMarksObtained(dto.                                        getMarksObtained());
         return assignment;
     }
 }

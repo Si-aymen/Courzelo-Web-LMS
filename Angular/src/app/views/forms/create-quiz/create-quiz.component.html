@@ -1,0 +1,53 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Create New Quiz</h5>
+        <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+            <div class="form-group">
+                <label for="title">Quiz Title</label>
+                <input type="text" class="form-control" id="title" formControlName="title" placeholder="Enter quiz title" required>
+                <div *ngIf="quizForm.get('title')?.invalid && quizForm.get('title')?.touched" class="text-danger">
+                    Title is required.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" formControlName="description" placeholder="Enter quiz description" rows="3" required></textarea>
+                <div *ngIf="quizForm.get('description')?.invalid && quizForm.get('description')?.touched" class="text-danger">
+                    Description is required.
+                </div>
+            </div>
+            <div formArrayName="questions">
+                <div *ngFor="let question of questionFormArray.controls; let i = index" [formGroupName]="i" class="border rounded p-3 mb-3">
+                    <div class="form-group">
+                        <label for="questionText{{i}}">Question {{ i + 1 }}</label>
+                        <input type="text" class="form-control" id="questionText{{i}}" formControlName="questionText" placeholder="Enter question" required>
+                        <div *ngIf="question.get('questionText')?.invalid && question.get('questionText')?.touched" class="text-danger">
+                            Question text is required.
+                        </div>
+                    </div>
+                    <div formArrayName="options" class="form-group">
+                        <label>Options</label>
+                        <div *ngFor="let option of question.get('options')['controls']; let j = index" [formGroupName]="j" class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Option {{ j + 1 }}</span>
+                            </div>
+                            <input type="text" class="form-control" id="option{{i}}{{j}}" formControlName="option" placeholder="Enter option" required>
+                            <div *ngIf="option.get('option')?.invalid && option.get('option')?.touched" class="text-danger">
+                                Option text is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="correctAnswer{{i}}">Correct Answer</label>
+                        <input type="text" class="form-control" id="correctAnswer{{i}}" formControlName="correctAnswer" placeholder="Enter correct answer" required>
+                        <div *ngIf="question.get('correctAnswer')?.invalid && question.get('correctAnswer')?.touched" class="text-danger">
+                            Correct answer is required.
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary mt-2" (click)="addQuestion()">Add Question</button>
+            </div>
+            <button type="submit" class="btn btn-success mt-3" [disabled]="quizForm.invalid">Create Quiz</button>
+        </form>
+    </div>
+</div>
