@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit {
     selectedFileName: string;
     selectedFileUrl: string | ArrayBuffer;
   birthDate: NgbDateStruct;
+  file: any;
 
   ngOnInit() {
     const date = new Date(this.connectedUser.profile.birthDate);
@@ -95,21 +96,34 @@ export class ProfileComponent implements OnInit {
   }
   onFileSelected(event) {
     if (event.target.files.length > 0) {
-      const file = event.target.files[0];
+       this.file = event.target.files[0];
         const reader = new FileReader();
-      this.selectedFileName = file.name;
+      this.selectedFileName = this.file.name;
       reader.onload = (e) => this.selectedFileUrl = reader.result;
-        reader.readAsDataURL(file);
-      this.userService.uploadProfileImage(file).subscribe(
-          res => {
-            this.toastr.success(res.message, 'Success!', {progressBar: true});
-            event.target.value = '';
-          },
-          error => {
-            this.handleErrorResponse(error);
-            event.target.value = '';
-          }
-      );
+        reader.readAsDataURL(this.file);
     }
+  }
+  uploadProfilePicture() {
+    this.loading = true;
+    if (!this.file) {
+      this.toastr.error('No file selected', 'Error!', {progressBar: true});
+      this.loading = false;
+      return;
+    }
+    this.userService.uploadProfileImage(this.file).subscribe(
+        res => {
+          this.userService.getUserProfile().subscribe(
+              user => {
+                this.sessionStorageService.setUser(user.user);
+              }
+          );
+          this.loading = false;
+          this.toastr.success(res.message, 'Success!', {progressBar: true});
+        },
+        error => {
+          this.loading = false;
+          this.handleErrorResponse(error);
+        }
+    );
   }
 }
