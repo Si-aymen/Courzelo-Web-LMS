@@ -55,34 +55,57 @@
     </div>
 </div>
 
+
 <div class="row">
     <div class="col-md-12">
         <div class="card o-hidden mb-4">
-            <ngx-datatable style="height: calc(100vh - 150px); box-shadow: none; width: 100%;" class="material fullscreen" [columnMode]="'force'"
-                [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [limit]="10" [rows]="products$ | async">
-                <ngx-datatable-column name="photo" [maxWidth]="100">
+            <ngx-datatable 
+                style="height: calc(100vh - 150px); box-shadow: none; width: 100%;" 
+                class="material fullscreen" 
+                [columnMode]="'force'"
+                [headerHeight]="50" 
+                [footerHeight]="50" 
+                [rowHeight]="60" 
+                [scrollbarV]="true" 
+                [limit]="10" 
+                [rows]="Lines$">
+
+                <ngx-datatable-column name="id">
                     <ng-template ngx-datatable-header-template>
-                        Client
+                        Line ID
                     </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <img height="32px" width="32px" style="border-radius: 4px" [src]="value" alt="">
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{ row.id }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="name" [width]="300">
+
+                <ngx-datatable-column name="Sector">
                     <ng-template ngx-datatable-header-template>
-                        Full name
+                        Sector
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{ row.Sector }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="category">
+
+                <ngx-datatable-column name="Depature">
                     <ng-template ngx-datatable-header-template>
-                        Type
+                        Departure
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{ row.Depature }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="subtitle">
+
+                <ngx-datatable-column name="TimeOfDep">
                     <ng-template ngx-datatable-header-template>
-                        Directions
+                        Time of departure
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{ row.TimeOfDep }}
                     </ng-template>
                 </ngx-datatable-column>
+
             </ngx-datatable>
         </div>
     </div>
