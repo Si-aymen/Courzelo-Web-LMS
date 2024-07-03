@@ -21,6 +21,11 @@
                     Password is required.
                 </div>
             </div>
+              <label class="checkbox checkbox-primary">
+                  <input formControlName="rememberMe" type="checkbox" checked>
+                  <span>Remember me</span>
+                  <span class="checkmark"></span>
+              </label>
             <!-- <button class="btn btn-rounded btn-primary btn-block mt-2">Sign In</button> -->
             <btn-loading btnClass="btn-primary btn-rounded btn-block mt-3" [loadingText]="loadingText" [loading]="loading">
               Sign In

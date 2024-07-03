@@ -133,7 +133,7 @@ public class AuthServiceImpl implements IAuthService {
                 log.info("Two factor authentication enabled");
                 return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("succes","TFA code required",true));
             }
-            setHeaders(response,userDetails);
+            setHeaders(response,userDetails,loginRequest.isRememberMe());
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
@@ -151,11 +151,11 @@ public class AuthServiceImpl implements IAuthService {
         }
     }
 
-    void setHeaders(HttpServletResponse response,User userDetails){
+    void setHeaders(HttpServletResponse response,User userDetails,boolean rememberMe){
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(userDetails.getEmail()), jwtExpirationMs).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie(
-                iRefreshTokenService.createRefreshToken(userDetails.getEmail(), userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
-                , userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
+                iRefreshTokenService.createRefreshToken(userDetails.getEmail(), rememberMe ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
+                , rememberMe ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
     }
 
     @Override
@@ -189,7 +189,7 @@ public class AuthServiceImpl implements IAuthService {
                 log.error("Invalid two factor authentication code");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid two factor authentication code"));
             }
-            setHeaders(response,userDetails);
+            setHeaders(response,userDetails,loginRequest.isRememberMe());
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
