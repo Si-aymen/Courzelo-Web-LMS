@@ -18,6 +18,7 @@ public interface IAuthService {
     ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest);
     ResponseEntity<LoginResponse> twoFactorAuthentication(String code, LoginRequest loginRequest, HttpServletResponse response);
     ResponseEntity<StatusMessageResponse> sendVerificationCode(String email);
+    ResponseEntity<StatusMessageResponse> sendPasswordResetCode(String email);
     ResponseEntity<StatusMessageResponse> verifyEmail( String code);
 
 }

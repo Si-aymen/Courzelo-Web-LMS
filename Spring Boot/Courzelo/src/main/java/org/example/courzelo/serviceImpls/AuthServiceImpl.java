@@ -223,6 +223,21 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
+    public ResponseEntity<StatusMessageResponse> sendPasswordResetCode(String email) {
+        if(userRepository.existsByEmail(email)){
+            CodeVerification codeVerification = codeVerificationService.saveCode(
+                    CodeType.PASSWORD_RESET,
+                    email,
+                    codeVerificationService.generateCode(),
+                    Instant.now().plusSeconds(3600)
+            );
+            mailService.sendPasswordResetEmail(userRepository.findUserByEmail(email),codeVerification);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Verification code sent successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error","User not found"));
+    }
+
+    @Override
     public ResponseEntity<StatusMessageResponse> verifyEmail(String code) {
         log.info("Verifying email");
         log.info("Code: "+code);

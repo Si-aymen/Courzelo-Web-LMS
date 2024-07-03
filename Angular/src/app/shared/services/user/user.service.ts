@@ -50,4 +50,7 @@ export class UserService {
   disable2FA(): Observable<StatusMessageResponse> {
     return this.http.delete<StatusMessageResponse>(`${this.baseUrl}/disableTwoFactorAuth`);
   }
+  resetPassword(updatePasswordRequest: UpdatePasswordRequest, code: string): Observable<StatusMessageResponse> {
+    return this.http.post<StatusMessageResponse>(`${this.baseUrl}/reset-password`, updatePasswordRequest, {params: {code}});
+  }
 }

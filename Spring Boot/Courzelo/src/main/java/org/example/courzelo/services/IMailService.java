@@ -5,4 +5,6 @@ import org.example.courzelo.models.User;
 
 public interface IMailService {
     void sendConfirmationEmail(User user, CodeVerification codeVerification);
+    void sendPasswordResetEmail(User user, CodeVerification codeVerification);
+
 }

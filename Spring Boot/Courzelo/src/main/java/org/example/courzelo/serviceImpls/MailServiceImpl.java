@@ -35,4 +35,26 @@ public class MailServiceImpl implements IMailService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void sendPasswordResetEmail(User user, CodeVerification codeVerification) {
+        MimeMessage mailMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mailMessage, "utf-8");
+
+        String htmlMsg = "<h3>Hello, " + user.getEmail() + "</h3>"
+                + "<p>You have requested to reset your password. Please click the below link to proceed:</p>"
+                + "<a href='http://localhost:4200/sessions/reset-password?code=" + codeVerification.getCode() + "'>Reset Password</a>"
+                + "<p>If you did not make this request, please ignore this email.</p>"
+                + "<p>Best regards,</p>"
+                + "<p>Courzelo Team</p>";
+
+        try {
+            helper.setText(htmlMsg, true);
+            helper.setTo(user.getEmail());
+            helper.setSubject("Password Reset");
+            mailSender.send(mailMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }

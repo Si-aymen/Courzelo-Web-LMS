@@ -52,6 +52,9 @@ export class AuthenticationService {
   resendVerificationEmail(email: string) {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/resend-verification-email`, {params: {email}});
   }
+  sendResetPasswordEmail(email: string) {
+    return this.http.get<StatusMessageResponse>(`${this.baseUrl}/forgot-password`, {params: {email}});
+  }
     handleErrorResponse(error) {
         console.error(error);
         let errorMessage = 'An unexpected error occurred';

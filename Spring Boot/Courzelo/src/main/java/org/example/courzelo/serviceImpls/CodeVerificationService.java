@@ -21,10 +21,13 @@ public class CodeVerificationService implements ICodeVerificationService {
     @Override
     public String verifyCode(String codeToVerify) {
         CodeVerification codeVerification = codeVerificationRepository.findByCode(codeToVerify);
-        if(codeVerification != null && codeVerification.getCode().equals(codeToVerify)){
+        if(codeVerification != null && !isCodeExpired(codeVerification) && codeVerification.getCode().equals(codeToVerify)){
             return codeVerification.getEmail();
         }
         return null;
+    }
+    private boolean isCodeExpired(CodeVerification codeVerification){
+        return codeVerification.getExpiryDate().isBefore(Instant.now());
     }
 
     @Override

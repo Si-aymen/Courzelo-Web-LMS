@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { TfaComponent } from './tfa/tfa.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
     SharedComponentsModule,
     SessionsRoutingModule
   ],
-  declarations: [SignupComponent, SigninComponent, ForgotComponent, TfaComponent, VerifyEmailComponent]
+  declarations: [SignupComponent, SigninComponent, ForgotComponent, TfaComponent, VerifyEmailComponent, ResetPasswordComponent]
 })
 export class SessionsModule { }

@@ -50,5 +50,9 @@ public class AuthController {
     ResponseEntity<StatusMessageResponse> resendVerificationCode(@RequestParam String email) {
         return authService.sendVerificationCode(email);
     }
+    @GetMapping("/forgot-password")
+    ResponseEntity<StatusMessageResponse> forgotPassword(@RequestParam String email) {
+        return authService.sendPasswordResetCode(email);
+    }
 
 }

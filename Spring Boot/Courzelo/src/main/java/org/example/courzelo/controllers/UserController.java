@@ -43,6 +43,11 @@ public class UserController {
     public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest , Principal principal) {
         return userService.updatePassword(updatePasswordRequest, principal);
     }
+    @PostMapping("/reset-password")
+    @PreAuthorize("permitAll")
+    public ResponseEntity<StatusMessageResponse> resetPassword(@RequestBody UpdatePasswordRequest updatePasswordRequest, @RequestParam String code) {
+        return userService.resetPassword(updatePasswordRequest, code);
+    }
     @GetMapping("/qrCode")
     public ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(Principal principal) {
         return userService.generateTwoFactorAuthQrCode(principal.getName());
