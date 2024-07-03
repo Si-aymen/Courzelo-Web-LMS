@@ -29,8 +29,11 @@ export class AuthenticationService {
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, loginRequest);
   }
-
   logout() {
+      this.sessionStorageService.clearUser();
+    return  this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`);
+  }
+  logoutImpl() {
       this.sessionStorageService.clearUser();
       this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`).subscribe(
         res => {

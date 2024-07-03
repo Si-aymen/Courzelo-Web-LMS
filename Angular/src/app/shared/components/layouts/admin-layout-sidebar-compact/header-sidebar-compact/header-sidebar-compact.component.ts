@@ -86,6 +86,6 @@ export class HeaderSidebarCompactComponent implements OnInit {
     state.childnavOpen = !state.childnavOpen;
   }
   signout() {
-    this.auth.logout();
+    this.auth.logoutImpl();
   }
 }
