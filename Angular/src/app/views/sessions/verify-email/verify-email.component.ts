@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenticationService} from '../../../shared/services/user/authentication.service';
-import {ToastrService} from "ngx-toastr";
+import {ToastrService} from 'ngx-toastr';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -13,8 +14,9 @@ export class VerifyEmailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private auth: AuthenticationService,
-              private toastr: ToastrService
-  ) { }
+              private toastr: ToastrService,
+                private responseHandlerService: ResponseHandlerService) { }
+
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -22,37 +24,15 @@ export class VerifyEmailComponent implements OnInit {
     });
     this.auth.verifyEmail(this.code).subscribe(
       res => {
-        console.log(res.message);
-        this.handleSuccessResponse(res);
+        this.responseHandlerService.handleSuccess(res.message);
         this.router.navigateByUrl('/sessions/signin');
       },
       error => {
         console.error(error);
-        this.handleErrorResponse(error);
+        this.responseHandlerService.handleError(error);
         this.router.navigateByUrl('/sessions/signin');
       }
     );
-  }
-  handleSuccessResponse(data) {
-    console.log(data);
-    this.toastr.success(data.message, 'Success!', {progressBar: true});
-  }
-  handleErrorResponse(error) {
-    console.error(error);
-    let errorMessage = 'An unexpected error occurred';
-    if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    }
-    switch (error.status) {
-      case 409:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 400:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      default:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-    }
   }
 
 }

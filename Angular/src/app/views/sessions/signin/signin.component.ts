@@ -5,6 +5,7 @@ import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, Resolve
 import {AuthenticationService} from '../../../shared/services/user/authentication.service';
 import {ToastrService} from 'ngx-toastr';
 import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 
 @Component({
     selector: 'app-signin',
@@ -21,7 +22,8 @@ export class SigninComponent implements OnInit {
         private auth: AuthenticationService,
         private toastr: ToastrService,
         private router: Router,
-        private sessionStorageService: SessionStorageService
+        private sessionStorageService: SessionStorageService,
+        private responseHandler: ResponseHandlerService
     ) { }
 
     ngOnInit() {
@@ -55,40 +57,19 @@ export class SigninComponent implements OnInit {
                         this.router.navigateByUrl('/sessions/tfa',
                             {state: {loginRequest: this.signinForm.getRawValue()}});
                     } else {
-                        this.handleSuccessResponse(res);
+                        this.responseHandler.handleSuccess(res.message);
                         this.sessionStorageService.setUser(res.user);
                         this.router.navigateByUrl('/dashboard/v1');
                     }
             },
                 error => {
                     this.loading = false;
-                    this.handleErrorResponse(error);
+                    this.responseHandler.handleError(error);
                 }
         );
     } else {
             this.loading = false;
             this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
-        }
-    }
-    handleSuccessResponse(data) {
-        console.log(data);
-        this.toastr.success(data.message, 'Success!', {progressBar: true});
-    }
-    handleErrorResponse(error) {
-        console.error(error);
-        let errorMessage = 'An unexpected error occurred';
-        if (error.error && error.error.message) {
-            errorMessage = error.error.message;
-        }
-        switch (error.status) {
-            case 409:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-                break;
-            case 400:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-                break;
-            default:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
         }
     }
 

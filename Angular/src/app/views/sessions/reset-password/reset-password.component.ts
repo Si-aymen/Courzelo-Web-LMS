@@ -4,6 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../../shared/services/user/user.service';
 import {UpdatePasswordRequest} from '../../../shared/models/user/requests/UpdatePasswordRequest';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,6 +17,7 @@ export class ResetPasswordComponent implements OnInit {
                   private route: ActivatedRoute,
                   private toastr: ToastrService,
                   private router: Router,
+                  private responseHandler: ResponseHandlerService
   ) { }
   code: string;
   updatePasswordRequest: UpdatePasswordRequest = {};
@@ -58,34 +60,13 @@ export class ResetPasswordComponent implements OnInit {
           this.updatePasswordRequest.newPassword = this.passwordForm.controls.password.value;
         this.userService.resetPassword(this.updatePasswordRequest, this.code)
             .subscribe(
-                data => {this.handleSuccessResponse(data);
+                data => {this.responseHandler.handleSuccess(data.message);
                             this.router.navigateByUrl('/sessions/signin');
                 },
-                error => this.handleErrorResponse(error)
+                error => this.responseHandler.handleError(error)
             );
         } else {
         this.toastr.error('Invalid password', 'Error!', {progressBar: true});
         }
     }
-handleSuccessResponse(data) {
-  console.log(data);
-  this.toastr.success(data.message, 'Success!', {progressBar: true});
-}
-handleErrorResponse(error) {
-  console.error(error);
-  let errorMessage = 'An unexpected error occurred';
-  if (error.error && error.error.message) {
-    errorMessage = error.error.message;
-  }
-  switch (error.status) {
-    case 409:
-      this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-      break;
-    case 400:
-      this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-      break;
-    default:
-      this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-  }
-}
 }

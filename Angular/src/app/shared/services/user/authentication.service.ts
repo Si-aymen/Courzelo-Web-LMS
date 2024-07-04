@@ -8,6 +8,7 @@ import {SignupRequest} from '../../models/user/requests/SignupRequest';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {SessionStorageService} from './session-storage.service';
+import {ResponseHandlerService} from './response-handler.service';
 
 
 @Injectable({
@@ -19,7 +20,8 @@ export class AuthenticationService {
   constructor(private http: HttpClient,
               private router: Router,
               private toastr: ToastrService,
-              private sessionStorageService: SessionStorageService   ) {
+              private sessionStorageService: SessionStorageService,
+              private responseHandlerService: ResponseHandlerService) {
   }
 
   register(signupRequest: SignupRequest) {
@@ -41,7 +43,7 @@ export class AuthenticationService {
           this.router.navigateByUrl('/sessions/signin');
         },
         error => {
-            this.handleErrorResponse(error);
+            this.responseHandlerService.handleError(error);
             this.router.navigateByUrl('/sessions/signin');
         }
     );
@@ -58,23 +60,4 @@ export class AuthenticationService {
   sendResetPasswordEmail(email: string) {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/forgot-password`, {params: {email}});
   }
-    handleErrorResponse(error) {
-        console.error(error);
-        let errorMessage = 'An unexpected error occurred';
-        if (error.error && error.error.message) {
-            errorMessage = error.error.message;
-        }
-        switch (error.status) {
-            case 409:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-                break;
-            case 400:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-                break;
-            case 403:
-                break;
-            default:
-                this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        }
-    }
 }

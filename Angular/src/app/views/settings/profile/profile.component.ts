@@ -6,6 +6,7 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
 import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -17,7 +18,8 @@ export class ProfileComponent implements OnInit {
       private formBuilder: FormBuilder,
       private toastr: ToastrService,
       private userService: UserService,
-      private sessionStorageService: SessionStorageService
+      private sessionStorageService: SessionStorageService,
+      private responseHandlerService: ResponseHandlerService
   ) { }
   loading: boolean;
   connectedUser: UserResponse = this.sessionStorageService.getUser();
@@ -57,7 +59,7 @@ export class ProfileComponent implements OnInit {
         },
         error => {
           this.loading = false;
-          this.handleErrorResponse(error);
+          this.responseHandlerService.handleError(error);
         }
     );
   }
@@ -73,25 +75,6 @@ export class ProfileComponent implements OnInit {
     } else {
       this.loading = false;
       this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
-    }
-  }
-  handleErrorResponse(error) {
-    console.error(error);
-    let errorMessage = 'An unexpected error occurred';
-    if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    }
-    switch (error.status) {
-      case 409:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 400:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 401:
-        break;
-      default:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
     }
   }
   onFileSelected(event) {
@@ -122,7 +105,7 @@ export class ProfileComponent implements OnInit {
         },
         error => {
           this.loading = false;
-          this.handleErrorResponse(error);
+            this.responseHandlerService.handleError(error);
         }
     );
   }

@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../../../shared/services/user/authentication.service';
 import {SignupRequest} from '../../../shared/models/user/requests/SignupRequest';
 import {ToastrService} from 'ngx-toastr';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 
 @Component({
   selector: 'app-signup',
@@ -14,7 +15,8 @@ import {ToastrService} from 'ngx-toastr';
 export class SignupComponent implements OnInit {
   constructor(    private authService: AuthenticationService,
                   private formBuilder: FormBuilder,
-                  private toastr: ToastrService
+                  private toastr: ToastrService,
+                  private responseHandler: ResponseHandlerService
                   ) { }
   signupForm = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -50,35 +52,14 @@ export class SignupComponent implements OnInit {
       this.signupRequest = this.signupForm.getRawValue();
       this.authService.register(this.signupRequest)
           .subscribe(
-              data => this.handleSuccessResponse(data),
-              error => this.handleErrorResponse(error)
+              data => this.responseHandler.handleSuccess(data.message),
+              error => this.responseHandler.handleError(error)
           );
     } else {
       this.showFormInvalidError();
     }
   }
 
-  handleSuccessResponse(data) {
-    this.toastr.success(data.message, 'Success!', {progressBar: true});
-  }
-
-  handleErrorResponse(error) {
-    console.error(error);
-    let errorMessage = 'An unexpected error occurred';
-    if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    }
-    switch (error.status) {
-      case 409:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 400:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      default:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-    }
-  }
 
   showFormInvalidError() {
     this.toastr.error('Form is invalid', 'Error!', {progressBar: true});
