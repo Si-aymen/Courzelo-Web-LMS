@@ -11,7 +11,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/evaluations")
 public class EvaluationController {
-    private final EvaluationService evaluationService;
+  /*  private final EvaluationService evaluationService;
     public EvaluationController(EvaluationService evaluationService) {
         this.evaluationService = evaluationService;
     }
@@ -22,5 +22,5 @@ public class EvaluationController {
     @PostMapping("/evaluate/{studentId}")
     public Evaluation evaluateStudent(@PathVariable String studentId) {
         return evaluationService.evaluateStudent(studentId);
-    }
+    }*/
 }

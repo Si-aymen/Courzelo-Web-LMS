@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/academic")
 public class AcademicController {
-    private final AcademicService academicService;
+  /*  private final AcademicService academicService;
 
     public AcademicController(AcademicService academicService) {
         this.academicService = academicService;
@@ -27,5 +27,5 @@ public class AcademicController {
     public ResponseEntity<AcademicDTO> saveAcademic(@RequestBody AcademicDTO academicDTO) {
         AcademicDTO savedAcademic = academicService.saveAcademic(academicDTO);
         return new ResponseEntity<>(savedAcademic, HttpStatus.CREATED);
-    }
+    }*/
 }

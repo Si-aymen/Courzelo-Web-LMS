@@ -14,7 +14,7 @@ export class QuizListComponent implements OnInit {
   filteredQuizzes;
   constructor( private QS: QuizService) { }
   ngOnInit(): void {
-    this.QS.getQuizzesByTeacherId('ddsd')
+    this.QS.getAllQuizzes()
         .subscribe((res: any[]) => {
           this.quizzes=[...res];
           this.filteredQuizzes = res;

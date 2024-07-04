@@ -19,7 +19,8 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
-import {CreateQuizComponent} from './create-quiz/create-quiz.component';
+import {CreateQuizComponent} from './Quiz/create-quiz/create-quiz.component';
+import { TakeQuizComponent } from './Quiz/take-quiz/take-quiz.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -37,6 +38,6 @@ import {CreateQuizComponent} from './create-quiz/create-quiz.component';
   ],
 
 
-  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, CreateQuizComponent],
+  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, CreateQuizComponent, TakeQuizComponent],
 })
 export class AppFormsModule { }

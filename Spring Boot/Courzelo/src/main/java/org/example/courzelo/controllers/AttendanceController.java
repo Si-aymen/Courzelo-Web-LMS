@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/questions")
+@RequestMapping("/api/attendance")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
@@ -24,7 +24,7 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceDTOs);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AttendanceDTO> saveAttendance(@RequestBody AttendanceDTO attendanceDTO) {
         AttendanceDTO savedAttendanceDTO = attendanceService.saveAttendance(attendanceDTO);
         return new ResponseEntity<>(savedAttendanceDTO, HttpStatus.CREATED);

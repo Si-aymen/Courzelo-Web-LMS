@@ -9,7 +9,7 @@ import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 import { HttpClientModule } from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {CreateQuizComponent} from './views/forms/create-quiz/create-quiz.component';
+import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 
 @NgModule({
   declarations: [

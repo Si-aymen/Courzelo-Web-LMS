@@ -7,7 +7,8 @@ import { WizardComponent } from './wizard/wizard.component';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
-import { CreateQuizComponent } from './create-quiz/create-quiz.component';
+import { CreateQuizComponent } from './Quiz/create-quiz/create-quiz.component';
+import {TakeQuizComponent} from './Quiz/take-quiz/take-quiz.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'create-quiz',
     component: CreateQuizComponent
+  },
+  {
+    path: 'take-quiz',
+    component: TakeQuizComponent
   }
 ];
 

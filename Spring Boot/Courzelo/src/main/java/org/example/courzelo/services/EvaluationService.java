@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class EvaluationService {
-    private final EvaluationRepository evaluationRepository;
+/*    private final EvaluationRepository evaluationRepository;
     private final QuizResultService quizResultService;
     private final AttendanceService attendanceService;
     private final AssignementService assignmentService;
@@ -41,5 +41,5 @@ public class EvaluationService {
 
     public List<Evaluation> getEvaluationByStudentId(String studentId) {
         return evaluationRepository.findByStudentId(studentId);
-    }
+    }*/
 }
