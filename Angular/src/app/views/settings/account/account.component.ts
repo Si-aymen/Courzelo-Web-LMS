@@ -37,8 +37,13 @@ export class AccountComponent implements OnInit {
   );
   updatePasswordRequest: UpdatePasswordRequest;
   qrCodeImage = '';
-  user: UserResponse = this.sessionStorageService.getUser();
+  user: UserResponse;
   ngOnInit() {
+      this.sessionStorageService.getUser().subscribe(
+          (user: UserResponse) => {
+              this.user = user;
+          }
+      );
     this.updatePasswordForm.controls.newPassword.valueChanges.subscribe(() => {
       this.updatePasswordForm.controls.cPassword.updateValueAndValidity();
     });

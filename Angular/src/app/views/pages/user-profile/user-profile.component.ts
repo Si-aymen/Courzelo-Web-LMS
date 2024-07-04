@@ -18,8 +18,13 @@ export class UserProfileComponent implements OnInit {
       private sanitizer: DomSanitizer
   ) { }
   imageSrc: any;
-  user: UserResponse = this.sessionStorageService.getUser();
+  user: UserResponse;
   ngOnInit() {
+   this.sessionStorageService.getUser().subscribe(
+        (user: UserResponse) => {
+          this.user = user;
+        }
+    );
     this.userService.getProfileImageBlobUrl().subscribe((blob: Blob) => {
       const objectURL = URL.createObjectURL(blob);
       this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);

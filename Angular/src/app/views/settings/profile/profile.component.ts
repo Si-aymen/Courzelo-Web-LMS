@@ -22,12 +22,12 @@ export class ProfileComponent implements OnInit {
       private responseHandlerService: ResponseHandlerService
   ) { }
   loading: boolean;
-  connectedUser: UserResponse = this.sessionStorageService.getUser();
+  connectedUser: UserResponse;
   informationForm = this.formBuilder.group({
-        name: [this.connectedUser.profile.name, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
-        lastname: [this.connectedUser.profile.lastname, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
-        bio: [this.connectedUser.profile.bio, [Validators.maxLength(300), Validators.minLength(20)]],
-        title: [this.connectedUser.profile.title, [  Validators.minLength(3), Validators.maxLength(20)]],
+        name: [' ', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+        lastname: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+        bio: ['', [Validators.maxLength(300), Validators.minLength(20)]],
+        title: ['', [  Validators.minLength(3), Validators.maxLength(20)]],
         birthDate: []
       }
   );
@@ -38,6 +38,12 @@ export class ProfileComponent implements OnInit {
   file: any;
 
   ngOnInit() {
+      this.sessionStorageService.getUser().subscribe(
+          (user: UserResponse) => {
+              this.connectedUser = user;
+          }
+      );
+      this.initializeFormWithUserData();
     const date = new Date(this.connectedUser.profile.birthDate);
     this.birthDate = {
       year: date.getFullYear(),
@@ -45,6 +51,22 @@ export class ProfileComponent implements OnInit {
       day: date.getDate()
     };
   }
+    initializeFormWithUserData() {
+        if (this.connectedUser) {
+            const date = new Date(this.connectedUser.profile.birthDate);
+            this.birthDate = {
+                year: date.getFullYear(),
+                month: date.getMonth() + 1,
+                day: date.getDate()
+            };
+            this.informationForm.patchValue({
+                name: this.connectedUser.profile.name,
+                lastname: this.connectedUser.profile.lastname,
+                bio: this.connectedUser.profile.bio,
+                title: this.connectedUser.profile.title,
+            });
+        }
+    }
 
   updateUserProfile() {
     this.userService.updateUserProfile(this.profileInfromationRequest).subscribe(
