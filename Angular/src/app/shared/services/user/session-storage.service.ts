@@ -35,7 +35,6 @@ export class SessionStorageService {
       );
     }
   }
-
   clearUser(): void {
     sessionStorage.removeItem('user');
   }

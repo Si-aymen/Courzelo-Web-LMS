@@ -37,7 +37,7 @@ export class AuthenticationService {
   }
   logoutImpl() {
       this.sessionStorageService.clearUser();
-      this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`).subscribe(
+    this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`).subscribe(
         res => {
             this.toastr.success(res.message, 'Success', {progressBar: true} );
           this.router.navigateByUrl('/sessions/signin');
