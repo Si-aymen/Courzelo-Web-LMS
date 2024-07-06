@@ -3,6 +3,7 @@ package org.example.courzelo.serviceImpls;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
 import org.example.courzelo.dto.requests.SignupRequest;
@@ -34,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.Instant;
 
 @Service
@@ -252,5 +254,14 @@ public class AuthServiceImpl implements IAuthService {
         }
         log.info("Invalid verification code");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error","Invalid verification code"));
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> checkAuth(Principal principal) {
+        if(isUserAuthenticated()){
+            User user = userRepository.findUserByEmail(principal.getName());
+            return ResponseEntity.ok(new LoginResponse("success","User authenticated", new UserResponse(user)));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("error","User not authenticated"));
     }
 }

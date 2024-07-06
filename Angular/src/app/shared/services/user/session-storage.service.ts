@@ -17,8 +17,16 @@ export class SessionStorageService {
   setUser(user: UserResponse): void {
     sessionStorage.setItem('user', JSON.stringify(user));
   }
-
-  getUser(): Observable<UserResponse> {
+  setAuthenticated(authenticated: boolean): void {
+    sessionStorage.setItem('authenticated', JSON.stringify(authenticated));
+  }
+  getAuthenticated(): boolean {
+    return JSON.parse(sessionStorage.getItem('authenticated'));
+  }
+  getUser(): UserResponse {
+    return JSON.parse(sessionStorage.getItem('user'));
+  }
+/*  getUser(): Observable<UserResponse> {
     const userInSession = sessionStorage.getItem('user');
     if (userInSession) {
       return of(JSON.parse(userInSession));
@@ -26,6 +34,7 @@ export class SessionStorageService {
       return this.userService.getUserProfile().pipe(
           tap(loginResponse => {
             this.setUser(loginResponse.user);
+            this.setAuthenticated(true);
           }),
           catchError(error => {
             this.handleResponse.handleError(error);
@@ -34,7 +43,7 @@ export class SessionStorageService {
           map(loginResponse => loginResponse.user)
       );
     }
-  }
+  }*/
   clearUser(): void {
     sessionStorage.removeItem('user');
   }

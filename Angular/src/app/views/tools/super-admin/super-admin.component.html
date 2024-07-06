@@ -1,0 +1,68 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Users List</h1>
+    </div>
+
+    <div class="separator-breadcrumb border-top"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <ngx-datatable
+                        style="height: calc(100vh - 270px); box-shadow: none"
+                        class="material fullscreen"
+                        [columnMode]="'force'"
+                        [headerHeight]="50"
+                        [footerHeight]="0"
+                        [rowHeight]="80"
+                        [scrollbarV]="true"
+                        [scrollbarH]="true"
+                        [rows]="users | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
+                    <ngx-datatable-column name="email" [width]="150" [maxWidth]="300">
+                        <ng-template ngx-datatable-header-template>
+                            Email
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="roles" [width]="300">
+                        <ng-template ngx-datatable-header-template>
+                            Roles
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.name">
+                        <ng-template ngx-datatable-header-template>
+                            Name
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.profile?.name||"N/A" }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.lastname">
+                        <ng-template ngx-datatable-header-template>
+                            Last Name
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.profile?.lastname||"N/A" }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.birthDate" prop="birthDate">
+                        <ng-template ngx-datatable-header-template>
+                            Birth Date
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.profile?.birthDate | date:'mediumDate' }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.title" prop="title" >
+                        <ng-template ngx-datatable-header-template>
+                            Title
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template  let-row="row">
+                            {{ row.profile?.title||"N/A" }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+                <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>

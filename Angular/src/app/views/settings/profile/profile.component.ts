@@ -38,11 +38,7 @@ export class ProfileComponent implements OnInit {
   file: any;
 
   ngOnInit() {
-      this.sessionStorageService.getUser().subscribe(
-          (user: UserResponse) => {
-              this.connectedUser = user;
-          }
-      );
+   this.connectedUser = this.sessionStorageService.getUser();
       this.initializeFormWithUserData();
     const date = new Date(this.connectedUser.profile.birthDate);
     this.birthDate = {

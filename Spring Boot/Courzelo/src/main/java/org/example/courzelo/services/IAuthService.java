@@ -9,6 +9,8 @@ import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.security.Principal;
+
 public interface IAuthService {
 
     ResponseEntity<StatusMessageResponse> logout(String email, HttpServletRequest request, HttpServletResponse response);
@@ -20,5 +22,6 @@ public interface IAuthService {
     ResponseEntity<StatusMessageResponse> sendVerificationCode(String email);
     ResponseEntity<StatusMessageResponse> sendPasswordResetCode(String email);
     ResponseEntity<StatusMessageResponse> verifyEmail( String code);
+    ResponseEntity<LoginResponse> checkAuth(Principal principal);
 
 }

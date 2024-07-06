@@ -137,7 +137,8 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
                 { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' },
+                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' }
             ]
         },
         {

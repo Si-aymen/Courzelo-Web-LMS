@@ -20,11 +20,7 @@ export class UserProfileComponent implements OnInit {
   imageSrc: any;
   user: UserResponse;
   ngOnInit() {
-   this.sessionStorageService.getUser().subscribe(
-        (user: UserResponse) => {
-          this.user = user;
-        }
-    );
+   this.user = this.sessionStorageService.getUser();
     this.userService.getProfileImageBlobUrl().subscribe((blob: Blob) => {
       const objectURL = URL.createObjectURL(blob);
       this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);

@@ -5,25 +5,26 @@ import {
   Router,
  UrlSegment
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
 import {map} from 'rxjs/operators';
+import {AuthenticationService} from './user/authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoAuthGuard implements CanLoad {
-  constructor(private sessionStorageService: SessionStorageService, private router: Router) {}
+  constructor( private authService: AuthenticationService, private router: Router) {}
 
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> {
-    return this.sessionStorageService.getUser().pipe(
-        map(user => {
-          if (user) {
+    return this.authService.checkAuthState().pipe(
+        map(isAuthenticated => {
+          if (isAuthenticated) {
+            console.log(isAuthenticated);
             this.router.navigateByUrl('/dashboard/v1');
-            console.log('User is already logged in');
             return false;
           }
-          console.log('User is not logged in');
+          console.log(isAuthenticated);
           return true;
         })
     );

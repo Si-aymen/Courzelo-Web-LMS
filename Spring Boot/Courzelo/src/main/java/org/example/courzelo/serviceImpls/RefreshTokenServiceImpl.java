@@ -1,6 +1,7 @@
 package org.example.courzelo.serviceImpls;
 
 import org.example.courzelo.models.RefreshToken;
+import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.RefreshTokenRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.IRefreshTokenService;
@@ -25,6 +26,12 @@ public class RefreshTokenServiceImpl implements IRefreshTokenService {
     public boolean ValidToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
         return refreshToken != null && refreshToken.getExpiryDate().isAfter(Instant.now())&&userService.ValidUser(refreshToken.getUser().getEmail());
+    }
+
+    @Override
+    public User getUserFromToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
+        return refreshToken.getUser();
     }
 
     @Override

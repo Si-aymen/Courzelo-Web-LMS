@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
-import {first, map} from 'rxjs/operators';
+import {AuthenticationService} from './user/authentication.service';
+import {switchMap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +11,29 @@ import {first, map} from 'rxjs/operators';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private router: Router,
+    private authService: AuthenticationService,
     private sessionService: SessionStorageService,
+    private router: Router
   ) { }
 
 
-  canActivate(
-      next: ActivatedRouteSnapshot,
-      state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    canActivate(
+        next: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+        const requiredRoles = next.data['roles'] as Array<string>;
 
-    const requiredRoles = next.data['roles'] as Array<string>;
-
-    return this.sessionService.getUser().pipe(
-        map(user => {
-          if (!requiredRoles || requiredRoles.some(role => user.roles.includes(role))) {
-            return true;
-          } else {
-            this.router.navigateByUrl('/sessions/signin');
-            return false;
-          }
-        }),
-        first()
-    );
-  }
+        return this.authService.checkAuthState().pipe(
+            switchMap(isAuthenticated => {
+                if (!isAuthenticated) {
+                    return of(this.router.parseUrl('/sessions/signin'));
+                }
+                const user = this.sessionService.getUser();
+                if (user && user.roles.some(role => requiredRoles.includes(role))) {
+                    return of(true);
+                }
+                return of(this.router.parseUrl('/sessions/signin'));
+            })
+        );
+    }
 }

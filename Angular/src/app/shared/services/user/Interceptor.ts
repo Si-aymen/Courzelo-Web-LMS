@@ -22,11 +22,13 @@ export class Interceptor implements HttpInterceptor {
     });
     return next.handle(modifiedRequest).pipe(
         catchError((error: HttpErrorResponse) => {
-          if (error.status === 401) {
+         //   const isAuthRoute = request.url.includes('/sessions/signin');
+        //    console.log(isAuthRoute);
+          if (error.status === 401 && !error.url.includes('/api/v1/auth/check-auth') ) {
               this.toastr.error('Session Expired', 'Error', {progressBar: true});
             this.authService.logout().subscribe();
-            this.router.navigateByUrl('/sessions/signin');
-           }
+              this.router.navigateByUrl('/sessions/signin');
+          }
            return throwError(error);
          })
     );
