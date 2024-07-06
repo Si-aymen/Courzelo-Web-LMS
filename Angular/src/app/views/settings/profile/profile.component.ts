@@ -20,10 +20,20 @@ export class ProfileComponent implements OnInit {
       private userService: UserService,
       private sessionStorageService: SessionStorageService,
       private responseHandlerService: ResponseHandlerService
-  ) { }
+  ) {
+      const today = new Date();
+      const minAge = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+      this.maxDate = {
+          year: minAge.getFullYear(),
+          month: minAge.getMonth() + 1,
+          day: minAge.getDate()
+      };
+  }
   loading: boolean;
   connectedUser: UserResponse;
-  informationForm = this.formBuilder.group({
+    maxDate: NgbDateStruct;
+    informationForm = this.formBuilder.group({
         name: [' ', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
         lastname: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
         bio: ['', [Validators.maxLength(300), Validators.minLength(20)]],

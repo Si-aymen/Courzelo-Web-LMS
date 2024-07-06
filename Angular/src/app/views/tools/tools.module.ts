@@ -6,6 +6,7 @@ import { SuperAdminComponent } from './super-admin/super-admin.component';
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {NgxPaginationModule} from "ngx-pagination";
 import {SharedComponentsModule} from "../../shared/components/shared-components.module";
+import {TagInputModule} from "ngx-chips";
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {SharedComponentsModule} from "../../shared/components/shared-components.
         ToolsRoutingModule,
         NgxDatatableModule,
         NgxPaginationModule,
-        SharedComponentsModule
+        SharedComponentsModule,
+        TagInputModule
     ]
 })
 export class ToolsModule { }
