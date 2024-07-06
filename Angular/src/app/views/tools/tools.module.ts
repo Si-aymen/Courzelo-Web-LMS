@@ -5,6 +5,7 @@ import { ToolsRoutingModule } from './tools-routing.module';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {NgxPaginationModule} from "ngx-pagination";
+import {SharedComponentsModule} from "../../shared/components/shared-components.module";
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import {NgxPaginationModule} from "ngx-pagination";
         CommonModule,
         ToolsRoutingModule,
         NgxDatatableModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        SharedComponentsModule
     ]
 })
 export class ToolsModule { }

@@ -16,6 +16,7 @@ export class SuperAdminComponent implements OnInit {
   totalPages = 0;
   totalItems = 0;
   itemsPerPage = 5;
+  loading: boolean;
 
   get currentPage(): number {
     return this._currentPage;
@@ -43,5 +44,17 @@ export class SuperAdminComponent implements OnInit {
       this.itemsPerPage = response.itemsPerPage;
     }, error => this.handleResponse.handleError(error)
     );
+  }
+  toggleBan(user: UserResponse) {
+    this.superAdminService.toggleBan(user.email).subscribe(res => {
+      user.security.ban = !user.security.ban;
+      this.handleResponse.handleSuccess(res.message);
+    }, error => this.handleResponse.handleError(error));
+  }
+  toggleEnabled(user: UserResponse) {
+    this.superAdminService.toggleEnable(user.email).subscribe(res => {
+      user.security.enabled = !user.security.enabled;
+      this.handleResponse.handleSuccess(res.message);
+    }, error => this.handleResponse.handleError(error));
   }
 }
