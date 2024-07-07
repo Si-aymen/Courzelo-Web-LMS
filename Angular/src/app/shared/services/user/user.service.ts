@@ -14,6 +14,7 @@ import {QRCodeResponse} from '../../models/user/QRCodeResponse';
 })
 export class UserService {
   private baseUrl = 'http://localhost:8080/api/v1/user';
+  image: Blob;
 
   constructor(private http: HttpClient,    private sanitizer: DomSanitizer) { }
   updateUserProfile(profileInfromationRequest: ProfileInformationRequest) {
@@ -31,9 +32,16 @@ export class UserService {
     return this.http.get<LoginResponse>(`${this.baseUrl}/profile`);
   }
   getProfileImageBlobUrl(): Observable<Blob> {
+    if (this.image) {
+        return new Observable<Blob>((observer) => {
+            observer.next(this.image);
+            observer.complete();
+        });
+    }
     return this.getProfileImage().pipe(
         map((arrayBuffer: ArrayBuffer) => {
           const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+          this.image = blob;
           return blob;
         })
     );

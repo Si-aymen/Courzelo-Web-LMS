@@ -20,4 +20,10 @@ export class SuperAdminService {
   toggleEnable(email: string) {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/toggle-user-enabled`, {params: {email: email}});
   }
+  addRole(email: string, role: string) {
+    return this.http.get<StatusMessageResponse>(`${this.baseUrl}/add-role`, {params: {email: email, role: role}});
+  }
+    removeRole(email: string, role: string) {
+        return this.http.get<StatusMessageResponse>(`${this.baseUrl}/remove-role`, {params: {email: email, role: role}});
+    }
 }

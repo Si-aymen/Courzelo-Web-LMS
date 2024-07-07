@@ -18,7 +18,8 @@ export class SuperAdminComponent implements OnInit {
   totalItems = 0;
   itemsPerPage = 5;
   loading = false;
-  autocompletes$: string[] = ['STUDENT', 'TEACHER', 'ADMIN', 'SUPERADMIN'];
+  selectedRole = '';
+  availableRoles: string[] = ['SUPERADMIN', 'ADMIN', 'STUDENT', 'TEACHER'];
 
   get currentPage(): number {
     return this._currentPage;
@@ -26,7 +27,7 @@ export class SuperAdminComponent implements OnInit {
 
   set currentPage(value: number) {
     this._currentPage = value;
-    this.loadUsers(this._currentPage, this.itemsPerPage); // Automatically reload users when currentPage changes
+    this.loadUsers(this._currentPage, this.itemsPerPage);
   }
   constructor(
       private superAdminService: SuperAdminService,
@@ -53,34 +54,39 @@ export class SuperAdminComponent implements OnInit {
     );
   }
   toggleBan(user: UserResponse) {
-    this.loading = true;
     this.superAdminService.toggleBan(user.email).subscribe(res => {
       user.security.ban = !user.security.ban;
       this.handleResponse.handleSuccess(res.message);
-        this.loading = false;
     }, error => {
       this.handleResponse.handleError(error);
-        this.loading = false;
     }
     );
   }
   toggleEnabled(user: UserResponse) {
-    this.loading = true;
     this.superAdminService.toggleEnable(user.email).subscribe(res => {
       user.security.enabled = !user.security.enabled;
       this.handleResponse.handleSuccess(res.message);
     }, error => {
       this.handleResponse.handleError(error);
-      this.loading = false;
     }
     );
   }
 
-  removeRole(row: any, role: any) {
-
-  }
-
-  openRoleList(row: any) {
-
+  changeUserRole(user: UserResponse) {
+    if (this.selectedRole && !user.roles.includes(this.selectedRole)) {
+      this.superAdminService.addRole(user.email, this.selectedRole).subscribe(res => {
+        this.handleResponse.handleSuccess(res.message);
+        user.roles.push(this.selectedRole);
+      }, error => {
+        this.handleResponse.handleError(error);
+      });
+    } else if (this.selectedRole && user.roles.includes(this.selectedRole)) {
+      this.superAdminService.removeRole(user.email, this.selectedRole).subscribe(res => {
+        this.handleResponse.handleSuccess(res.message);
+        user.roles = user.roles.filter(role => role !== this.selectedRole);
+      }, error => {
+        this.handleResponse.handleError(error);
+      });
+    }
   }
 }

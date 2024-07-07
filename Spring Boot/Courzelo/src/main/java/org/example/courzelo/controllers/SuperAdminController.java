@@ -30,5 +30,13 @@ public class SuperAdminController {
     public ResponseEntity<StatusMessageResponse> toggleUserEnabledStatus(@RequestParam String email) {
         return superAdminService.toggleUserEnabledStatus(email);
     }
+    @GetMapping("/add-role")
+    public ResponseEntity<StatusMessageResponse> addRoleToUser(@RequestParam String email, @RequestParam String role) {
+        return superAdminService.addRoleToUser(email, role);
+    }
+    @GetMapping("/remove-role")
+    public ResponseEntity<StatusMessageResponse> removeRoleFromUser(@RequestParam String email, @RequestParam String role) {
+        return superAdminService.removeRoleFromUser(email, role);
+    }
 
 }

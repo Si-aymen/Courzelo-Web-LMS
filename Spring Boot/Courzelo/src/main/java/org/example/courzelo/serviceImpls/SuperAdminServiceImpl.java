@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.responses.PaginatedUsersResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ISuperAdminService;
@@ -57,5 +58,33 @@ public class SuperAdminServiceImpl implements ISuperAdminService {
         user.getSecurity().setEnabled(!user.getSecurity().isEnabled());
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("Success", user.getEmail()+" enabled status toggled"));
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> addRoleToUser(String email, String role) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new StatusMessageResponse("Error", "User not found"));
+        }
+        if(user.getRoles().contains(Role.valueOf(role))){
+            return ResponseEntity.badRequest().body(new StatusMessageResponse("Error", "Role already assigned"));
+        }
+        user.getRoles().add(Role.valueOf(role));
+        userRepository.save(user);
+        return ResponseEntity.ok(new StatusMessageResponse("Success", email +" is now assigned role "+role));
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> removeRoleFromUser(String email, String role) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new StatusMessageResponse("Error", "User not found"));
+        }
+        if(!user.getRoles().contains(Role.valueOf(role))){
+            return ResponseEntity.badRequest().body(new StatusMessageResponse("Error", "Role not assigned"));
+        }
+        user.getRoles().remove(Role.valueOf(role));
+        userRepository.save(user);
+        return ResponseEntity.ok(new StatusMessageResponse("Success", email +" is no longer assigned role "+role));
     }
 }

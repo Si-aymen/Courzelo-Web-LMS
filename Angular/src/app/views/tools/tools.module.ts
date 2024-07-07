@@ -7,6 +7,7 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {NgxPaginationModule} from "ngx-pagination";
 import {SharedComponentsModule} from "../../shared/components/shared-components.module";
 import {TagInputModule} from "ngx-chips";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {TagInputModule} from "ngx-chips";
         NgxDatatableModule,
         NgxPaginationModule,
         SharedComponentsModule,
-        TagInputModule
+        TagInputModule,
+        FormsModule
     ]
 })
 export class ToolsModule { }

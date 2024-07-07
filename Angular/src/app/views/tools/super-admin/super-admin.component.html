@@ -62,7 +62,7 @@
                             Birth Date
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-row="row">
-                            {{ row.profile?.birthDate | date:'mediumDate' }}
+                            {{ (row.profile?.birthDate | date:'mediumDate') ||  "N/A" }}
                         </ng-template>
                     </ngx-datatable-column>
                     <ngx-datatable-column name="profile.title" prop="title" >
@@ -91,6 +91,21 @@
                             <btn-loading [btnClass]="row.security?.ban ? 'btn-danger btn-rounded' : 'btn-success btn-rounded'" (click)="toggleBan(row)" [loading]="loading">
                                 {{ row.security?.ban ? 'Banned' : 'Unbanned' }}
                             </btn-loading>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="change role" prop="title">
+                        <ng-template ngx-datatable-header-template>
+                            Add/Remove role
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            <form (ngSubmit)="changeUserRole(row)">
+                                <div class="form-group">
+                                    <select [(ngModel)]="selectedRole" class="form-control" name="role">
+                                        <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-user-edit mr-2"></i>Add/Remove Role</button>
+                            </form>
                         </ng-template>
                     </ngx-datatable-column>
                 </ngx-datatable>
