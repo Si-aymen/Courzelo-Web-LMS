@@ -11,15 +11,17 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 import { TfaComponent } from './tfa/tfa.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedComponentsModule,
-    SessionsRoutingModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedComponentsModule,
+        SessionsRoutingModule,
+        NgbDatepickerModule
+    ],
   declarations: [SignupComponent, SigninComponent, ForgotComponent, TfaComponent, VerifyEmailComponent, ResetPasswordComponent]
 })
 export class SessionsModule { }

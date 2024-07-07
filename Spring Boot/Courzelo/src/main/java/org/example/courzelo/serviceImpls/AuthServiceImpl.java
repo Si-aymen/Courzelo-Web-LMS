@@ -162,11 +162,17 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest) {
+        log.info(signupRequest.toString());
         if(userRepository.existsByEmail(signupRequest.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new StatusMessageResponse("error","Email already in use"));
         }
         User user = new User(
                 signupRequest.getEmail().toLowerCase(),
+                signupRequest.getName(),
+                signupRequest.getLastname(),
+                signupRequest.getBirthDate(),
+                signupRequest.getGender(),
+                signupRequest.getCountry(),
                 encoder.encode(signupRequest.getPassword()),
                 Role.STUDENT
         );
