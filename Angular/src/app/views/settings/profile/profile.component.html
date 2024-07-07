@@ -61,6 +61,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="picker1">Gender</label>
+                            <select formControlName="gender" class="form-control">
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="countrySelect">Country</label>
+                            <select formControlName="country" class="form-control" id="countrySelect">
+                                <option *ngFor="let country of countries" [value]="country.country">{{ country.country}}</option>
+                            </select>
+                        </div>
 
                         <div class="col-md-12">
                             <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Submit</btn-loading>

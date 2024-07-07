@@ -14,6 +14,8 @@ public class UserProfile {
     private String lastname;
     private String profileImage;
     private Date birthDate;
+    private String gender;
+    private String country;
     private String title;
     private String bio;
 }

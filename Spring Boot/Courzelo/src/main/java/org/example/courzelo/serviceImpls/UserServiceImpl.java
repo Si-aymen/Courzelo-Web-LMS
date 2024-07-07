@@ -109,6 +109,8 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         }
         user.getProfile().setBio(profileInformationRequest.getBio());
         user.getProfile().setTitle(profileInformationRequest.getTitle());
+        user.getProfile().setGender(profileInformationRequest.getGender());
+        user.getProfile().setCountry(profileInformationRequest.getCountry());
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Profile updated successfully"));
     }

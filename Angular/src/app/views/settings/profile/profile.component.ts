@@ -38,7 +38,9 @@ export class ProfileComponent implements OnInit {
         lastname: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
         bio: ['', [Validators.maxLength(300), Validators.minLength(20)]],
         title: ['', [  Validators.minLength(3), Validators.maxLength(20)]],
-        birthDate: []
+        birthDate: [],
+        gender: [''],
+        country: ['']
       }
   );
   profileInfromationRequest: ProfileInformationRequest = {};
@@ -46,14 +48,21 @@ export class ProfileComponent implements OnInit {
     selectedFileUrl: string | ArrayBuffer;
   birthDate: NgbDateStruct;
   file: any;
-
+  countries = [];
   ngOnInit() {
+      this.userService.getCountries().subscribe(
+            countries => {
+                this.countries = countries;
+                console.log(this.countries);
+            }
+        );
    this.connectedUser = this.sessionStorageService.getUser();
+   console.log(this.connectedUser);
       this.initializeFormWithUserData();
     const date = new Date(this.connectedUser.profile.birthDate);
     this.birthDate = {
       year: date.getFullYear(),
-      month: date.getMonth() + 1, // JavaScript months are 0-based
+      month: date.getMonth() + 1,
       day: date.getDate()
     };
   }
@@ -70,6 +79,8 @@ export class ProfileComponent implements OnInit {
                 lastname: this.connectedUser.profile.lastname,
                 bio: this.connectedUser.profile.bio,
                 title: this.connectedUser.profile.title,
+                gender: this.connectedUser.profile.gender,
+                country: this.connectedUser.profile.country
             });
         }
     }

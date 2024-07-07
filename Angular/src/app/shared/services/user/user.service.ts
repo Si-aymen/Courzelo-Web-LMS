@@ -20,6 +20,9 @@ export class UserService {
   updateUserProfile(profileInfromationRequest: ProfileInformationRequest) {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/profile`, profileInfromationRequest);
   }
+  getCountries(): Observable<string[]> {
+    return this.http.get<string[]>('/assets/country-by-name.json');
+  }
   uploadProfileImage(file: File) {
     const formData = new FormData();
     formData.append('file', file);

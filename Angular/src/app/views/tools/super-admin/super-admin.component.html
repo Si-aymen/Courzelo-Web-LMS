@@ -78,6 +78,22 @@
                             {{ row.profile?.title||"N/A" }}
                         </ng-template>
                     </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.gender" prop="gender" >
+                        <ng-template ngx-datatable-header-template>
+                            Gender
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template  let-row="row">
+                            {{ row.profile?.gender||"N/A" }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="profile.country" prop="country" >
+                        <ng-template ngx-datatable-header-template>
+                            Country
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template  let-row="row">
+                            {{ row.profile?.country||"N/A" }}
+                        </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column name="security.enabled" prop="title">
                         <ng-template ngx-datatable-header-template>
                             Enabled

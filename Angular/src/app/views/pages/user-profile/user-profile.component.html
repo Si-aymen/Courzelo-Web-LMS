@@ -152,19 +152,15 @@
                                 <p class="text-primary mb-1"><i class="i-Calendar text-16 mr-1"></i> Birth Date</p>
                                 <span>{{ user?.profile.birthDate | date:'dd/MM/yyyy' }}</span>
                             </div>
-                            <div class="mb-4">
-                                <p class="text-primary mb-1"><i class="i-Edit-Map text-16 mr-1"></i> Birth Place</p>
-                                <span>Dhaka, DB</span>
-                            </div>
-                            <div class="mb-4">
+                            <div *ngIf="user?.profile.country" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Globe text-16 mr-1"></i> Lives In</p>
-                                <span>Dhaka, DB</span>
+                                <span>{{ user?.profile.country }}</span>
                             </div>
                         </div>
                         <div class="col-md-4 col-6">
-                            <div class="mb-4">
+                            <div *ngIf="user?.profile.gender" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-MaleFemale text-16 mr-1"></i> Gender</p>
-                                <span>1 Jan, 1994</span>
+                                <span>{{user?.profile.gender}}</span>
                             </div>
                             <div *ngIf="user?.email" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-MaleFemale text-16 mr-1"></i> Email</p>
