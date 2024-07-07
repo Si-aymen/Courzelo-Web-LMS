@@ -4,10 +4,10 @@ import {HttpClient} from '@angular/common/http';
 import {ProfileInformationRequest} from '../../models/user/requests/ProfileInformationRequest';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {LoginResponse} from '../../models/user/LoginResponse';
 import {UpdatePasswordRequest} from '../../models/user/requests/UpdatePasswordRequest';
 import {QRCodeResponse} from '../../models/user/QRCodeResponse';
+import {SessionStorageService} from './session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,8 @@ import {QRCodeResponse} from '../../models/user/QRCodeResponse';
 export class UserService {
   private baseUrl = 'http://localhost:8080/api/v1/user';
   image: Blob;
-
-  constructor(private http: HttpClient,    private sanitizer: DomSanitizer) { }
+  storedUser;
+  constructor(private http: HttpClient ) { }
   updateUserProfile(profileInfromationRequest: ProfileInformationRequest) {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/profile`, profileInfromationRequest);
   }
@@ -28,23 +28,26 @@ export class UserService {
     formData.append('file', file);
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/image`, formData);
   }
-  getProfileImage(): Observable<ArrayBuffer> {
-    return this.http.get(`${this.baseUrl}/image`, { responseType: 'arraybuffer' });
+  getProfileImage(email: string): Observable<ArrayBuffer> {
+    return this.http.get(`${this.baseUrl}/image`, { responseType: 'arraybuffer', params: {email} });
   }
   getUserProfile(): Observable<LoginResponse> {
     return this.http.get<LoginResponse>(`${this.baseUrl}/profile`);
   }
-  getProfileImageBlobUrl(): Observable<Blob> {
-    if (this.image) {
+  getProfileImageBlobUrl(email: string): Observable<Blob> {
+    this.storedUser = JSON.parse(sessionStorage.getItem('user'));
+    if (this.image && this.storedUser.email === email) {
         return new Observable<Blob>((observer) => {
             observer.next(this.image);
             observer.complete();
         });
     }
-    return this.getProfileImage().pipe(
+    return this.getProfileImage(email).pipe(
         map((arrayBuffer: ArrayBuffer) => {
           const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-          this.image = blob;
+          if (this.storedUser.email === email) {
+            this.image = blob;
+          }
           return blob;
         })
     );
@@ -63,5 +66,8 @@ export class UserService {
   }
   resetPassword(updatePasswordRequest: UpdatePasswordRequest, code: string): Observable<StatusMessageResponse> {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/reset-password`, updatePasswordRequest, {params: {code}});
+  }
+  getUserProfileByEmail(email: string): Observable<LoginResponse> {
+    return this.http.get<LoginResponse>(`${this.baseUrl}/profile/${email}`);
   }
 }

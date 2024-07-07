@@ -10,6 +10,7 @@ import {ToastrService} from 'ngx-toastr';
 import {SessionStorageService} from './session-storage.service';
 import {ResponseHandlerService} from './response-handler.service';
 import {map, tap} from 'rxjs/operators';
+import {UserService} from "./user.service";
 
 
 @Injectable({
@@ -21,7 +22,8 @@ export class AuthenticationService {
               private router: Router,
               private toastr: ToastrService,
               private sessionStorageService: SessionStorageService,
-              private responseHandlerService: ResponseHandlerService) {
+              private responseHandlerService: ResponseHandlerService,
+              private userService: UserService) {
   }
 
   register(signupRequest: SignupRequest) {
@@ -39,6 +41,8 @@ export class AuthenticationService {
   logoutImpl() {
       this.sessionStorageService.clearUser();
       this.sessionStorageService.setAuthenticated(false);
+      this.userService.image = null;
+      this.userService.storedUser = null;
       this.http.get<StatusMessageResponse>(`${this.baseUrl}/logout`).subscribe(
         res => {
             this.toastr.success(res.message, 'Success', {progressBar: true} );

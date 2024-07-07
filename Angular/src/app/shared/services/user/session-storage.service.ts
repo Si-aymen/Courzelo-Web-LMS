@@ -26,6 +26,9 @@ export class SessionStorageService {
   getUser(): UserResponse {
     return JSON.parse(sessionStorage.getItem('user'));
   }
+  getUserEmail(): string {
+    return this.getUser().email;
+  }
 /*  getUser(): Observable<UserResponse> {
     const userInSession = sessionStorage.getItem('user');
     if (userInSession) {

@@ -166,10 +166,10 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getProfileImage(Principal principal) {
+    public ResponseEntity<byte[]> getProfileImage(Principal principal, String email) {
         try {
             // Get the user
-            User user = userRepository.findUserByEmail(principal.getName());
+            User user = userRepository.findUserByEmail(email);
             if(user.getProfile().getProfileImage() == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -281,6 +281,15 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
             log.warn("Invalid TFA code {} for user: {}", verificationCode ,email);
         }
         return isCodeValid;
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal, String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
+        }
+        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
     }
 
 

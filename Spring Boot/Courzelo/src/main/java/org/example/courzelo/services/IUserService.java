@@ -5,6 +5,7 @@ import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
+import org.example.courzelo.dto.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,7 @@ UserDetails loadUserByEmail(String email);
 
     ResponseEntity<StatusMessageResponse> uploadProfileImage(MultipartFile file, Principal principal);
 
-    ResponseEntity<byte[]> getProfileImage(Principal principal);
+    ResponseEntity<byte[]> getProfileImage(Principal principal, String email);
 
     ResponseEntity<LoginResponse> getUserProfile(String email);
 
@@ -32,4 +33,5 @@ UserDetails loadUserByEmail(String email);
     ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(String email,String verificationCode);
     ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(String email);
     boolean verifyTwoFactorAuth(String email, int verificationCode);
+    ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal,String email);
 }
