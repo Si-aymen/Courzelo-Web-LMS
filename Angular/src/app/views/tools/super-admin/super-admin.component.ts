@@ -5,6 +5,7 @@ import {PaginatedUsersResponse} from '../../../shared/models/user/PaginatedUsers
 import {UserResponse} from '../../../shared/models/user/UserResponse';
 import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 import {FormControl} from '@angular/forms';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-super-admin',
@@ -20,6 +21,7 @@ export class SuperAdminComponent implements OnInit {
   loading = false;
   selectedRole = '';
   availableRoles: string[] = ['SUPERADMIN', 'ADMIN', 'STUDENT', 'TEACHER'];
+  searchControl: FormControl = new FormControl();
 
   get currentPage(): number {
     return this._currentPage;
@@ -27,7 +29,11 @@ export class SuperAdminComponent implements OnInit {
 
   set currentPage(value: number) {
     this._currentPage = value;
-    this.loadUsers(this._currentPage, this.itemsPerPage);
+    if (this.searchControl.value == null) {
+      this.loadUsers(this._currentPage, this.itemsPerPage, '');
+    } else {
+        this.loadUsers(this._currentPage, this.itemsPerPage, this.searchControl.value);
+    }
   }
   constructor(
       private superAdminService: SuperAdminService,
@@ -35,11 +41,17 @@ export class SuperAdminComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadUsers(this.currentPage, this.itemsPerPage);
+    this.loadUsers(this.currentPage, this.itemsPerPage, '');
+      this.searchControl.valueChanges
+          .pipe(debounceTime(200))
+          .subscribe(value => {
+            this.loadUsers(1, this.itemsPerPage, value);
+          });
+
   }
-  loadUsers(page: number, size: number) {
+  loadUsers(page: number, size: number, keyword: string) {
     this.loading = true;
-    this.superAdminService.getUsers(page - 1, size).subscribe((response: PaginatedUsersResponse) => {
+    this.superAdminService.getUsers(page - 1, size, keyword).subscribe((response: PaginatedUsersResponse) => {
       console.log(response);
       this.users = response.users;
       this._currentPage = response.currentPage + 1;

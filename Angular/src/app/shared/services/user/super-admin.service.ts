@@ -11,8 +11,8 @@ export class SuperAdminService {
   private baseUrl = 'http://localhost:8080/api/v1/super-admin';
 
   constructor(private http: HttpClient) { }
-  getUsers(page: number, size: number) {
-    return this.http.get<PaginatedUsersResponse>(`${this.baseUrl}/users`, {params: {page: page, size: size}});
+  getUsers(page: number, size: number, keyword: string) {
+    return this.http.get<PaginatedUsersResponse>(`${this.baseUrl}/users`, {params: {page: page, size: size, keyword: keyword}});
   }
   toggleBan(email: string) {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/toggle-user-ban`, {params: {email: email}});

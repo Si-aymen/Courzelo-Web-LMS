@@ -18,9 +18,10 @@ public class SuperAdminController {
     @GetMapping("/users")
     public ResponseEntity<PaginatedUsersResponse> getUsersPaginated(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size)
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "keyword", required = false) String keyword)
     {
-        return superAdminService.getAllUsers(page, size);
+        return superAdminService.getAllUsers(page, size,keyword);
     }
     @GetMapping("/toggle-user-ban")
     public ResponseEntity<StatusMessageResponse> toggleUserBanStatus(@RequestParam String email) {

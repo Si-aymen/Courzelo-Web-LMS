@@ -6,6 +6,11 @@
     <div class="separator-breadcrumb border-top"></div>
 
     <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input id="keyword" placeholder="Search Users" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+            </div>
+        </div>
         <div class="col-md-12">
             <div class="card o-hidden">
                 <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 50vh;">
