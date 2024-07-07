@@ -5,6 +5,7 @@ import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.repositories.CodeVerificationRepository;
 import org.example.courzelo.services.ICodeVerificationService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -41,6 +42,7 @@ public class CodeVerificationService implements ICodeVerificationService {
     }
 
     @Override
+    @Scheduled(fixedRate = 3600000) // Runs every hour
     public void deleteExpiredCodes() {
         codeVerificationRepository.deleteAllByExpiryDateBefore(Instant.now());
     }

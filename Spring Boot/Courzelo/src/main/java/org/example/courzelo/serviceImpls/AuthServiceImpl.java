@@ -75,6 +75,7 @@ public class AuthServiceImpl implements IAuthService {
         log.info("Logging out user");
         User user = userRepository.findUserByEmail(email);
         if(user != null){
+            iRefreshTokenService.deleteUserTokens(user);
             log.info("User found");
             user.getActivity().setLastLogout(Instant.now());
             userRepository.save(user);
@@ -154,6 +155,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     void setHeaders(HttpServletResponse response,User userDetails,boolean rememberMe){
+        iRefreshTokenService.deleteUserTokens(userDetails);
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(userDetails.getEmail()), jwtExpirationMs).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie(
                 iRefreshTokenService.createRefreshToken(userDetails.getEmail(), rememberMe ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
