@@ -5,6 +5,8 @@ import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.repositories.CodeVerificationRepository;
 import org.example.courzelo.services.ICodeVerificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class CodeVerificationService implements ICodeVerificationService {
+    private static final Logger log = LoggerFactory.getLogger(CodeVerificationService.class);
     private final CodeVerificationRepository codeVerificationRepository;
     @Override
     public String generateCode() {
@@ -44,6 +47,7 @@ public class CodeVerificationService implements ICodeVerificationService {
     @Override
     @Scheduled(fixedRate = 3600000) // Runs every hour
     public void deleteExpiredCodes() {
+        log.info("Deleting expired codes");
         codeVerificationRepository.deleteAllByExpiryDateBefore(Instant.now());
     }
 }
