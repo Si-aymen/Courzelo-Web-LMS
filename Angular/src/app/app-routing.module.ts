@@ -4,11 +4,17 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGaurd } from './shared/services/auth.gaurd';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
+import { ListTicketComponent } from './views/tickets/list-ticket/list-ticket.component';
+import { AddTicketComponent } from './views/tickets/add-ticket/add-ticket.component';
 
 const adminRoutes: Routes = [
     {
       path: 'dashboard',
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
+      path: 'tickets',
+      loadChildren: () => import('./views/tickets/tickets.module').then(m => m.TicketsModule)
     },
     {
       path: 'uikits',
@@ -58,6 +64,9 @@ const routes: Routes = [
     redirectTo: 'dashboard/v1',
     pathMatch: 'full'
   },
+  {path:'addtickets',
+  component:AddTicketComponent    
+  },
   {
     path: '',
     component: AuthLayoutComponent,
@@ -83,6 +92,9 @@ const routes: Routes = [
     component: AdminLayoutSidebarCompactComponent,
     canActivate: [AuthGaurd],
     children: adminRoutes
+  },
+  {path:'ticketts',
+  component:ListTicketComponent    
   },
   {
     path: '**',

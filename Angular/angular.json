@@ -44,7 +44,7 @@
             ],
             "scripts": [
               "node_modules/echarts/dist/echarts.min.js"
-            ],
+                   ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,

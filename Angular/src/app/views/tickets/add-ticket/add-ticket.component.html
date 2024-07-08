@@ -1,0 +1,59 @@
+<div class="col-md-12">
+  <div class="card mb-4">
+      <div class="card-body">
+          <div class="card-title mb-3">Add Ticket</div>
+          <form [formGroup]="formAddTicket" (ngSubmit)="addTicket()">
+              <div class="row">
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="id">ID</label>
+                      <input type="number" class="form-control form-control-rounded" id="id" formControlName="id" placeholder="Enter ticket ID" required>
+                  </div>
+
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="type">Type</label>
+                      <input type="text" class="form-control form-control-rounded" id="type" formControlName="type" placeholder="Enter ticket type" required>
+                  </div>
+
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="sujet">Sujet</label>
+                      <input type="text" class="form-control form-control-rounded" id="sujet" formControlName="sujet" placeholder="Enter ticket sujet" required>
+                  </div>
+
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="description">Description</label>
+                      <input type="text" class="form-control form-control-rounded" id="description" formControlName="description" placeholder="Enter ticket description" required>
+                  </div>
+
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="date">Date</label>
+                      <input type="date" class="form-control form-control-rounded" id="date" formControlName="date" placeholder="yyyy-mm-dd" required>
+                  </div>
+
+                  <div class="col-md-6 form-group mb-3">
+                      <label for="status">Status</label>
+                      <select class="form-control form-control-rounded" id="status" formControlName="status" required>
+                          <option value="">Select status</option>
+                          <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                      </select>
+                  </div>
+
+                  <div class="col-md-12">
+                      <button class="btn btn-primary btn-rounded" type="submit">Add Ticket</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+
+  <div *ngIf="tickets.length > 0" class="mt-4">
+      <h2>Tickets List</h2>
+      <ul class="list-group">
+          <li *ngFor="let ticket of tickets" class="list-group-item">
+              {{ ticket.id }} - {{ ticket.type }} - {{ ticket.sujet }} - {{ ticket.description }} - {{ ticket.date }} - {{ ticket.status }}
+          </li>
+      </ul>
+  </div>
+  <div *ngIf="tickets.length === 0" class="mt-4">
+      <p>No tickets available.</p>
+  </div>
+</div>

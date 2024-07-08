@@ -1,0 +1,20 @@
+{
+  "/api": {
+    "target": "https://api.trello.com",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/aki": {
+    "target": "http://localhost:8081/",
+    "secure": true,
+    "pathRewrite": {
+      "^/aki": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
