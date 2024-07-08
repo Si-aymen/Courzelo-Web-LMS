@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
-import { AuthGaurd } from './shared/services/auth.gaurd';
+import { AuthGuard } from './shared/services/auth-guard.service';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
+import {NoAuthGuard} from './shared/services/no-auth.guard';
 
-const adminRoutes: Routes = [
+const userRoutes: Routes = [
     {
       path: 'dashboard',
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
@@ -49,6 +50,14 @@ const adminRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
+    },
+    {
+        path: 'settings',
+        loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
+    },
+    {
+        path: 'tools',
+        loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule)
     }
   ];
 
@@ -64,7 +73,8 @@ const routes: Routes = [
     children: [
       {
         path: 'sessions',
-        loadChildren: () => import('./views/sessions/sessions.module').then(m => m.SessionsModule)
+          canLoad: [NoAuthGuard],
+          loadChildren: () => import('./views/sessions/sessions.module').then(m => m.SessionsModule)
       }
     ]
   },
@@ -81,8 +91,9 @@ const routes: Routes = [
   {
     path: '',
     component: AdminLayoutSidebarCompactComponent,
-    canActivate: [AuthGaurd],
-    children: adminRoutes
+    canActivate: [AuthGuard],
+    children: userRoutes,
+      data: { roles: ['STUDENT', 'TEACHER', 'ADMIN' , 'SUPER_ADMIN'] }
   },
   {
     path: '**',
