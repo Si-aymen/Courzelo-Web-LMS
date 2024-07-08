@@ -1,41 +1,22 @@
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">{{ quiz.title }}</h2>
-            <p class="card-text">{{ quiz.description }}</p>
-        </div>
-        <div class="card-body">
-            <form (ngSubmit)="submitQuiz()">
-                <div *ngFor="let question of quiz.questions; let i = index" class="mb-4">
-                    <div class="form-group">
-                        <label class="form-label">{{ question.questionText }}</label>
-                        <div *ngIf="question.type === 'MULTIPLE_CHOICE'" class="form-check">
-                            <div *ngFor="let option of question.options">
-                                <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="question{{ i }}"
-                                        [value]="option"
-                                        [(ngModel)]="answers[i]"
-                                />
-                                <label class="form-check-label">{{ option }}</label>
-                            </div>
-                        </div>
-                        <div *ngIf="question.type === 'SHORT_ANSWER' || question.type === 'LONG_ANSWER'">
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    [(ngModel)]="answers[i]"
-                                    name="question{{ i }}"
-                            />
-                        </div>
-                    </div>
+<div *ngIf="quiz">
+    <h2>{{ quiz.title }}</h2>
+    <p>{{ quiz.description }}</p>
+
+    <form (ngSubmit)="onSubmit()">
+        <div *ngFor="let question of quiz.questions">
+            <h3>{{ question.text }}</h3>
+            <div *ngIf="question.type === 'MULTIPLE_CHOICE'">
+                <div *ngFor="let option of question.options">
+                    <input type="radio" [name]="question.id" [value]="option" [(ngModel)]="answers[question.id]"> {{ option }}
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-            <div *ngIf="quizSubmitted" class="mt-4">
-                <h3>Your Score: {{ score }}</h3>
+            </div>
+            <div *ngIf="question.type === 'SHORT_ANSWER'">
+                <input type="text" [(ngModel)]="answers[question.id]">
+            </div>
+            <div *ngIf="question.type === 'LONG_ANSWER'">
+                <textarea [(ngModel)]="answers[question.id]"></textarea>
             </div>
         </div>
-    </div>
+        <button type="submit">Submit Quiz</button>
+    </form>
 </div>

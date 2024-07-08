@@ -4,6 +4,7 @@ import {QuizService} from '../../../../shared/services/quiz.service';
 import {Question} from '../../../../shared/models/Question';
 import {Quiz} from '../../../../shared/models/Quiz';
 import {QuestionType} from '../../../../shared/models/QuestionType';
+import {status} from '../../../../shared/models/status';
 
 @Component({
   selector: 'app-create-quiz',
@@ -13,7 +14,7 @@ import {QuestionType} from '../../../../shared/models/QuestionType';
 })
 export class CreateQuizComponent  {
   quiz: Quiz = {
-    Status: '',
+    Status: status.COMPLETED,
     category: '',
     isSelected: false,
     id: '',
@@ -29,10 +30,12 @@ export class CreateQuizComponent  {
 
   addQuestion(): void {
     const newQuestion: Question = {
-      questionText: '',
-      options: [],
+      id: '',
+      text: '',
+      options: [''],
       correctAnswer: '',
-      type: QuestionType.MULTIPLE_CHOICE
+      type: QuestionType.MULTIPLE_CHOICE,
+      answers: []
     };
     this.quiz.questions.push(newQuestion);
   }
@@ -56,4 +59,10 @@ export class CreateQuizComponent  {
         }
     );
   }
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  }
+
+  protected readonly QuestionType = QuestionType;
 }

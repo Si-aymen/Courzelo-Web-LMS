@@ -1,0 +1,66 @@
+.container {
+  margin-top: 20px;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.card-header {
+  background-color: #27538a;
+  color: #fff;
+  border-bottom: 1px solid #007bff;
+}
+
+.card-title {
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+  background-color: #2a456b;
+  border-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.input-group-append .btn-danger {
+  border-radius: 0 4px 4px 0;
+}
+
+.breadcrumb {
+  margin-bottom: 20px;
+}
+
+.breadcrumb h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.breadcrumb ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.breadcrumb ul li {
+  margin-right: 10px;
+}
+
+.breadcrumb ul li a {
+  text-decoration: none;
+  color: #2b4564;
+}
+
+.separator-breadcrumb {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

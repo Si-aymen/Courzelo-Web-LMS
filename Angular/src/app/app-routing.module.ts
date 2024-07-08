@@ -4,8 +4,10 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGaurd } from './shared/services/auth.gaurd';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
+import {TakeQuizComponent} from './views/forms/Quiz/take-quiz/take-quiz.component';
+import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 
-const adminRoutes: Routes = [
+const usersRoutes: Routes = [
     {
       path: 'dashboard',
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
@@ -49,7 +51,7 @@ const adminRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-    }
+    },
   ];
 
 const routes: Routes = [
@@ -82,12 +84,12 @@ const routes: Routes = [
     path: '',
     component: AdminLayoutSidebarCompactComponent,
     canActivate: [AuthGaurd],
-    children: adminRoutes
+    children: usersRoutes
   },
   {
     path: '**',
     redirectTo: 'others/404'
-  }
+  },
 ];
 
 @NgModule({

@@ -1,4 +1,7 @@
 import {Question} from './Question';
+import {status} from './status';
+
+
 
 export class Quiz {
     id?: string;
@@ -7,14 +10,23 @@ export class Quiz {
     questions: Question[] = [];
     isSelected: boolean;
     score: number;
-    Status: string;
+    Status: status;
     duration: number;
     maxAttempts: number;
     category: string;
-    constructor() {
-        this.questions = [];
-    }
 }
-
+export class QuizSubmission {
+    quizID: string;
+    answers: { questionID: string, answer: string }[] = [];
+}
+export class QuizSubmissionResult {
+    quizID: string;
+    score: number;
+    maxScore: number;
+    passed: boolean;
+    status: status;
+    submittedAt: Date;
+    Answers: { questionID: string, answer: string }[] = [];
+}
 
 

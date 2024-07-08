@@ -35,6 +35,7 @@ import { TakeQuizComponent } from './Quiz/take-quiz/take-quiz.component';
     FormWizardModule,
     FormsRoutingModule,
 
+
   ],
 
 

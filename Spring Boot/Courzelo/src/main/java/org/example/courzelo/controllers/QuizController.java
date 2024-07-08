@@ -2,6 +2,9 @@ package org.example.courzelo.controllers;
 
 import jakarta.validation.Valid;
 import org.example.courzelo.dto.QuizDTO;
+import org.example.courzelo.models.Quiz;
+import org.example.courzelo.models.QuizSubmission;
+import org.example.courzelo.models.QuizSubmissionResult;
 import org.example.courzelo.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,19 +33,26 @@ public class QuizController {
 
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getQuizById(@PathVariable String id) {
-        QuizDTO quiz = quizService.getQuizById(id);
+        Quiz quiz = quizService.getQuizById(id);
         if (quiz == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(quiz, HttpStatus.OK);
+        QuizDTO quizDTO = quizService.mapToDTO(quiz);
+        return new ResponseEntity<>(quizDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+   /* @PostMapping("/create")
     public ResponseEntity<String> createQuiz(
             @RequestBody @Valid final QuizDTO quizDTO) {
         final String createdId = quizService.create(quizDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+    }*/
+   @PostMapping("/create")
+   public ResponseEntity<String> createQuizWithQuestionsEndpoint(@RequestBody Quiz quiz) {
+       Quiz createdQuiz = quizService.createQuizWithQuestions(quiz);
+       String quizId = createdQuiz.getId();
+       return new ResponseEntity<>(quizId, HttpStatus.CREATED);
+   }
     @PostMapping
 
 
@@ -59,5 +69,15 @@ public class QuizController {
     public ResponseEntity<Void> deleteQuiz(@PathVariable String id) {
         quizService.deleteQuiz(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/with-answers")
+    public Quiz getQuizWithAnswersById(@PathVariable String id) {
+        return quizService.getQuizWithAnswersById(id);
+    }
+
+    @PostMapping("/submit")
+    public QuizSubmissionResult submitQuiz(@RequestBody QuizSubmission submission) {
+        return quizService.submitQuiz(submission);
     }
 }

@@ -45,8 +45,12 @@ export class QuizService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  submitQuiz(id: string, answers: string[]): Observable<number> {
-    return this.http.post<number>(`${this.apiUrl}/${id}/submit`, answers);
+ /* getQuizById(id: string): Observable<Quiz> {
+    return this.http.get<Quiz>(`${this.apiUrl}/quizzes/${id}`);
+  }*/
+
+  submitQuiz(quizId: string, answers: any[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/quizzes/${quizId}/submit`, { answers });
   }
 
   calculateScore(id: string, answers: string[]) {

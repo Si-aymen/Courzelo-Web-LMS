@@ -2,6 +2,7 @@ package org.example.courzelo.services;
 
 import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.models.Question;
+import org.example.courzelo.models.Quiz;
 import org.example.courzelo.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class QuestionService {
         Question question = questionRepository.findById(id).orElse(null);
         return convertToDTO(question);
     }
+    public List<Question> getQuestionsByIds(List<String> ids) {
+        return questionRepository.findByIdIn(ids);
+    }
+
 
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
         Question question = convertToEntity(questionDTO);
