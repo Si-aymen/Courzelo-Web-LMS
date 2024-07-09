@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { echartStyles } from 'src/app/shared/echart-styles';
 import { ActivityService } from 'src/app/shared/services/activity.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-
+import { FormBuilder, FormGroup,Validators } from '@angular/forms';
+import { Activity } from 'src/app/shared/models/activity.model';
 @Component({
   selector: 'app-dashboard-v5',
   templateUrl: './dashboard-v5.component.html',
@@ -35,7 +35,7 @@ export class DashboardV5Component implements OnInit {
         }
       }]
     };
-
+  
     this.lineChart1 = {
       ...echartStyles.lineFullWidth,
       series: [{
@@ -76,58 +76,81 @@ export class DashboardV5Component implements OnInit {
         }
       }]
     };
-
+  
     this.activityForm = this.fb.group({
-      name: [''],
-      description: [''],
-      category: [''],
-      date: [''],
-      time: [''],
-      location: [''],
-      responsible: this.fb.group({
-        name: [''],
-        contact: ['']
-      }),
-      participants: this.fb.array([]),
-      maxCapacity: [''],
-      registrations: this.fb.group({
-        formUrl: [''],
-        deadline: ['']
-      }),
-      requiredEquipment: this.fb.array([]),
-      budget: [''],
-      objectives: this.fb.array([]),
-      evaluation: this.fb.array([]),
-      feedback: this.fb.array([]),
-      photos: this.fb.array([]),
-      videos: this.fb.array([]),
-      sponsors: this.fb.array([]),
-      resources: this.fb.array([]),
-      status: [''],
-      notes: ['']
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      category: ['', Validators.required],
+      date: ['', Validators.required],
+      time: ['', Validators.required],
+      location: ['', Validators.required],
+      status: ['', Validators.required] // Initialize status control
     });
-
+  
     this.loadActivities();
   }
-
+  
   loadActivities(): void {
-    this.activityService.getActivities().subscribe((data: any[]) => {
-      this.activities = data;
-    });
+    this.activityService.getActivities().subscribe(
+      (data: any[]) => {
+        console.log('Activities:', data);
+        this.activities = data;
+      },
+      (error) => {
+        console.error('Error loading activities:', error);
+      }
+    );
   }
+  
 
   addActivity(): void {
-    const newActivity = this.activityForm.value;
-    this.activityService.addActivity(newActivity).subscribe(() => {
-      this.loadActivities(); // Refresh the list
-    });
+  
+    if (this.activityForm.valid) {
+      const newActivity: Activity = {
+        name: this.activityForm.value.name,
+        description: this.activityForm.value.description,
+        category: this.activityForm.value.category,
+        date: new Date(this.activityForm.value.date), // Assuming date is a valid ISO string
+        time: this.activityForm.value.time,
+        location: this.activityForm.value.location,
+        status: this.activityForm.value.status
+      };
+      this.activityService.addActivity(newActivity).subscribe(
+        (response) => {
+          console.log('Activity added successfully:', response);
+          // Optionally, perform actions after successful addition
+          this.loadActivities();
+        },
+        (error) => {
+          console.error('Error adding activity:', error);
+          // Handle error cases
+        }
+      );
+    } else {
+      // Form validation failed, handle accordingly
+    }
   }
 
-  update(row: any): void {
-    this.activityService.updateActivity(row).subscribe(() => {
-      this.loadActivities(); // Refresh the list
-    });
-  }
+update(row: any): void {
+  const updatedActivity: Activity = {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    category: row.category,
+    date: row.date,
+    time: row.time,
+    location: row.location,
+    status: row.status
+  };
+
+  this.activityService.updateActivity(updatedActivity).subscribe(() => {
+    this.loadActivities(); // Refresh the list after update
+  }, (error) => {
+    console.error('Error updating activity:', error);
+    // Handle error cases
+  });
+}
+
 
   delete(row: any): void {
     this.activityService.deleteActivity(row.id).subscribe(() => {
@@ -137,13 +160,13 @@ export class DashboardV5Component implements OnInit {
 
   getRowClass(row: any): string {
     switch (row.status) {
-      case 'Planifiée':
+      case 'PLANIFIEE':
         return 'status-planifiee';
-      case 'En cours':
+      case 'EN_COURS':
         return 'status-en-cours';
-      case 'Terminée':
+      case 'TERMINEE':
         return 'status-terminee';
-      case 'Annulée':
+      case 'ANNULEE':
         return 'status-annulee';
       default:
         return '';

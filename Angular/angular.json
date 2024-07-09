@@ -27,7 +27,8 @@
             "allowedCommonJsDependencies": [
                 "echarts",
                 "highlight.js",
-                "angular2-text-mask"
+                "angular2-text-mask",
+                "quill"
             ],
             "outputPath": "dist",
             "index": "src/index.html",

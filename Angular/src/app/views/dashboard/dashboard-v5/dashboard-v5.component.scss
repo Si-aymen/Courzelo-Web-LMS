@@ -32,7 +32,7 @@
   .description-cell {
     word-break: break-word; /* Permet de briser les mots trop longs */
     white-space: pre-wrap;  /* Conserve les retours à la ligne et permet les césures de ligne */
-    max-width: 200px;       /* Assurez-vous que la largeur maximale est conforme à la largeur de la colonne */
+    max-width: 400px;       /* Assurez-vous que la largeur maximale est conforme à la largeur de la colonne */
     line-height: 1.5;       /* Optionnel : ajustez la hauteur de ligne pour un meilleur espacement */
   }
   

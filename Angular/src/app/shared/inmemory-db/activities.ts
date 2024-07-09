@@ -1,4 +1,4 @@
-export class ActivityDB{
+/*export class ActivityDB{
     public static activities = [{
         "id": "1",
         'name': 'Club de Football',
@@ -141,4 +141,4 @@ export class ActivityDB{
         "notes": "Penser à commander de nouveaux ballons."
     }
       ]
-} 
+} */

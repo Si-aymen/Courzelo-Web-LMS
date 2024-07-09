@@ -1,6 +1,6 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { ProductDB } from './products';
-import { ActivityDB } from './activities';
+//import { ActivityDB } from './activities';
 
 import { MailDB } from './mails';
 import { CountryDB } from './countries';
@@ -18,8 +18,8 @@ export class InMemoryDataService implements InMemoryDbService {
       'contacts': ChatDB.contacts,
       'chat-collections': ChatDB.chatCollection,
       'chat-user': ChatDB.user,
-      'users': UserDB.users,
-      'activities':ActivityDB.activities
+      'users': UserDB.users
+    //  'activities':ActivityDB.activities
     };
   }
 }

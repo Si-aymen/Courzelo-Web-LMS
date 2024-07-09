@@ -83,10 +83,9 @@
 	<div class="col-md-12">
 	  <div echarts [options]="lineChart1" [autoResize]="true" style="height: 180px;"></div>
 	</div>
-  </div>
-  
-  <!-- Form for adding a new activity -->
-  <div class="row">
+  </div> 
+ <!-- Form for adding a new activity-->
+<div class="row">
 	<div class="col-md-12">
 	  <form [formGroup]="activityForm" (ngSubmit)="addActivity()">
 		<div class="form-row">
@@ -114,14 +113,67 @@
 			<label for="location">Location</label>
 			<input type="text" id="location" formControlName="location" class="form-control" required>
 		  </div>
+		  <div class="form-group col-md-4">
+			<label for="status">Status</label>
+			<select id="status" formControlName="status" class="form-control" required>
+			  <option value="PLANIFIEE">PLANIFIEE</option>
+			  <option value="TERMINEE">TERMINEE</option>
+			  <option value="ANNULEE">ANNULEE</option>
+			  <option value="EN_COURS">E cours</option>
+
+			</select>
+		  </div>
 		</div>
 		<button type="submit" class="btn btn-primary">Add Activity</button>
 	  </form>
 	</div>
   </div>
-  
-  <!-- Activities Table -->
+  <!--
   <div class="row">
+	<div class="col-md-12">
+	  <form [formGroup]="updateForm" (ngSubmit)="updateActivity()">
+		<div class="form-row">
+		  <div class="form-group col-md-4">
+			<label for="name">Activity Name</label>
+			<input type="text" id="name" formControlName="name" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="description">Description</label>
+			<input type="text" id="description" formControlName="description" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="category">Category</label>
+			<input type="text" id="category" formControlName="category" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="date">Date</label>
+			<input type="date" id="date" formControlName="date" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="time">Time</label>
+			<input type="time" id="time" formControlName="time" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="location">Location</label>
+			<input type="text" id="location" formControlName="location" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="status">Status</label>
+			<select id="status" formControlName="status" class="form-control" required>
+			  <option value="PLANIFIEE">PLANIFIEE</option>
+			  <option value="TERMINEE">TERMINEE</option>
+			  <option value="ANNULEE">ANNULEE</option>
+			  <option value="EN_COURS">EN COURS</option>
+			</select>
+		  </div>
+		</div>
+		<button type="submit" class="btn btn-primary">Update Activity</button>
+	  </form>
+	</div>
+  </div>
+  -->
+<!-- Activities Table -->
+<div class="row">
 	<div class="col-md-12">
 	  <div class="card o-hidden mb-4">
 		<ngx-datatable
@@ -159,10 +211,10 @@
 			</ng-template>
 			<ng-template ngx-datatable-cell-template let-value="value" let-row="row">
 			  <span [ngClass]="{
-				'status-planifiee': value === 'Planifiée',
-				'status-en-cours': value === 'En cours',
-				'status-terminee': value === 'Terminée',
-				'status-annulee': value === 'Annulée'
+				'status-planifiee': value === 'PLANIFIEE',
+				'status-en-cours': value === 'EN_COURS',
+				'status-terminee': value === 'TERMINEE',
+				'status-annulee': value === 'ANNULEE'
 			  }">
 				{{ value }}
 			  </span>
@@ -173,6 +225,16 @@
 			  Date
 			</ng-template>
 		  </ngx-datatable-column>
+		  <ngx-datatable-column name="time">
+			<ng-template ngx-datatable-header-template>
+			  Time
+			</ng-template>
+		  </ngx-datatable-column>
+		  <ngx-datatable-column name="location">
+			<ng-template ngx-datatable-header-template>
+			  Location
+			</ng-template>
+		  </ngx-datatable-column>
 		  <ngx-datatable-column name="description" [width]="400">
 			<ng-template ngx-datatable-header-template>
 			  Description
@@ -181,7 +243,7 @@
 			  <div class="description-cell">{{ value }}</div>
 			</ng-template>
 		  </ngx-datatable-column>
-		  
+  
 		  <ngx-datatable-column name="actions" [maxWidth]="200">
 			<ng-template ngx-datatable-header-template>
 			  Actions
@@ -195,4 +257,3 @@
 	  </div>
 	</div>
   </div>
-  
