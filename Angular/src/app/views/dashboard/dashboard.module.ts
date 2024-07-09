@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';  // Import this
+import { HttpClientModule } from '@angular/common/http'; // Ensure HttpClientModule is imported
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboadDefaultComponent } from './dashboad-default/dashboad-default.component';
@@ -20,7 +22,9 @@ import { DashboardV5Component } from './dashboard-v5/dashboard-v5.component';
     NgxEchartsModule,
     NgxDatatableModule,
     NgbModule,
-    DashboardRoutingModule
+    DashboardRoutingModule, 
+     ReactiveFormsModule,  // Add this
+    HttpClientModule  
   ],
   declarations: [DashboadDefaultComponent, DashboardV2Component, DashboardV3Component, DashboardV4Component,DashboardV5Component]
 })

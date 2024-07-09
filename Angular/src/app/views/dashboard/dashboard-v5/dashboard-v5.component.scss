@@ -1,0 +1,39 @@
+.status-planifiee {
+    background-color: blue;
+    color: white;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .status-en-cours {
+    background-color: green;
+    color: white;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .status-terminee {
+    background-color: red;
+    color: white;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .status-annulee {
+    text-decoration: line-through;
+    color: grey;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .description-cell {
+    word-break: break-word; /* Permet de briser les mots trop longs */
+    white-space: pre-wrap;  /* Conserve les retours à la ligne et permet les césures de ligne */
+    max-width: 200px;       /* Assurez-vous que la largeur maximale est conforme à la largeur de la colonne */
+    line-height: 1.5;       /* Optionnel : ajustez la hauteur de ligne pour un meilleur espacement */
+  }
+  
+  
