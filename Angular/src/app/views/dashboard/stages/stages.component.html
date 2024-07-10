@@ -1,19 +1,243 @@
+<p>stages works!</p>
+
+
 <div class="row">
-    <div class="col-lg-6 col-md-12">
-      <div class="card mb-4">
-        <div class="card-body p-0">
-          <h5 class="card-title m-0 p-3">Internship Offre per month</h5>
-          <div echarts [options]="chartLineOption2" style="height: 300px"></div>
+
+<!-- ICON BG -->
+<div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+        <div class="card-body text-center">
+            <i class="i-Add-User"></i>
+            <div class="content">
+                <p class="text-muted mt-2 mb-0">Applicants</p>
+                <p class="text-primary text-24 line-height-1 mb-2">205</p>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="col-lg-6 col-md-12">
-      <div class="card mb-4">
-        <div class="card-body p-0">
-          <h5 class="card-title m-0 p-3">Applicants per month</h5>
-          <div echarts [options]="chartLineOption3" style="height: 300px"></div>
+</div>
+
+<div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+        <div class="card-body text-center">
+            <i class="i-Financial"></i>
+            <div class="content">
+                <p class="text-muted mt-2 mb-0">Internships</p>
+                <p class="text-primary text-24 line-height-1 mb-2">4021</p>
+            </div>
         </div>
+    </div>
+</div>
+
+<div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+        <div class="card-body text-center">
+            <i class="i-Checkout-Basket"></i>
+            <div class="content">
+                <p class="text-muted mt-2 mb-0">Entreprises</p>
+                <p class="text-primary text-24 line-height-1 mb-2">80</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+        <div class="card-body text-center">
+            <i class="i-Money-2"></i>
+            <div class="content">
+                <p class="text-muted mt-2 mb-0">Expense</p>
+                <p class="text-primary text-24 line-height-1 mb-2">120</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- ICON BG -->
+
+
+<div class="row">
+    <div class="col-lg-4 col-sm-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">internship Type</div>
+                <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">Internships Domain</div>
+                <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">Internship location</div>
+                <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+      <div class="card o-hidden mb-4">
+        <ngx-datatable
+          style="height: calc(100vh - 270px); box-shadow: none"
+          class="material fullscreen"
+          [columnMode]="'force'"
+          [headerHeight]="50"
+          [footerHeight]="50"
+          [rowHeight]="60"
+          [scrollbarV]="true"
+          [limit]="10"
+          [rows]="stages$ | async"
+        >
+          <ngx-datatable-column name="photo" [maxWidth]="100">
+            <ng-template ngx-datatable-header-template>
+              Icon
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              <i class="i-Jeep"></i>
+            </ng-template>
+          </ngx-datatable-column>
+  
+          <ngx-datatable-column name="id">
+            <ng-template ngx-datatable-header-template>
+              id
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.id }}
+            </ng-template>
+          </ngx-datatable-column>
+  
+          <ngx-datatable-column name="name">
+            <ng-template ngx-datatable-header-template>
+                name
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.name }}
+            </ng-template>
+          </ngx-datatable-column>
+  
+          <ngx-datatable-column name="description">
+            <ng-template ngx-datatable-header-template>
+                description
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.description }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="location">
+            <ng-template ngx-datatable-header-template>
+                location
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.location }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="type">
+            <ng-template ngx-datatable-header-template>
+                type
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.type }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="status">
+            <ng-template ngx-datatable-header-template>
+                status
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.status }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="entName">
+            <ng-template ngx-datatable-header-template>
+                entName
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.entName }}
+            </ng-template>
+          </ngx-datatable-column>
+  
+          <ngx-datatable-column name="duration">
+            <ng-template ngx-datatable-header-template>
+                duration
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+              {{ row.duration }}
+            </ng-template>
+          </ngx-datatable-column>
+  
+          <ngx-datatable-column name="Actions" [width]="210">
+            <ng-template ngx-datatable-header-template>
+              Actions
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button class="btn btn-primary mr-2" (click)="view(row)">View</button>
+              <button class="btn btn-warning mr-2" (click)="edit(row)">Edit</button>
+              <button class="btn btn-danger" (click)="delete(row)">Delete</button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
       </div>
     </div>
   </div>
-  
+
+
+<!-- 
+
+
+<div class="row">
+	<div class="col-md-12">
+	  <form [formGroup]="Stagesform" (ngSubmit)="onSubmit()">
+		<div class="form-row">
+		  <div class="form-group col-md-4">
+			<label for="name">name</label>
+			<input type="text" id="name" formControlName="name" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="description">description</label>
+			<input type="text" id="description" formControlName="description" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="location">location</label>
+			<input type="text" id="location" formControlName="location" class="form-control" required>
+		  </div>
+          <div class="form-group col-md-4">
+			<label for="type">type</label>
+			<input type="text" id="type" formControlName="type" class="form-control" required>
+		  </div>
+          <div class="form-group col-md-4">
+			<label for="status">status</label>
+			<input type="text" id="status" formControlName="status" class="form-control" required>
+		  </div>
+          <div class="form-group col-md-4">
+			<label for="entName">entName</label>
+			<input type="text" id="entName" formControlName="entName" class="form-control" required>
+		  </div>
+		  <div class="form-group col-md-4">
+			<label for="duration">duration</label>
+			<input type="number" id="duration" formControlName="duration" class="form-control" required>
+		  </div>
+
+
+		</div>
+		<button type="submit" class="btn btn-primary">Add internshipq</button>
+	  </form>
+	</div>
+  </div>
+
+ICON BG -->

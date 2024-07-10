@@ -11,9 +11,9 @@
 <div class="card user-profile o-hidden mb-4">
     <div class="header-cover" style="background-image: url('assets/images/photo-wide-4.jpg')"></div>
     <div class="user-info">
-        <img class="profile-picture avatar-lg mb-2" src="assets/images/faces/1.jpg" alt="">
-        <p class="m-0 text-24">Timothy Carlson</p>
-        <p class="text-muted m-0">Digital Marketer</p>
+        <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg' " alt="">
+        <p class="m-0 text-24">{{ (user?.profile.name && user?.profile.lastname) ? (user?.profile.name + " " + user?.profile.lastname) : user?.email }} </p>
+        <p class="text-muted m-0">{{user?.profile.title||""}}</p>
     </div>
     <div class="card-body">
         <ngb-tabset class="nav-center">
@@ -144,19 +144,13 @@
             <ngb-tab title="About">
                 <ng-template ngbTabContent>
                     <h4>Personal Information</h4>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, commodi quam! Provident quis
-                        voluptate asperiores ullam, quidem odio pariatur. Lorem ipsum, dolor sit amet consectetur
-                        adipisicing elit. Voluptatem, nulla eos?
-                        Cum non ex voluptate corporis id asperiores doloribus dignissimos blanditiis iusto qui
-                        repellendus
-                        deleniti aliquam, vel quae eligendi explicabo.
-                    </p>
+                    <p>{{user?.profile.bio||""}}</p>
                     <hr>
                     <div class="row">
                         <div class="col-md-4 col-6">
-                            <div class="mb-4">
+                            <div *ngIf="user?.profile.birthDate" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Calendar text-16 mr-1"></i> Birth Date</p>
-                                <span>1 Jan, 1994</span>
+                                <span>{{ user?.profile.birthDate | date:'dd/MM/yyyy' }}</span>
                             </div>
                             <div class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Edit-Map text-16 mr-1"></i> Birth Place</p>
@@ -172,19 +166,19 @@
                                 <p class="text-primary mb-1"><i class="i-MaleFemale text-16 mr-1"></i> Gender</p>
                                 <span>1 Jan, 1994</span>
                             </div>
-                            <div class="mb-4">
+                            <div *ngIf="user?.email" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-MaleFemale text-16 mr-1"></i> Email</p>
-                                <span>example@ui-lib.com</span>
+                                <span>{{user?.email}}</span>
                             </div>
                             <div class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Cloud-Weather text-16 mr-1"></i> Website</p>
                                 <span>www.ui-lib.com</span>
                             </div>
                         </div>
-                        <div class="col-md-4 col-6">
-                            <div class="mb-4">
+                        <div *ngIf="user?.profile.title" class="col-md-4 col-6">
+                            <div *ngIf="user?.profile.title" class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Face-Style-4 text-16 mr-1"></i> Profession</p>
-                                <span>Digital Marketer</span>
+                                <span>{{user?.profile.title}}</span>
                             </div>
                             <div class="mb-4">
                                 <p class="text-primary mb-1"><i class="i-Professor text-16 mr-1"></i> Experience</p>

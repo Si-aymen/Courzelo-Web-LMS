@@ -5,9 +5,6 @@ import { AuthGaurd } from './shared/services/auth.gaurd';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 
-import { TransportsComponent } from './views/dashboard/transports/transports.component';
-
-
 const adminRoutes: Routes = [
     {
       path: 'dashboard',
@@ -16,8 +13,7 @@ const adminRoutes: Routes = [
     {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
-    },    
-
+    },
     {
       path: 'forms',
       loadChildren: () => import('./views/forms/forms.module').then(m => m.AppFormsModule)
@@ -53,6 +49,10 @@ const adminRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
+    },
+    {
+        path: 'settings',
+        loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
     }
   ];
 
