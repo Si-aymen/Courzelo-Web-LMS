@@ -40,4 +40,5 @@ public class SuperAdminController {
         return superAdminService.removeRoleFromUser(email, role);
     }
 
+
 }
