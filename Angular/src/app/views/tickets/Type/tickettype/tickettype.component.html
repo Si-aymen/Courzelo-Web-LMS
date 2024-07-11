@@ -1,0 +1,31 @@
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Ajouter une projet (logiciel) </h5>
+    </div>
+    <div class="card-body">
+        <div class="m-sm-4">
+            <form [formGroup]="data" (ngSubmit)="add()">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input class="form-control form-control-lg" type="text" formControlName="type"  name="name" placeholder="Enter the name" />
+                </div>
+            <!--    <div class="mb-3">
+                    <label class="form-label">Sociéte clientéle</label>
+                    <select class="form-select mb-3" formControlName="societe">
+                        <option value="">Selectioner Une</option>
+                        <option [value]="s.id" *ngFor="let s of societies">{{s.name}}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="form6Example7" formControlName="description" rows="3"></textarea>
+                </div>-->
+                <div>
+                    <button   [disabled]="!data.valid" style="margin-right:5px;" mat-raised-button color="primary">Ajouter</button>
+                   <!-- <button type="reset" mat-raised-button color="warn" (click)="OnClose()">Annuler</button>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
