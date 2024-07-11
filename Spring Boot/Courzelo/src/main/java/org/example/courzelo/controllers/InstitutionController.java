@@ -50,7 +50,7 @@ public class InstitutionController {
         return iInstitutionService.getInstitutionByID(institutionID);
     }
     @GetMapping("/my")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER','STUDENT')")
     public ResponseEntity<InstitutionResponse> getMyInstitution(Principal principal) {
         return iInstitutionService.getMyInstitution(principal);
     }

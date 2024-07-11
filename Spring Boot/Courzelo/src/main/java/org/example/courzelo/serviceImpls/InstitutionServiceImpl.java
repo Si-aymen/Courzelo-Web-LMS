@@ -30,6 +30,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     private final MongoTemplate mongoTemplate;
     @Override
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword) {
+        log.info("Fetching institutions for page: {}, sizePerPage: {}", page, sizePerPage);
         PageRequest pageRequest = PageRequest.of(page, sizePerPage);
         Query query = new Query().with(pageRequest);
 

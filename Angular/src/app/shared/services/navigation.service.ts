@@ -131,15 +131,13 @@ export class NavigationService {
             ]
         },
         {
-            name: 'Sessions',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            name: 'Super Admin',
+            description: 'Tools for super admins',
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
-                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' },
-                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' }
+                { icon: 'i-Administrator', name: 'Institutions', state: '/tools/institutions', type: 'link' },
+                { icon: 'i-Administrator', name: 'Users', state: '/tools/users', type: 'link' }
             ]
         },
         {
