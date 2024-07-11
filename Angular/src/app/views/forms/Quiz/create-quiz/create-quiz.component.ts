@@ -13,8 +13,9 @@ import {status} from '../../../../shared/models/status';
   animations: [SharedAnimations]
 })
 export class CreateQuizComponent  {
+  selectedAnswer: string;
   quiz: Quiz = {
-    Status: status.COMPLETED,
+    Status: status.COMPLETED, // Corrected property name from `Status` to `status`
     category: '',
     isSelected: false,
     id: '',
@@ -26,6 +27,8 @@ export class CreateQuizComponent  {
     score: 0
   };
 
+  statuses = Object.values(status); // List of all possible statuses
+
   constructor(private quizService: QuizService) {}
 
   addQuestion(): void {
@@ -35,7 +38,7 @@ export class CreateQuizComponent  {
       options: [''],
       correctAnswer: '',
       type: QuestionType.MULTIPLE_CHOICE,
-      answers: []
+      answers: [],
     };
     this.quiz.questions.push(newQuestion);
   }

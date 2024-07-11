@@ -5,6 +5,7 @@ import org.example.courzelo.dto.QuizDTO;
 import org.example.courzelo.models.Quiz;
 import org.example.courzelo.models.QuizSubmission;
 import org.example.courzelo.models.QuizSubmissionResult;
+import org.example.courzelo.repositories.QuizRepository;
 import org.example.courzelo.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,56 +29,70 @@ public class QuizController {
     @GetMapping
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
         List<QuizDTO> quizzes = quizService.getAllQuizzes();
-        return new ResponseEntity<>(quizzes, HttpStatus.OK);
+        return ResponseEntity.ok(quizzes);
+    }
+
+    /*@PostMapping
+    public ResponseEntity<QuizDTO> createQuiz(@RequestBody QuizDTO quizDTO) {
+        QuizDTO createdQuiz = quizService.createQuiz(quizDTO);
+        return ResponseEntity.ok(createdQuiz);
+    }*/
+
+    @PutMapping("/{quizId}")
+    public ResponseEntity<QuizDTO> updateQuiz(@PathVariable String quizId, @RequestBody Quiz updatedQuiz) {
+        try {
+            QuizDTO updatedQuizDTO = quizService.updateQuiz(quizId, updatedQuiz);
+            return ResponseEntity.ok(updatedQuizDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+   @PutMapping("/{id}")
+   public ResponseEntity<QuizDTO> updateQuizState(@PathVariable String id, @RequestBody Quiz updatedQuiz) {
+       try {
+           QuizDTO updatedQuizDTO = quizService.updateQuiz(id, updatedQuiz);
+           return ResponseEntity.ok(updatedQuizDTO);
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+       }
+   }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<QuizDTO> deleteQuiz(@PathVariable String id) {
+        try {
+            quizService.deleteQuiz(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getQuizById(@PathVariable String id) {
-        Quiz quiz = quizService.getQuizById(id);
-        if (quiz == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        QuizDTO quizDTO = quizService.mapToDTO(quiz);
-        return new ResponseEntity<>(quizDTO, HttpStatus.OK);
-    }
-
-   /* @PostMapping("/create")
-    public ResponseEntity<String> createQuiz(
-            @RequestBody @Valid final QuizDTO quizDTO) {
-        final String createdId = quizService.create(quizDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }*/
-   @PostMapping("/create")
-   public ResponseEntity<String> createQuizWithQuestionsEndpoint(@RequestBody Quiz quiz) {
-       Quiz createdQuiz = quizService.createQuizWithQuestions(quiz);
-       String quizId = createdQuiz.getId();
-       return new ResponseEntity<>(quizId, HttpStatus.CREATED);
-   }
-    @PostMapping
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<QuizDTO> updateQuiz(@PathVariable String id, @RequestBody QuizDTO quizDTO) {
-        QuizDTO updatedQuiz = quizService.updateQuiz(id, quizDTO);
-        if (updatedQuiz == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(updatedQuiz, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuiz(@PathVariable String id) {
-        quizService.deleteQuiz(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/{id}/with-answers")
-    public Quiz getQuizWithAnswersById(@PathVariable String id) {
-        return quizService.getQuizWithAnswersById(id);
+        QuizDTO quiz = quizService.getQuizById(id);
+        return ResponseEntity.ok(quiz);
     }
 
     @PostMapping("/submit")
-    public QuizSubmissionResult submitQuiz(@RequestBody QuizSubmission submission) {
-        return quizService.submitQuiz(submission);
+    public ResponseEntity<QuizSubmissionResult> submitQuiz(@RequestBody QuizSubmission submission) {
+        QuizSubmissionResult result = quizService.submitQuiz(submission);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO) {
+        QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO);
+        return ResponseEntity.ok(createdQuiz);
+    }
+
+    @PostMapping("/with-answers")
+    public ResponseEntity<QuizDTO> createQuizWithAnswers(@RequestBody QuizDTO quizDTO) {
+        QuizDTO createdQuiz = quizService.createQuizWithAnswers(quizDTO);
+        return ResponseEntity.ok(createdQuiz);
+    }
+
+    @GetMapping("/with-answers/{id}")
+    public ResponseEntity<QuizDTO> getQuizWithAnswersById(@PathVariable String id) {
+        QuizDTO quiz = quizService.getQuizWithAnswersById(id);
+        return ResponseEntity.ok(quiz);
     }
 }

@@ -12,11 +12,11 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <input id="email" placeholder="Search Quizzes" [formControl]="searchControl" class="form-control form-control-rounded" type="email">
+                <input id="search" placeholder="Search Quizzes" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
             </div>
         </div>
         <div class="col-md-12">
-            <div class="card  o-hidden">
+            <div class="card o-hidden">
                 <ngx-datatable
                         style="height: 500px; box-shadow: none"
                         class="material fullscreen"
@@ -26,29 +26,68 @@
                         [rowHeight]="60"
                         [scrollbarV]="true"
                         [rows]="filteredQuizzes">
-                    <ngx-datatable-column name="name" [width]="300">
+                    <ngx-datatable-column name="title" [width]="300">
                         <ng-template ngx-datatable-header-template>
                             Title
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.title }}
                         </ng-template>
                     </ngx-datatable-column>
                     <ngx-datatable-column name="category">
                         <ng-template ngx-datatable-header-template>
                             Category
                         </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.category }}
+                        </ng-template>
                     </ngx-datatable-column>
-                    <ngx-datatable-column name="subtitle">
+                    <ngx-datatable-column name="description">
                         <ng-template ngx-datatable-header-template>
                             Description
                         </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.description }}
+                        </ng-template>
                     </ngx-datatable-column>
-                    <ngx-datatable-column name="score">
+                    <ngx-datatable-column name="status">
                         <ng-template ngx-datatable-header-template>
                             Status
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            <i class="fa" [ngClass]="getStatusIcon(row.status)" [class]="getStatusClass(row.status)"></i>
                         </ng-template>
                     </ngx-datatable-column>
                     <ngx-datatable-column name="score">
                         <ng-template ngx-datatable-header-template>
                             Score
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.score }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="duration">
+                        <ng-template ngx-datatable-header-template>
+                            Duration
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.duration }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="maxAttempts">
+                        <ng-template ngx-datatable-header-template>
+                            Max Attempts
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.maxAttempts }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="isSelected">
+                        <ng-template ngx-datatable-header-template>
+                            Selected
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.isSelected ? 'Yes' : 'No' }}
                         </ng-template>
                     </ngx-datatable-column>
                 </ngx-datatable>

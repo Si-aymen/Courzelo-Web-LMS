@@ -3,6 +3,9 @@ import {Quiz} from '../../../../shared/models/Quiz';
 import {ActivatedRoute} from '@angular/router';
 import {QuizService} from '../../../../shared/services/quiz.service';
 import {SharedAnimations} from '../../../../shared/animations/shared-animations';
+import {ToastrService} from 'ngx-toastr';
+import {switchMap} from 'rxjs/operators';
+import {of} from 'rxjs';
 
 @Component({
   selector: 'app-take-quiz',
@@ -11,79 +14,97 @@ import {SharedAnimations} from '../../../../shared/animations/shared-animations'
   animations: [SharedAnimations]
 })
 export class TakeQuizComponent implements OnInit {
-  quiz: Quiz;
-  currentQuestionIndex = 0;
-  userAnswers: { questionId: string, answer: string }[] = [];
-  quizId: string;
+    quizzes: Quiz[] = [];
+    currentQuizIndex = 0;
+    selectedAnswers: { [key: string]: string } = {}; // Object to store selected answers per question
+    quizSubmissionStatus: { [key: string]: boolean } = {}; // Object to track submission status of each quiz
+    showSummary = false; // Flag to display summary
+    private answer: any;
 
-  constructor(private quizService: QuizService, private route: ActivatedRoute) {}
+    constructor(
+        private quizService: QuizService,
+        private toastr: ToastrService,
+        private route: ActivatedRoute
+    ) {}
 
-  ngOnInit(): void {
-    this.quizId = this.route.snapshot.paramMap.get('id');
-    this.loadQuiz();
-  }
+    ngOnInit(): void {
+        // Fetch all quizzes initially
+        this.fetchAllQuizzes();
+    }
 
-  loadQuiz(): void {
-    this.quizService.getQuizById(this.quizId).subscribe(
-        response => {
-          this.quiz = response;
-        },
-        error => {
-          console.error('Error loading quiz:', error);
+    fetchAllQuizzes(): void {
+        console.log('Fetching all quizzes...');
+        this.quizService.getAllQuizzes().subscribe(
+            (quizzes: Quiz[]) => {
+                if (quizzes && quizzes.length > 0) {
+                    this.quizzes = quizzes;
+                    console.log('Quizzes fetched:', this.quizzes);
+                    this.quizzes.forEach(quiz => {
+                        quiz.questions.forEach(question => {
+                            this.selectedAnswers[question.id] = ''; // Initialize selected answer as an empty string
+                        });
+                        this.quizSubmissionStatus[quiz.id] = false;
+                    });
+                } else {
+                    console.error('No quizzes found');
+                    this.toastr.error('No quizzes found', 'Error');
+                }
+            },
+            error => {
+                console.error('Error fetching quizzes', error);
+                this.toastr.error('Failed to load quizzes', 'Error');
+            }
+        );
+    }
+
+
+    selectAnswer(questionId: string): void {
+        console.log(`Selecting answer for question ID ${questionId}: ${(this.answer)}`);
+        this.selectedAnswers[questionId] = this.answer;
+    }
+
+    submitQuiz(): void {
+        const currentQuiz = this.quizzes[this.currentQuizIndex];
+        if (currentQuiz && currentQuiz.questions) {
+            // Submit answers for the current quiz
+            console.log('Submitting quiz:', currentQuiz);
+            console.log('Selected answers:', this.selectedAnswers);
+
+            // Mark quiz as submitted
+            this.quizSubmissionStatus[currentQuiz.id] = true;
+            this.toastr.success('Quiz submitted successfully', 'Success');
+
+            // If it's the last quiz, show summary
+            if (this.currentQuizIndex === this.quizzes.length - 1) {
+                this.showSummary = true;
+            }
         }
-    );
-  }
-
-  submitAnswer(questionId: string, answer: string): void {
-    const answerIndex = this.userAnswers.findIndex(ans => ans.questionId === questionId);
-    if (answerIndex > -1) {
-      this.userAnswers[answerIndex].answer = answer;
-    } else {
-      this.userAnswers.push({ questionId, answer });
     }
-  }
 
-  nextQuestion(): void {
-    if (this.currentQuestionIndex < this.quiz.questions.length - 1) {
-      this.currentQuestionIndex++;
-    } else {
-      this.submitQuiz();
-    }
-  }
-
-  previousQuestion(): void {
-    if (this.currentQuestionIndex > 0) {
-      this.currentQuestionIndex--;
-    }
-  }
-
-  submitQuiz(): void {
-    const correctAnswers = this.quiz.questions.map(q => ({
-      questionId: q.id,
-      correctAnswer: q.correctAnswer
-    }));
-
-    const results = this.userAnswers.map(userAnswer => {
-      const correctAnswer = correctAnswers.find(ca => ca.questionId === userAnswer.questionId);
-      return {
-        questionId: userAnswer.questionId,
-        isCorrect: userAnswer.answer === correctAnswer?.correctAnswer
-      };
-    });
-
-    // Optionally, you can display results to the user here
-    console.log('Quiz results:', results);
-
-    // Send results to the server or handle as needed
-    this.quizService.submitQuiz(this.quizId, results).subscribe(
-        response => {
-          console.log('Quiz submitted:', response);
-          this.quizService.toastr.success('Quiz submitted successfully', 'Success');
-        },
-        error => {
-          console.error('Error submitting quiz:', error);
+    nextQuiz(): void {
+        if (this.currentQuizIndex < this.quizzes.length - 1) {
+            this.currentQuizIndex++;
+            console.log('Moving to next quiz:', this.currentQuizIndex);
+        } else {
+            this.toastr.info('You have reached the last quiz', 'Info');
         }
-    );
-  }
+    }
+    previousQuiz(): void {
+        if (this.currentQuizIndex > 0) {
+            this.currentQuizIndex--;
+            console.log('Moving to previous quiz:', this.currentQuizIndex);
+        } else {
+            this.toastr.info('You are already on the first quiz', 'Info');
+        }
+    }
 
+    resetQuiz(): void {
+        this.selectedAnswers = {}; // Reset selected answers
+        this.quizSubmissionStatus = {}; // Reset submission status
+        this.currentQuizIndex = 0; // Reset to the first quiz
+    }
+
+    trackByIndex(index: number, obj: any): any {
+        return index;
+    }
 }

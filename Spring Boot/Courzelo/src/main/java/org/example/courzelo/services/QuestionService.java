@@ -1,9 +1,11 @@
 package org.example.courzelo.services;
 
+import com.fasterxml.jackson.core.JsonParser;
 import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.models.Question;
 import org.example.courzelo.models.Quiz;
 import org.example.courzelo.repositories.QuestionRepository;
+import org.example.courzelo.repositories.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class QuestionService {
         Question question = questionRepository.findById(id).orElse(null);
         return convertToDTO(question);
     }
+
     public List<Question> getQuestionsByIds(List<String> ids) {
         return questionRepository.findByIdIn(ids);
     }
@@ -70,4 +73,5 @@ public class QuestionService {
         question.setType(questionDTO.getType());
         return question;
     }
+    
 }

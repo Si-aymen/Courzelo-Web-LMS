@@ -28,7 +28,7 @@
       </svg>
         </button>
     </div>
-    <!-- SELECT CEHECKBOX -->
+    <!-- SELECT CHECKBOX -->
     <div class="col-6">
         <div class="btn-group float-right">
             <button type="button" class="btn btn-outline-light btn-rounded btn-checkbox">
@@ -41,8 +41,7 @@
             <div class="btn-group" ngbDropdown role="group" aria-label="Select all" placement="left">
                 <button class="btn btn-outline-light btn-rounded" ngbDropdownToggle></button>
                 <div class="dropdown-menu" ngbDropdownMenu>
-                    <button class="dropdown-item">Delete</button>
-                    <button class="dropdown-item">Move to</button>
+                    <button class="dropdown-item" (click)="deleteSelectedQuizzes()">Delete</button>
                 </div>
             </div>
         </div>
@@ -52,41 +51,35 @@
 <!-- DATA LIST -->
 <div class="row" [ngClass]="{'list-horizontal': viewMode === 'list', 'list-grid': viewMode === 'grid'}">
     <!-- SINGLE LIST ITEM -->
-    <div *ngFor="let item of quizzes| paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index"
+    <div *ngFor="let quiz of quizzes | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index"
          class="list-item"
          [ngClass]="{'col-md-12': viewMode === 'list', 'col-md-3': viewMode === 'grid'}"
-         [@animate]="{value:'*',params:{delay: (i*100)+'ms', y:'50px'}}"
-    >
+         [@animate]="{value:'*',params:{delay: (i*100)+'ms', y:'50px'}}">
         <div class="card o-hidden mb-4 d-flex" [ngClass]="{'flex-row': viewMode === 'list', 'flex-column': viewMode === 'grid'}">
-            <div class="list-thumb d-flex">
-                <!-- TUMBNAIL -->
-                <img [src]="item.photo" alt="">
-            </div>
-            <div class="flex-grow-1" [ngClass]="{'pl-2 d-flex': viewMode === 'list', 'd-bock': viewMode === 'grid'}">
+            <div class="flex-grow-1">
                 <div class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center"
                      [ngClass]="{'flex-lg-row': viewMode === 'list'}">
-                    <!-- OTHER DATA -->
-                    <a href="" class="w-40 w-sm-100">
-                        <div class="item-title">{{item.name}}</div>
-                    </a>
-                    <p class="m-0 text-muted text-small w-15 w-sm-100">Gadget</p>
-                    <p class="m-0 text-muted text-small w-15 w-sm-100">
-                        {{item?.price.sale | currency}}
-                        <del class="text-secondary">{{item?.price?.previous | currency}}</del>
-                    </p>
-                    <p class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-badges">
-                        <span class="badge badge-{{item?.badge?.color}}">{{item?.badge?.text}}</span>
-                    </p>
-                    <p class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-actions">
-                        <button class="btn btn-icon bg-transparent"
-                                [ngClass]="{'d-none': viewMode === 'grid'}">
+                    <!-- Quiz Details -->
+                    <div class="w-40 w-sm-100">
+                        <div class="item-title">{{ quiz.title }}</div>
+                        <div class="text-muted">{{ quiz.description }}</div>
+                        <div class="text-muted">Duration: {{ quiz.duration }} minutes</div>
+                        <div class="text-muted">Max Attempts: {{ quiz.maxAttempts }}</div>
+                        <div class="text-muted">Status: {{ quiz.Status }}</div>
+                    </div>
+                    <!-- Edit and Delete Actions -->
+                    <div class="w-15 w-sm-100 item-actions">
+                        <button class="btn btn-icon bg-transparent" (click)="editQuiz(quiz)">
                             <i class="i-File-Edit text-16 text-primary"></i>
                         </button>
-                    </p>
+                        <button class="btn btn-icon bg-transparent" (click)="deleteQuiz(quiz.id)">
+                            <i class="i-File-Trash text-16 text-danger"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="align-self-center pl-3 pb-2 pr-3 item-select">
+                <div class="align-self-center pl-4 pr-4 pb-3 mb-3 item-select">
                     <label class="checkbox checkbox-outline-light">
-                        <input type="checkbox" [(ngModel)]="item.isSelected">
+                        <input type="checkbox" [(ngModel)]="quiz.isSelected">
                         <span></span>
                         <span class="checkmark"></span>
                     </label>

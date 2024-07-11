@@ -12,4 +12,5 @@ public class QuestionDTO {
     private List<String> options;
     private String correctAnswer;
     private QuestionType type;
+    private String QuizID;
 }

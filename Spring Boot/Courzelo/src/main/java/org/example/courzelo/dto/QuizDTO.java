@@ -14,6 +14,7 @@ public class QuizDTO {
     private String title;
     private String description;
     private List<QuestionDTO> questions;
+    private String QuizID;
     private boolean isSelected;
     private double score;
     private Status status;

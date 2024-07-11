@@ -1,22 +1,54 @@
-<div *ngIf="quiz">
-    <h2>{{ quiz.title }}</h2>
-    <p>{{ quiz.description }}</p>
-
-    <form (ngSubmit)="onSubmit()">
-        <div *ngFor="let question of quiz.questions">
-            <h3>{{ question.text }}</h3>
-            <div *ngIf="question.type === 'MULTIPLE_CHOICE'">
-                <div *ngFor="let option of question.options">
-                    <input type="radio" [name]="question.id" [value]="option" [(ngModel)]="answers[question.id]"> {{ option }}
+<div class="row">
+    <div class="col-lg-8">
+        <div *ngIf="!showSummary" class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">{{ quizzes[currentQuizIndex]?.title }}</h4>
+                <p class="card-subtitle text-muted">{{ quizzes[currentQuizIndex]?.description }}</p>
+            </div>
+            <div class="card-body">
+                <div *ngFor="let question of quizzes[currentQuizIndex]?.questions; let i = index" class="mb-4">
+                    <div class="mb-3">
+                        <h5 class="mb-2">{{ i + 1 }}. {{ question.text }}</h5>
+                        <div *ngIf="question.type === 'MULTIPLE_CHOICE'" class="form-check">
+                            <div *ngFor="let option of question.options">
+                                <input class="form-check-input" type="radio" name="question{{ i }}" [value]="option"
+                                       (change)="selectAnswer(option)" [checked]="selectedAnswers[quizzes[currentQuizIndex]?.id] === option">
+                                <label class="form-check-label">{{ option }}</label>
+                            </div>
+                        </div>
+                        <!-- Add handling for other question types if needed -->
+                    </div>
                 </div>
             </div>
-            <div *ngIf="question.type === 'SHORT_ANSWER'">
-                <input type="text" [(ngModel)]="answers[question.id]">
-            </div>
-            <div *ngIf="question.type === 'LONG_ANSWER'">
-                <textarea [(ngModel)]="answers[question.id]"></textarea>
+            <div class="card-footer">
+                <button class="btn btn-primary mr-2" (click)="submitQuiz()">Submit Quiz</button>
+                <button class="btn btn-secondary mr-2" (click)="previousQuiz()" [disabled]="currentQuizIndex === 0">Previous
+                    Quiz</button>
+                <button class="btn btn-secondary" (click)="nextQuiz()"
+                        [disabled]="currentQuizIndex === quizzes.length - 1">Next Quiz</button>
             </div>
         </div>
-        <button type="submit">Submit Quiz</button>
-    </form>
+
+        <div *ngIf="showSummary" class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">Quiz Summary</h4>
+            </div>
+            <div class="card-body">
+                <div *ngFor="let quiz of quizzes" class="mb-4">
+                    <h5 class="mb-3">{{ quiz.title }}</h5>
+                    <div *ngFor="let question of quiz.questions; let i = index">
+                        <p><strong>{{ i + 1 }}. {{ question.text }}</strong></p>
+                        <p>Your Answer: {{ selectedAnswers[quiz.id] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-secondary" (click)="resetQuiz()">Restart Quizzes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="quizzes.length === 0" class="alert alert-warning">
+    No quizzes found.
 </div>

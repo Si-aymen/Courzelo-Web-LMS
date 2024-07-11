@@ -13,5 +13,4 @@ export class Question {
     correctAnswer: string;
     type: QuestionType;
     answers: Answer[];
-
 }

@@ -1,11 +1,14 @@
 package org.example.courzelo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.dto.QuizDTO;
 import org.example.courzelo.models.*;
 import org.example.courzelo.repositories.AnswerRepository;
 import org.example.courzelo.repositories.QuestionRepository;
 import org.example.courzelo.repositories.QuizRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +17,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class QuizService {
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final QuestionService questionService;
+    private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
 
     @Autowired
-    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository) {
+    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, QuestionService questionService) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
+        this.questionService = questionService;
     }
 
     public List<QuizDTO> getAllQuizzes() {
@@ -32,35 +39,63 @@ public class QuizService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
-    public QuizDTO createQuiz(QuizDTO quizDTO) {
-        Quiz quiz = mapToEntity(quizDTO);
+
+   /* public QuizDTO createQuiz(QuizDTO quizDTO) {
+        Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz = quizRepository.save(quiz);
         return mapToDTO(quiz);
+    }*/
+
+    public QuizDTO updateQuiz(String id, Quiz quizDTO) {
+        Quiz existingQuiz = quizRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + id));
+
+        // Update the existing quiz entity with values from the provided quizDTO
+        updateQuizEntity(existingQuiz, quizDTO);
+
+        Quiz savedQuiz = quizRepository.save(existingQuiz);
+        return mapToDTO(savedQuiz);
     }
-    public String create(final QuizDTO quizDTO) {
-        final Quiz quiz = new Quiz();
-        mapToEntity(quizDTO, quiz);
-        return quizRepository.save(quiz).getId();
+
+    private void updateQuizEntity(Quiz existingQuiz, Quiz quizDTO) {
+        if (quizDTO.getTitle() != null) {
+            existingQuiz.setTitle(quizDTO.getTitle());
+        }
+        if (quizDTO.getDescription() != null) {
+            existingQuiz.setDescription(quizDTO.getDescription());
+        }
+        if (quizDTO.getQuestions() != null) {
+            existingQuiz.setQuestions(quizDTO.getQuestions());
+        }
+        // Add other properties as needed
     }
-    public QuizDTO updateQuiz(String id, QuizDTO quizDTO) {
-        Quiz quiz = mapToEntity(quizDTO);
-        quiz.setId(id);
-        quiz = quizRepository.save(quiz);
-        return mapToDTO(quiz);
+    public QuizDTO updateQuizState(String QuizID ,Quiz updatedQuiz) {
+        Quiz existingQuiz = quizRepository.findById(updatedQuiz.getId())
+                .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + updatedQuiz.getId()));
+
+        // Update the existing quiz entity with values from the updatedQuiz DTO
+        existingQuiz.setTitle(updatedQuiz.getTitle());
+        existingQuiz.setDescription(updatedQuiz.getDescription());
+        existingQuiz.setQuestions(updatedQuiz.getQuestions());
+        // Add other properties as needed
+
+        Quiz savedQuiz = quizRepository.save(existingQuiz);
+        return mapToDTO(savedQuiz);
     }
+
     public void deleteQuiz(String id) {
         quizRepository.deleteById(id);
     }
-    public Quiz getQuizById(String id) {
-        return quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+    public QuizDTO getQuizById(String id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        return mapToDTO(quiz);
     }
 
     public QuizSubmissionResult submitQuiz(QuizSubmission submission) {
-        Quiz quiz = getQuizById(submission.getQuizID());
+        Quiz quiz = quizRepository.findById(submission.getQuizID()).orElseThrow(() -> new RuntimeException("Quiz not found"));
         List<Answer> answers = submission.getAnswers();
-
         int correctCount = 0;
-
         for (Answer answer : answers) {
             Optional<Question> question = questionRepository.findById(answer.getQuestionID());
 
@@ -68,33 +103,33 @@ public class QuizService {
                 correctCount++;
             }
         }
-
         int score = (correctCount * 100) / quiz.getQuestions().size();
 
         QuizSubmissionResult result = new QuizSubmissionResult();
         result.setQuizID(submission.getQuizID());
         result.setScore(score);
-
         return result;
     }
-    public Quiz createQuizWithQuestions(Quiz quiz) {
-        quiz = quizRepository.save(quiz);
 
+    public QuizDTO createQuizWithQuestions(QuizDTO quizDTO) {
+        Quiz quiz = mapToEntity(quizDTO, new Quiz());
+        quiz = quizRepository.save(quiz);
+        logger.info("Quiz ID after save: {}", quiz.getId());
         List<Question> questions = quiz.getQuestions().stream()
-                .map(questionDTO -> {
-                    Question question = new Question();
-                    question.setText(questionDTO.getText());
-                    question.setOptions(questionDTO.getOptions());
-                    question.setCorrectAnswer(questionDTO.getCorrectAnswer());
-                    question.setType(questionDTO.getType());
+                .map(question -> {
                     question = questionRepository.save(question);
+                    logger.info("Question ID after save: {}", question.getId());
                     return question;
                 })
                 .collect(Collectors.toList());
         quiz.setQuestions(questions);
-        return quizRepository.save(quiz);
+        quiz = quizRepository.save(quiz);
+        logger.info("Final Quiz ID: {}", quiz.getId());
+        return mapToDTO(quiz);
     }
-    public Quiz CreateQuizWithAnswers(Quiz quiz) {
+
+    public QuizDTO createQuizWithAnswers(QuizDTO quizDTO) {
+        Quiz quiz = mapToEntity(quizDTO, new Quiz());
         Quiz savedQuiz = quizRepository.save(quiz);
         for (Question question : quiz.getQuestions()) {
             question.setQuizID(savedQuiz.getId());
@@ -104,23 +139,23 @@ public class QuizService {
                 answerRepository.save(answer);
             }
         }
-        return savedQuiz;
+        return mapToDTO(savedQuiz);
     }
-    public Quiz getQuizWithAnswersById(String id) {
-        Quiz quiz = getQuizById(id);
+
+    public QuizDTO getQuizWithAnswersById(String id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         for (Question question : quiz.getQuestions()) {
             question.setAnswers(answerRepository.findByQuestionID(question.getId()));
         }
-        return quiz;
+        return mapToDTO(quiz);
     }
 
     public QuizDTO mapToDTO(final Quiz quiz) {
-        if (quiz == null) {
-            return null;
-        }
-
         QuizDTO quizDTO = new QuizDTO();
-        quizDTO.setId(quiz.getId());
+        return mapToDTO(quiz, quizDTO);
+    }
+
+    private QuizDTO mapToDTO(final Quiz quiz, final QuizDTO quizDTO) {
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
         quizDTO.setQuestions(quiz.getQuestions().stream()
@@ -134,14 +169,7 @@ public class QuizService {
         quizDTO.setSelected(quiz.isSelected());
         return quizDTO;
     }
-
-    private Quiz mapToEntity(final QuizDTO quizDTO) {
-        if (quizDTO == null) {
-            return null;
-        }
-
-        Quiz quiz = new Quiz();
-        quiz.setId(quizDTO.getId());
+    public Quiz mapToEntity(final QuizDTO quizDTO, final Quiz quiz) {
         quiz.setTitle(quizDTO.getTitle());
         quiz.setDescription(quizDTO.getDescription());
         quiz.setQuestions(quizDTO.getQuestions().stream()
@@ -155,22 +183,6 @@ public class QuizService {
         quiz.setSelected(quizDTO.isSelected());
         return quiz;
     }
-
-    private Quiz mapToEntity(final QuizDTO quizDTO, final Quiz quiz) {
-        quiz.setTitle(quizDTO.getTitle());
-        quiz.setDescription(quizDTO.getDescription());
-        quiz.setQuestions(quizDTO.getQuestions().stream()
-                .map(this::mapToQuestionEntity)
-                .collect(Collectors.toList()));
-        quiz.setDuration(quizDTO.getDuration());
-        quiz.setMaxAttempts(quizDTO.getMaxAttempts());
-        quiz.setScore(quizDTO.getScore());
-        quiz.setStatus(quizDTO.getStatus());
-        quiz.setCategory(quizDTO.getCategory());
-        quiz.setSelected(quizDTO.isSelected());
-        return quiz;
-    }
-
 
     private QuestionDTO mapToQuestionDTO(Question question) {
         QuestionDTO questionDTO = new QuestionDTO();

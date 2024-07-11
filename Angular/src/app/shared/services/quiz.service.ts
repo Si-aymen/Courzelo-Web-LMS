@@ -36,18 +36,17 @@ export class QuizService {
   getQuizById(id: string): Observable<Quiz> {
     return this.http.get<Quiz>(`${this.apiUrl}/${id}`);
   }
+  getQuizzesById(ids: string[]): Observable<Quiz[]> {
+    const params = { ids: ids.join(',') };
+    return this.http.get<Quiz[]>(`${this.apiUrl}/quizzes`, { params });
+  }
 
   updateQuiz(id: string, quiz: Quiz): Observable<Quiz> {
     return this.http.put<Quiz>(`${this.apiUrl}/${id}`, quiz);
   }
-
-  deleteQuiz(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteQuiz(id: string): Observable<Quiz> {
+    return this.http.delete<Quiz>(`${this.apiUrl}/${id}`);
   }
-
- /* getQuizById(id: string): Observable<Quiz> {
-    return this.http.get<Quiz>(`${this.apiUrl}/quizzes/${id}`);
-  }*/
 
   submitQuiz(quizId: string, answers: any[]): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/quizzes/${quizId}/submit`, { answers });
@@ -55,5 +54,9 @@ export class QuizService {
 
   calculateScore(id: string, answers: string[]) {
     return 0;
+  }
+  updateQuizState(quiz: Quiz): Observable<any> {
+    const url = `${this.apiUrl}/${quiz.id}`;
+    return this.http.put(url, quiz); // Assuming your backend supports updating quiz state via PUT request
   }
 }
