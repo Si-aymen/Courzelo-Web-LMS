@@ -11,6 +11,9 @@ import { AddTicketComponent } from './add-ticket/add-ticket.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ForwardComponent } from './forward/forward.component';
 import { FaqComponent } from './faq/faq.component';
+import { TickettypeComponent } from './Type/tickettype/tickettype.component';
+import { ListComponent } from './Type/list/list.component';
+import { UpdateTicketComponent } from './update-ticket/update-ticket.component';
 
 
 
@@ -25,6 +28,6 @@ import { FaqComponent } from './faq/faq.component';
     NgbModule,
     TicketsRoutingModule // Import the routing module here
   ],
-  declarations: [ListTicketComponent, AddTicketComponent,ForwardComponent, FaqComponent]
+  declarations: [ListTicketComponent, AddTicketComponent,ForwardComponent, FaqComponent, TickettypeComponent, ListComponent, UpdateTicketComponent]
 })
 export class TicketsModule { }

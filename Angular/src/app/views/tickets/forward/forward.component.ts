@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { TicketDataService } from 'src/app/views/tickets/ticketdata.service'; // Adjust the path as necessary
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TrelloserviceService } from './../trello/trelloservice.service'; // Adjust the path as necessary
 import { environment } from 'src/environments/environment';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CardREQ } from 'src/app/shared/models/CardREQ';
+import { TicketServiceService } from '../Services/ticket-service.service';
+import { Etat } from 'src/app/shared/models/Etat';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-forward',
@@ -11,13 +16,15 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./forward.component.scss']
 })
 export class ForwardComponent implements OnInit {
-middle() {
-throw new Error('Method not implemented.');
-}
+
   id: any; // Define id property
   sujet: any; // Define sujet property
   details: any; // Define details property
-
+  type:any;
+  TrelloCard = new FormGroup({
+    CardId: new FormControl('',Validators.required),
+    TicketID: new FormControl('',Validators.required),
+  })
   ticketData$: Observable<any>;
   data = new FormGroup({
     developper: new FormControl('', Validators.required),
@@ -28,23 +35,21 @@ throw new Error('Method not implemented.');
 
   employee = ["touatiahmed", "ahmed_touati"];
 
-  constructor(private ticketDataService: TicketDataService, private trelloService: TrelloserviceService) { }
+  constructor(private ticketDataService: TicketDataService,
+     private trelloService: TrelloserviceService,private ticketservice:TicketServiceService) { }
 
   ngOnInit(): void {
     this.ticketData$ = this.ticketDataService.ticketData$;
-    // Subscribe to ticketData$ to get the data when it emits
     this.ticketData$.subscribe(data => {
       if (data) {
-        // Access id, sujet, and description from the data object
+        console.log(data)
+        this.type=data.type;
         this.id = data.id;
         this.sujet = data.sujet;
-        this.details = data.description;
-
+        this.details = data.details;
         console.log('ID:', this.id);
         console.log('SUJET:', this.sujet);
         console.log('Description:', this.details);
-
-        // You can now use id, sujet, and details as needed in your component
       }
     });
   }
@@ -54,32 +59,64 @@ throw new Error('Method not implemented.');
     const idListDoing = environment.idListDoing;
     const idListDone = environment.idListDone;
     const member = this.data.value['developper'];
-    const complaintId = this.id; // Use this.id instead of this.idd
-    const complaintName = this.sujet;
-    const complaintDetails = this.details; // Use this.details
+    const ticketId = this.id; 
+    const ticketName = this.sujet;
+    const ticketDetails = this.details; 
+    const ticketType = this.type.type;
     const activity = String(this.data.value['activity']);
 
     var splitted = activity.split(".", activity.length);
 
-    console.log('Forwarding Data:', member, complaintId, complaintName, complaintDetails, activity);
-
-    this.trelloService.createCard(idListToDo, this.sujet, this.details).subscribe((card: any) => {
-      console.log(card);
-      console.log("Card ID:", card.id);
-      
-      this.trelloService.addCheckList(card.id).subscribe((checkList: any) => {
-        console.log("Checklist ID:", checkList.id);
-        
-        splitted.forEach(t => {
-          this.trelloService.addItemToCheckList(checkList.id, t).subscribe((res: any) => {
-            console.log("show:++++",card.id,member);
-            this.trelloService.addEmployeToCard(card.id, member).subscribe((res: any) => {
-              // Implement further actions if needed
-            });
+    console.log('Forwarding Data:', member, ticketId, ticketName, ticketDetails, activity,"Le Type",ticketType);
+    this.trelloService.getBoardByType(ticketType).subscribe((res:any)=>{
+      console.log("le type ",res);
+      this.trelloService.createCard(res.idListToDo,this.sujet,this.details).subscribe((card:any)=>{
+        console.log("le card",card.id)
+        this.TrelloCard.patchValue({ CardId: card.id })
+        this.TrelloCard.patchValue({ TicketID: ticketId })
+        console.log(this.TrelloCard.value)
+        this.ticketservice.addCardTrello(this.TrelloCard.value);
+        console.log("ajouter Success")
+        this.trelloService.addCheckList(card.id).subscribe((checklist:any)=>{
+          console.log("le checklist",checklist)
+          console.log("le member",member)
+          this.trelloService.getTrelloUserId(member).subscribe((member:any)=>{
+            console.log("le userid :",member.id,card.id)
+            this.trelloService.addEmployeToCard(card.id,member.id).subscribe((res:any)=>{
+         this.ticketservice.updateStatus(ticketId, Etat.EN_COURS).subscribe((res:any) => {
+          splitted.forEach(t=>{
+            this.trelloService.addItemToCheckList(checklist.id,t).subscribe((res:any)=>{
+              if (res) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Success...',
+                  text: 'Transférer avec succès!',
+                })
+              }
+              else {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Success...',
+                  text: 'Transférer avec succès!',
+                })
+              }
+            })
           })
+              }
+              )
+            },err => {
+              console.log('Trello username developper not found');    
+            })
+            
+          })
+        }
+        )
+      })
 
-        });
-      });
-    });
+    })
+
   }
+  middle() {
+    console.log('Method not implemented.',this.id);
+    }
 }

@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TicketsRoutingModule } from './views/tickets/tickets-routing.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { TicketsRoutingModule } from './views/tickets/tickets-routing.module';
     AppRoutingModule,
     FormsModule,
     TicketsRoutingModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -31,10 +31,15 @@ public class TicketTypeServiceImp implements ITicketTypeService {
     }
 
     @Override
-    public void saveTicketType(TicketType type) {
+    public TicketType saveTicketType(TicketType type) {
          ticketTypeRepository.save(type);
+        return type;
     }
 
+    @Override
+    public TicketType findByType(String type) {
+        return ticketTypeRepository.findByType(type);
+    }
     @Override
     public void updateTicketType(TicketType type) {
         ticketTypeRepository.save(type);

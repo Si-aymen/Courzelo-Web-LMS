@@ -8,11 +8,11 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
-  "/aki": {
-    "target": "http://localhost:8081/",
+  "/tk": {
+    "target": "http://localhost:8080/",
     "secure": true,
     "pathRewrite": {
-      "^/aki": ""
+      "^/tk": ""
     },
     "changeOrigin": true,
     "logLevel": "debug"

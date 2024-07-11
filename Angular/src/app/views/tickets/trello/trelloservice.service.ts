@@ -17,9 +17,9 @@ export class TrelloserviceService {
     }})
   }
 
-  getBoardByType(designation: any){
-    return this.http.get('/aki/api/board/bytype',{params:{
-      type: designation
+  getBoardByType(type: any){
+    return this.http.get('/tk/api/v1/tickettype/bytype',{params:{
+      type: type
     }})
   }
   addBoardDB(designation: any){
@@ -29,7 +29,14 @@ export class TrelloserviceService {
   }
 
   getBoardList(id:any){
-    return this.http.get('/api/1/boards/'+ id +'/lists',{params:{
+    return this.http.get('/api/1/lists/'+ id +'/cards',{params:{
+      key: environment.KEY,
+      token: environment.TOKEN,
+    }})
+  }
+  //api.trello.com/1/lists/{id}/cards?key=APIKey&token=APIToken
+  getCardList(id:any){
+    return this.http.get('/api/1/lists/'+ id +'/cards',{params:{
       key: environment.KEY,
       token: environment.TOKEN,
     }})

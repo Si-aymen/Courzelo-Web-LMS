@@ -64,9 +64,6 @@ const routes: Routes = [
     redirectTo: 'dashboard/v1',
     pathMatch: 'full'
   },
-  {path:'addtickets',
-  component:AddTicketComponent    
-  },
   {
     path: '',
     component: AuthLayoutComponent,
@@ -93,9 +90,7 @@ const routes: Routes = [
     canActivate: [AuthGaurd],
     children: adminRoutes
   },
-  {path:'ticketts',
-  component:ListTicketComponent    
-  },
+
   {
     path: '**',
     redirectTo: 'others/404'

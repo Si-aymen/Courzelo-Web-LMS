@@ -4,4 +4,6 @@ import org.example.courzelo.models.TicketType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface TicketTypeRepository extends MongoRepository <TicketType,String> {
+    TicketType findByType(String type);
+
 }

@@ -1,7 +1,7 @@
 <div *ngIf="ticketData$ | async as ticketData">
     <h2>Forwarded Ticket Data:</h2>
     <h5>{{ticketData.sujet}}</h5>
-    <h5>{{ticketData.description}}</h5>
+    <h5>{{ticketData.details}}</h5>
     <!--<pre>{{ ticketData | json }}</pre>-->
     <!-- Display the data as needed -->
   </div>
@@ -27,5 +27,6 @@
                             <!-- <button type="submit" class="btn btn-lg btn-primary">Sign up</button> -->
                         </div>
                     </form>
+                </div>
                 </div>
   

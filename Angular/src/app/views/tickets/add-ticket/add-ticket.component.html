@@ -2,38 +2,22 @@
   <div class="card mb-4">
       <div class="card-body">
           <div class="card-title mb-3">Add Ticket</div>
-          <form [formGroup]="formAddTicket" (ngSubmit)="addTicket()">
+          <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
               <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                      <label for="id">ID</label>
-                      <input type="number" class="form-control form-control-rounded" id="id" formControlName="id" placeholder="Enter ticket ID" required>
-                  </div>
-
-                  <div class="col-md-6 form-group mb-3">
-                      <label for="type">Type</label>
-                      <input type="text" class="form-control form-control-rounded" id="type" formControlName="type" placeholder="Enter ticket type" required>
-                  </div>
-
                   <div class="col-md-6 form-group mb-3">
                       <label for="sujet">Sujet</label>
                       <input type="text" class="form-control form-control-rounded" id="sujet" formControlName="sujet" placeholder="Enter ticket sujet" required>
                   </div>
 
                   <div class="col-md-6 form-group mb-3">
-                      <label for="description">Description</label>
-                      <input type="text" class="form-control form-control-rounded" id="description" formControlName="description" placeholder="Enter ticket description" required>
+                      <label for="details">Details</label>
+                      <input type="text" class="form-control form-control-rounded" id="details" formControlName="details" placeholder="Enter ticket details" required>
                   </div>
 
                   <div class="col-md-6 form-group mb-3">
-                      <label for="date">Date</label>
-                      <input type="date" class="form-control form-control-rounded" id="date" formControlName="date" placeholder="yyyy-mm-dd" required>
-                  </div>
-
-                  <div class="col-md-6 form-group mb-3">
-                      <label for="status">Status</label>
-                      <select class="form-control form-control-rounded" id="status" formControlName="status" required>
-                          <option value="">Select status</option>
-                          <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                      <label for="status">Type</label>
+                      <select class="form-control form-control-rounded" id="type" formControlName="type" required>
+                          <option *ngFor="let t of types" [value]="t">{{ t }}</option>
                       </select>
                   </div>
 
