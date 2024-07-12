@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { TickettypeService } from '../TicketTypeService/tickettype.service';
 import { TicketType } from 'src/app/shared/models/TicketType';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-ticket',
@@ -16,7 +17,7 @@ export class AddTicketComponent implements OnInit {
   statuses = ['waiting', 'doing', 'done'];
   ticketForm: FormGroup = new FormGroup({});
   types:String[]=[];
-  constructor(private fb: FormBuilder,private formBuilder: FormBuilder,private ticketservice:TicketServiceService,private typeservice:TickettypeService) { }
+  constructor(private fb: FormBuilder,private router:Router,private formBuilder: FormBuilder,private ticketservice:TicketServiceService,private typeservice:TickettypeService) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -81,4 +82,7 @@ console.log('Selected value:', selectedValue);
   )
 //      this.reclamationservice.forwardToEmployee(res.id,this.token.getUser())
     }
+    middle() {
+      this.router.navigate(['tickets/list']); // Navigate to forward component
+        }
 }

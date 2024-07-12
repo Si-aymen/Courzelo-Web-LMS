@@ -9,6 +9,7 @@ import { CardREQ } from 'src/app/shared/models/CardREQ';
 import { TicketServiceService } from '../Services/ticket-service.service';
 import { Etat } from 'src/app/shared/models/Etat';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forward',
@@ -22,8 +23,8 @@ export class ForwardComponent implements OnInit {
   details: any; // Define details property
   type:any;
   TrelloCard = new FormGroup({
-    CardId: new FormControl('',Validators.required),
-    TicketID: new FormControl('',Validators.required),
+    cardId: new FormControl('',Validators.required),
+    ticketID: new FormControl('',Validators.required),
   })
   ticketData$: Observable<any>;
   data = new FormGroup({
@@ -35,7 +36,7 @@ export class ForwardComponent implements OnInit {
 
   employee = ["touatiahmed", "ahmed_touati"];
 
-  constructor(private ticketDataService: TicketDataService,
+  constructor(private router : Router,private ticketDataService: TicketDataService,
      private trelloService: TrelloserviceService,private ticketservice:TicketServiceService) { }
 
   ngOnInit(): void {
@@ -55,9 +56,6 @@ export class ForwardComponent implements OnInit {
   }
 
   forward() {
-    const idListToDo = environment.idListToDo;
-    const idListDoing = environment.idListDoing;
-    const idListDone = environment.idListDone;
     const member = this.data.value['developper'];
     const ticketId = this.id; 
     const ticketName = this.sujet;
@@ -72,8 +70,8 @@ export class ForwardComponent implements OnInit {
       console.log("le type ",res);
       this.trelloService.createCard(res.idListToDo,this.sujet,this.details).subscribe((card:any)=>{
         console.log("le card",card.id)
-        this.TrelloCard.patchValue({ CardId: card.id })
-        this.TrelloCard.patchValue({ TicketID: ticketId })
+        this.TrelloCard.patchValue({ cardId: card.id })
+        this.TrelloCard.patchValue({ ticketID: ticketId })
         console.log(this.TrelloCard.value)
         this.ticketservice.addCardTrello(this.TrelloCard.value);
         console.log("ajouter Success")
@@ -83,7 +81,7 @@ export class ForwardComponent implements OnInit {
           this.trelloService.getTrelloUserId(member).subscribe((member:any)=>{
             console.log("le userid :",member.id,card.id)
             this.trelloService.addEmployeToCard(card.id,member.id).subscribe((res:any)=>{
-         this.ticketservice.updateStatus(ticketId, Etat.EN_COURS).subscribe((res:any) => {
+         this.ticketservice.updateStatusdoing(ticketId, Etat.EN_COURS).subscribe((res:any) => {
           splitted.forEach(t=>{
             this.trelloService.addItemToCheckList(checklist.id,t).subscribe((res:any)=>{
               if (res) {
@@ -117,6 +115,6 @@ export class ForwardComponent implements OnInit {
 
   }
   middle() {
-    console.log('Method not implemented.',this.id);
-    }
+    this.router.navigate(['tickets/list']); // Navigate to forward component
+      }
 }

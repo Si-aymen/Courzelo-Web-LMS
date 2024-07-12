@@ -34,6 +34,13 @@ export class TrelloserviceService {
       token: environment.TOKEN,
     }})
   }
+
+  getListOfCard(id:any){
+    return this.http.get('/api/1/cards/'+ id +'/list',{params:{
+      key: environment.KEY,
+      token: environment.TOKEN,
+    }})
+  }
   //api.trello.com/1/lists/{id}/cards?key=APIKey&token=APIToken
   getCardList(id:any){
     return this.http.get('/api/1/lists/'+ id +'/cards',{params:{

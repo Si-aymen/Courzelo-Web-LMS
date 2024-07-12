@@ -8,6 +8,7 @@ import org.example.courzelo.models.Status;
 import org.example.courzelo.models.Ticket;
 import org.example.courzelo.models.TicketType;
 import org.example.courzelo.models.TrelloCard;
+import org.example.courzelo.repositories.TicketRepository;
 import org.example.courzelo.repositories.TrelloCardRepository;
 import org.example.courzelo.serviceImpls.ITicketService;
 import org.example.courzelo.serviceImpls.ITicketTypeService;
@@ -26,6 +27,8 @@ public class TicketController {
     private final ITicketService iTicketService;
     private final ITicketTypeService typeService;
     private final TrelloCardRepository trellorepository;
+    private final TicketRepository ticketrepository;
+
     @GetMapping("/all")
     public List<Ticket> getReclamations() {
         return iTicketService.getAllTickets();
@@ -34,12 +37,12 @@ public class TicketController {
     @PostMapping("/add")
     public ResponseEntity<Object> addTicket(@RequestBody TicketREQ ticket) {
         try {
-            TicketType typeticket = typeService.findByType(ticket.getType());
+            TicketType type = typeService.findByType(ticket.getType());
             Ticket tick = new Ticket();
             tick.setSujet(ticket.getSujet());
             tick.setDetails(ticket.getDetails());
             tick.setStatus(Status.EN_ATTENTE);
-            tick.setType(typeticket);
+            tick.setType(type);
             iTicketService.saveTicket(tick);
             return ResponseEntity.ok().body("{\"message\": \"Ticket ajouté avec succès!\"}"); // Return JSON object
         } catch (Exception e) {
@@ -71,18 +74,29 @@ public class TicketController {
         }
     }
 
-    @RequestMapping(path = "/update/status/{idticket}/{status}",method = RequestMethod.POST)
-    public void updateStatus(@PathVariable("idticket") String id, @PathVariable("status") String status){
+    @PostMapping("/update/statusdoing/{idticket}/{status}")
+    public ResponseEntity<?> updateStatus(@PathVariable("idticket") String id, @PathVariable("status") String status) {
+
+            Ticket t = iTicketService.getTicket(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Ticket not exist with id :" + id));
+
+            if (status.equals(Status.EN_COURS.name()))
+                t.setStatus(Status.EN_COURS);
+
+            return ResponseEntity.ok(ticketrepository.save(t));
+    }
+
+    @PostMapping("/update/statusdone/{idticket}/{status}")
+    public ResponseEntity<?> updateStatusDone(@PathVariable("idticket") String id, @PathVariable("status") String status) {
+
         Ticket t = iTicketService.getTicket(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not exist with id :" + id));
-        if (status.equals(Status.EN_ATTENTE.name()))
-            t.setStatus(Status.EN_ATTENTE);
-        else if (status.equals(Status.EN_COURS.name()))
-            t.setStatus(Status.EN_COURS);
-        else if (status.equals(Status.FINIE.name())){
-            t.setStatus(Status.FINIE);}
-        iTicketService.updateTicket(t);
+        if (Status.FINIE.name().equals(status) && t.getStatus() != Status.FINIE)
+            t.setStatus(Status.FINIE);
+        return ResponseEntity.ok(ticketrepository.save(t));
     }
+
+
 
     @DeleteMapping("/delete/{ID}")
     public void deleteClass(@PathVariable String ID) {

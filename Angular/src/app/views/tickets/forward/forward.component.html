@@ -1,17 +1,15 @@
 <div *ngIf="ticketData$ | async as ticketData">
-    <h2>Forwarded Ticket Data:</h2>
-    <h5>{{ticketData.sujet}}</h5>
-    <h5>{{ticketData.details}}</h5>
-    <!--<pre>{{ ticketData | json }}</pre>-->
-    <!-- Display the data as needed -->
+    <h2>Ticket Details :</h2>
+    <h5>Subject :{{ticketData.sujet}}</h5>
+    <h5>Description :{{ticketData.details}}</h5>
   </div>
    <div class="card-body">
                 <div class="m-sm-4">
                     <form [formGroup]="data" (ngSubmit)="forward()">
-                        <div class="mb-3">
-                            <label class="form-label">Transférer à </label>
+                        <div class="mb-8">
+                            <label class="form-label">Affect to   </label>
                             <select class="form-select mb-3" formControlName="developper">
-                                <option value="" disabled>Choisir un service</option>
+                                <option value="" disabled>Pick Staff</option>
                                 <option [value]="" *ngFor="let e of employee">{{e}}</option>
                             </select>
                         </div>
@@ -22,8 +20,10 @@
                             rows="3"></textarea>
                         </div>
                         <div class="text-center m-3">
-                            <button  class="btn btn-dark btn-lg" style="margin-right: 10px;" [disabled]="! data.valid">Transférer</button> 
-                            <button type="reset" class="btn btn-danger btn-lg" (click)="middle()">Annuler</button>
+                                <button class="btn btn-primary btn-rounded" style="margin-right: 10px;" [disabled]="! data.valid">Add Ticket</button>
+     
+                            <!--<button  class="btn btn-dark btn-lg" style="margin-right: 10px;" [disabled]="! data.valid">Transférer</button>-->
+                            <button type="reset" class="btn btn-danger btn-rounded" (click)="middle()">Annuler</button>
                             <!-- <button type="submit" class="btn btn-lg btn-primary">Sign up</button> -->
                         </div>
                     </form>

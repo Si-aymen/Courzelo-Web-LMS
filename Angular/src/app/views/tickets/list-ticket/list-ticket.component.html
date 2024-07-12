@@ -23,7 +23,7 @@
           [scrollbarH]="true"
           [rows]="tickets$ | async">
           
-          <ngx-datatable-column name="id" [maxWidth]="50">
+          <ngx-datatable-column name="id" [maxWidth]="1000">
             <ng-template ngx-datatable-header-template>
               ID
             </ng-template>
@@ -50,14 +50,14 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="details">
+         <!-- <ngx-datatable-column name="details">
             <ng-template ngx-datatable-header-template>
               Description
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               {{ row.details }}
             </ng-template>
-          </ngx-datatable-column>
+          </ngx-datatable-column>-->
 
           <ngx-datatable-column name="dateCreation" [width]="150">
             <ng-template ngx-datatable-header-template>
@@ -78,12 +78,12 @@
           </ngx-datatable-column>
           
           <!-- New Column for Button -->
-          <ngx-datatable-column name="actions" [width]="100">
+          <ngx-datatable-column name="Details" [width]="100">
             <ng-template ngx-datatable-header-template>
-              Actions
+              Details
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Action</button>
+              <button class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Details</button>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="actions" [width]="100">
@@ -91,7 +91,7 @@
               Affecter
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-primary btn-sm" (click)="Affecter(row.id)">Action</button>
+              <button class="btn btn-primary btn-sm" (click)="onUpdate(row)">Action</button>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>

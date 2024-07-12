@@ -15,7 +15,7 @@
                   </div>
 
                   <div class="col-md-6 form-group mb-3">
-                      <label for="status">Type</label>
+                      <label for="type">Type</label>
                       <select class="form-control form-control-rounded" id="type" formControlName="type" required>
                           <option *ngFor="let t of types" [value]="t">{{ t }}</option>
                       </select>
@@ -23,21 +23,11 @@
 
                   <div class="col-md-12">
                       <button class="btn btn-primary btn-rounded" type="submit">Add Ticket</button>
+                      <button type="reset" class="btn btn-danger btn-rounded" (click)="middle()">Annuler</button>
                   </div>
               </div>
           </form>
       </div>
   </div>
 
-  <div *ngIf="tickets.length > 0" class="mt-4">
-      <h2>Tickets List</h2>
-      <ul class="list-group">
-          <li *ngFor="let ticket of tickets" class="list-group-item">
-              {{ ticket.id }} - {{ ticket.type }} - {{ ticket.sujet }} - {{ ticket.description }} - {{ ticket.date }} - {{ ticket.status }}
-          </li>
-      </ul>
-  </div>
-  <div *ngIf="tickets.length === 0" class="mt-4">
-      <p>No tickets available.</p>
-  </div>
 </div>
