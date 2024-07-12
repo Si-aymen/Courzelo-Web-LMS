@@ -1,7 +1,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title mb-0">Ajouter une projet (logiciel) </h5>
+        <h5 class="card-title mb-0">Add type </h5>
     </div>
     <div class="card-body">
         <div class="m-sm-4">
@@ -22,8 +22,8 @@
                     <textarea class="form-control" id="form6Example7" formControlName="description" rows="3"></textarea>
                 </div>-->
                 <div>
-                    <button   [disabled]="!data.valid" style="margin-right:5px;" mat-raised-button color="primary">Ajouter</button>
-                   <!-- <button type="reset" mat-raised-button color="warn" (click)="OnClose()">Annuler</button>-->
+                    <button class="btn btn-primary btn-rounded" type="submit"[disabled]="data.invalid">Add </button>
+                    <button type="reset" class="btn btn-danger btn-rounded" (click)="middle()">Cancel</button>
                 </div>
             </form>
         </div>

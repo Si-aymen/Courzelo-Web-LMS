@@ -60,6 +60,7 @@ console.log('Selected value:', selectedValue);
       })
       this.ngOnInit();
       console.log("success")
+      this.router.navigate(['tickets/list']); // Navigate to forward component
     }
     else{
       Swal.fire({

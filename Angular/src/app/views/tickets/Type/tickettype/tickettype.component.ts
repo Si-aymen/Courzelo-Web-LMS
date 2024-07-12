@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { TrelloserviceService } from '../../trello/trelloservice.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tickettype',
@@ -19,7 +20,7 @@ export class TickettypeComponent implements OnInit {
     type: new FormControl('', Validators.required)
   });
 
-  constructor(
+  constructor(private router:Router,
     private trelloService: TrelloserviceService,
     private formBuilder: FormBuilder,
     private tickettypeService: TickettypeService
@@ -68,6 +69,7 @@ export class TickettypeComponent implements OnInit {
                   text: 'Ajouté avec succès !',
                 });
                 this.data.reset();
+                this.router.navigate(['tickets/list']); // Navigate to forward component
               }
             }).catch((err: any) => {
               if (err.error && err.error.message) {
@@ -118,4 +120,7 @@ export class TickettypeComponent implements OnInit {
     }
     // ... similar logic for Doing and Done lists
   }
+  middle() {
+    this.router.navigate(['tickets/list']); // Navigate to forward component
+      }
 }

@@ -14,10 +14,10 @@ public class FAQ {
     private String id;
 
     @Size(max = 255)
-    private String Questions;
+    private String question;
 
     @Size(max = 255)
-    private String Answers;
+    private String answer;
 
 }
 

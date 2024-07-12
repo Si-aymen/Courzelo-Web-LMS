@@ -1,24 +1,20 @@
-<div class="row">
-    <div class="col-md-12">
-      <div class="card mb-4">
-        <div class="card-header">
-          <h4 class="card-title">Frequently Asked Questions</h4>
-        </div>
-        <div class="card-body">
-          <div *ngFor="let faq of faqList" class="accordion">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="mb-0">
-                    {{ faq.question }}
-                </h5>
-              </div>
-                <div class="card-body">
-                 <h5>{{ faq.answer }}</h5> 
-                </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- faq-list.component.html -->
+
+<div class="container mt-4">
+  <h2>FAQ List</h2>
+
+  <div *ngIf="faqs && faqs.length > 0">
+    <ul class="list-group">
+      <li *ngFor="let faq of faqs" class="list-group-item">
+        <h5 class="mb-1">Question : {{ faq.question }}</h5>
+        <p class="mb-1">Answer : {{ faq.answer }}</p>
+        <button class="btn btn-sm btn-outline-primary" (click)="editFAQ(faq)">Edit</button>
+        <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteFAQ(faq)">Delete</button>
+      </li>
+    </ul>
   </div>
-  
+
+  <div *ngIf="faqs && faqs.length === 0">
+    <p>No FAQs found.</p>
+  </div>
+</div>

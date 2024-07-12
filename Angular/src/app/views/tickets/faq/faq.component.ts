@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FAQ } from 'src/app/shared/models/faq';
+import { FAQService } from '../Services/faq.service';
 
 @Component({
   selector: 'app-faq',
@@ -6,16 +8,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./faq.component.scss']
 })
 export class FaqComponent implements OnInit {
+  faqs: FAQ[];
 
-  faqList: any[] = [
-    { question: 'What payment methods do you accept?', answer: 'We accept Visa, MasterCard, American Express, and PayPal.' },
-    { question: 'How do I get a refund ?', answer: 'You can initiate a refund request through your account or contact our support team.' },
-    // Add more FAQ items as needed
-  ];
-
-  constructor() { }
+  constructor(private faqService: FAQService) { }
 
   ngOnInit(): void {
+    this.loadFAQs();
   }
 
+  loadFAQs() {
+    this.faqService.getAllFAQs().subscribe(data => {
+      this.faqs = data;
+    });
+  }
+  editFAQ(id:any){
+
+  }
+  deleteFAQ(id:any){
+
+  }
 }

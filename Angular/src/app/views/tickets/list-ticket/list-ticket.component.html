@@ -1,11 +1,24 @@
 <div>
   <div class="breadcrumb">
-    <h1>Tickets</h1>
+    <h1>Tickets :</h1>
     <ul>
-      <li><a href="tickets/add"><i class="i-Add"></i>Add Ticket </a></li>
-      <li>Tickets</li>
+      <button
+        _ngcontent-hdd-c88=""
+        type="button"
+        class="btn btn-info btn-rounded m-1"
+        [routerLink]="['/tickets/add']">
+        Submit Tickets
+      </button>
+      <button
+        _ngcontent-hdd-c88=""
+        type="button"
+        class="btn btn-info btn-rounded m-1"
+        [routerLink]="['/tickets/typeticket']">
+        Add Type
+      </button>
     </ul>
   </div>
+  
 
   <div class="separator-breadcrumb border-top"></div>
 
@@ -50,15 +63,6 @@
             </ng-template>
           </ngx-datatable-column>
 
-         <!-- <ngx-datatable-column name="details">
-            <ng-template ngx-datatable-header-template>
-              Description
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-row="row">
-              {{ row.details }}
-            </ng-template>
-          </ngx-datatable-column>-->
-
           <ngx-datatable-column name="dateCreation" [width]="150">
             <ng-template ngx-datatable-header-template>
               Date
@@ -80,20 +84,31 @@
           <!-- New Column for Button -->
           <ngx-datatable-column name="Details" [width]="100">
             <ng-template ngx-datatable-header-template>
-              Details
+              Forward to Trello
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Details</button>
+              <button *ngIf="row.status !== 'FINIE'" class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Forward</button>
             </ng-template>
           </ngx-datatable-column>
+          
           <ngx-datatable-column name="actions" [width]="100">
             <ng-template ngx-datatable-header-template>
-              Affecter
+              Update
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-primary btn-sm" (click)="onUpdate(row)">Action</button>
+              <button *ngIf="row.status !== 'FINIE'" class="btn btn-primary btn-sm" (click)="onUpdate(row)">Update</button>
             </ng-template>
           </ngx-datatable-column>
+          
+          <ngx-datatable-column name="actions" [width]="100">
+            <ng-template ngx-datatable-header-template>
+              Rate
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button *ngIf="row.status === 'FINIE'" class="btn btn-primary btn-sm" (click)="onRate(row)">Rate</button>
+            </ng-template>
+          </ngx-datatable-column>
+          
         </ngx-datatable>
       </div>
     </div>

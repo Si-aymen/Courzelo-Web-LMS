@@ -35,4 +35,7 @@ public class Ticket {
 
     @DBRef
     private TicketType type;
+
+    @DBRef
+    private Rating rating;
 }

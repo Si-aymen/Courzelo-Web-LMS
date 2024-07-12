@@ -14,6 +14,8 @@ import { FaqComponent } from './faq/faq.component';
 import { TickettypeComponent } from './Type/tickettype/tickettype.component';
 import { ListComponent } from './Type/list/list.component';
 import { UpdateTicketComponent } from './update-ticket/update-ticket.component';
+import { RatingComponent } from './rating/rating.component';
+import { AddfaqComponent } from './faq/addfaq/addfaq.component';
 
 
 
@@ -28,6 +30,6 @@ import { UpdateTicketComponent } from './update-ticket/update-ticket.component';
     NgbModule,
     TicketsRoutingModule // Import the routing module here
   ],
-  declarations: [ListTicketComponent, AddTicketComponent,ForwardComponent, FaqComponent, TickettypeComponent, ListComponent, UpdateTicketComponent]
+  declarations: [ListTicketComponent, AddTicketComponent,ForwardComponent, FaqComponent, TickettypeComponent, ListComponent, UpdateTicketComponent, RatingComponent, AddfaqComponent]
 })
 export class TicketsModule { }

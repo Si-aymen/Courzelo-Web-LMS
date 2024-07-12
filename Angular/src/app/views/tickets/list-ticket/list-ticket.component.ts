@@ -116,7 +116,7 @@ updateTicketStatus(ticketId: string, status: string) {
       console.log(response);
       console.log("Status updated successfully for ticketId:", ticketId);
       
-      // Check if response.status is 'FINIE'
+      /*// Check if response.status is 'FINIE'
       if (response.status === 'FINIE') {
         // Handle additional logic when status is 'FINIE'
         this.ticketservice.sendMessage(this.message).subscribe(
@@ -127,7 +127,7 @@ updateTicketStatus(ticketId: string, status: string) {
             console.error('Error sending message:', error);
           }
         );
-      }
+      }*/
     },
     error => {
       console.error('Error updating status:', error);
@@ -160,6 +160,11 @@ updateTicketStatus(ticketId: string, status: string) {
   onUpdate(row: any) {
     this.ticketDataService.sendTicketData(row); // Send row data to service
     this.router.navigate(['tickets/update']); // Navigate to forward component
+  }
+
+  onRate(row: any) {
+    this.ticketDataService.sendTicketData(row); // Send row data to service
+    this.router.navigate(['tickets/rate']); // Navigate to forward component
   }
 
 

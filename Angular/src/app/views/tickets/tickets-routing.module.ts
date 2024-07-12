@@ -8,6 +8,8 @@ import { FaqComponent } from './faq/faq.component';
 import { TickettypeComponent } from './Type/tickettype/tickettype.component';
 import { ListComponent } from './Type/list/list.component';
 import { UpdateTicketComponent } from './update-ticket/update-ticket.component';
+import { RatingComponent } from './rating/rating.component';
+import { AddfaqComponent } from './faq/addfaq/addfaq.component';
 
 const routes: Routes = [
   { path: 'list', component: ListTicketComponent },
@@ -16,7 +18,9 @@ const routes: Routes = [
   { path: 'typeticket', component: TickettypeComponent },
   { path: 'listtype', component: ListComponent },
   { path: 'faq', component: FaqComponent },
-  { path: 'update',component:UpdateTicketComponent}
+  { path: 'rate', component: RatingComponent },
+  { path: 'update',component:UpdateTicketComponent},
+  { path: 'faq/add',component:AddfaqComponent}
 ];
 
 @NgModule({
