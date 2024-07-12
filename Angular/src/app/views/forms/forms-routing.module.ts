@@ -9,6 +9,7 @@ import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import { CreateQuizComponent } from './Quiz/create-quiz/create-quiz.component';
 import {TakeQuizComponent} from './Quiz/take-quiz/take-quiz.component';
+import {QuizResultComponent} from './Quiz/quiz-result/quiz-result.component';
 
 const routes: Routes = [
   {
@@ -46,8 +47,12 @@ const routes: Routes = [
   {
     path: 'take-quiz',
     component: TakeQuizComponent
-  }
-];
+  },
+
+  {
+    path: 'QuizResult',
+    component: QuizResultComponent
+  }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

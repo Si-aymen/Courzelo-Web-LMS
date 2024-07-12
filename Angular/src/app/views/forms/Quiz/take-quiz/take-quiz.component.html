@@ -4,26 +4,35 @@
             <div class="card-header">
                 <h4 class="card-title">{{ quizzes[currentQuizIndex]?.title }}</h4>
                 <p class="card-subtitle text-muted">{{ quizzes[currentQuizIndex]?.description }}</p>
+                <p class="card-text">Duration: {{ quizzes[currentQuizIndex]?.duration }} minutes</p>
             </div>
             <div class="card-body">
                 <div *ngFor="let question of quizzes[currentQuizIndex]?.questions; let i = index" class="mb-4">
                     <div class="mb-3">
                         <h5 class="mb-2">{{ i + 1 }}. {{ question.text }}</h5>
                         <div *ngIf="question.type === 'MULTIPLE_CHOICE'" class="form-check">
-                            <div *ngFor="let option of question.options">
-                                <input class="form-check-input" type="radio" name="question{{ i }}" [value]="option"
-                                       (change)="selectAnswer(option)" [checked]="selectedAnswers[quizzes[currentQuizIndex]?.id] === option">
-                                <label class="form-check-label">{{ option }}</label>
+                            <div *ngFor="let option of question.options; let j = index">
+                                <input class="form-check-input" type="checkbox" [id]="'option' + question.id + '_' + j" [value]="option"
+                                       (change)="toggleOptionSelection(question.id, option)"
+                                       [checked]="selectedAnswers[question.id]?.includes(option)">
+                                <label class="form-check-label" [for]="'option' + question.id + '_' + j">{{ option }}</label>
                             </div>
                         </div>
-                        <!-- Add handling for other question types if needed -->
+                        <div *ngIf="question.type === 'SHORT_ANSWER'">
+                            <input type="text" class="form-control" [(ngModel)]="selectedAnswers[question.id]">
+                            <button class="btn btn-primary mt-2" (click)="submitShortAnswer(question.id)">Submit Answer</button>
+                        </div>
+                        <div *ngIf="question.type === 'LONG_ANSWER'">
+                            <textarea class="form-control" rows="4" [(ngModel)]="selectedAnswers[question.id]"></textarea>
+                            <button class="btn btn-primary mt-2" (click)="submitLongAnswer(question.id)">Submit Answer</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary mr-2" (click)="submitQuiz()">Submit Quiz</button>
-                <button class="btn btn-secondary mr-2" (click)="previousQuiz()" [disabled]="currentQuizIndex === 0">Previous
-                    Quiz</button>
+                <button class="btn btn-secondary mr-2" (click)="previousQuiz()"
+                        [disabled]="currentQuizIndex === 0">Previous Quiz</button>
                 <button class="btn btn-secondary" (click)="nextQuiz()"
                         [disabled]="currentQuizIndex === quizzes.length - 1">Next Quiz</button>
             </div>
@@ -38,7 +47,7 @@
                     <h5 class="mb-3">{{ quiz.title }}</h5>
                     <div *ngFor="let question of quiz.questions; let i = index">
                         <p><strong>{{ i + 1 }}. {{ question.text }}</strong></p>
-                        <p>Your Answer: {{ selectedAnswers[quiz.id] }}</p>
+                        <p>Your Answer: {{ selectedAnswers[question.id] }}</p>
                     </div>
                 </div>
             </div>
@@ -47,8 +56,11 @@
             </div>
         </div>
     </div>
-</div>
-
-<div *ngIf="quizzes.length === 0" class="alert alert-warning">
-    No quizzes found.
+    <div class="card mb-4">
+        <!-- ... -->
+        <div class="card-footer">
+            <p>Your final score: {{ finalScore }}</p>
+            <!-- ... -->
+        </div>
+    </div>
 </div>

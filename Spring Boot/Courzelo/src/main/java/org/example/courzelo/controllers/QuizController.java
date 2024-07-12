@@ -66,6 +66,11 @@ public class QuizController {
         }
     }
 
+    @GetMapping("/duration/{quizId}")
+    public int getQuizDuration(@PathVariable String quizId) {
+        return quizService.getQuizDuration(quizId);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getQuizById(@PathVariable String id) {
         QuizDTO quiz = quizService.getQuizById(id);
@@ -82,6 +87,11 @@ public class QuizController {
     public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO) {
         QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO);
         return ResponseEntity.ok(createdQuiz);
+    }
+    @GetMapping("/status/{id}")
+    public ResponseEntity<QuizDTO> getQuizStatus(@PathVariable String id) {
+        QuizDTO quiz = quizService.getQuizStatus(id);
+        return ResponseEntity.ok(quiz);
     }
 
     @PostMapping("/with-answers")

@@ -91,6 +91,10 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         return mapToDTO(quiz);
     }
+    public int getQuizDuration(String quizId) {
+        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
+        return quizOptional.map(Quiz::getDuration).orElse(0);
+    }
 
     public QuizSubmissionResult submitQuiz(QuizSubmission submission) {
         Quiz quiz = quizRepository.findById(submission.getQuizID()).orElseThrow(() -> new RuntimeException("Quiz not found"));
@@ -113,6 +117,7 @@ public class QuizService {
 
     public QuizDTO createQuizWithQuestions(QuizDTO quizDTO) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
+        quiz.setStatus(quizDTO.getStatus()); // explicitly set the status
         quiz = quizRepository.save(quiz);
         logger.info("Quiz ID after save: {}", quiz.getId());
         List<Question> questions = quiz.getQuestions().stream()
@@ -182,6 +187,10 @@ public class QuizService {
         quiz.setCategory(quizDTO.getCategory());
         quiz.setSelected(quizDTO.isSelected());
         return quiz;
+    }
+    public QuizDTO getQuizStatus(String id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        return mapToDTO(quiz);
     }
 
     private QuestionDTO mapToQuestionDTO(Question question) {

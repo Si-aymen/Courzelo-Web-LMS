@@ -4,6 +4,7 @@ import {Quiz} from '../models/Quiz';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
+import {id} from 'date-fns/locale';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,9 @@ export class QuizService {
   }
   deleteQuiz(id: string): Observable<Quiz> {
     return this.http.delete<Quiz>(`${this.apiUrl}/${id}`);
+  }
+  getQuizDuration (quiz: Quiz): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/duration,/${id}`);
   }
 
   submitQuiz(quizId: string, answers: any[]): Observable<any> {
