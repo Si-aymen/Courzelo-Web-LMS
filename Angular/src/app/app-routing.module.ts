@@ -4,6 +4,14 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGaurd } from './shared/services/auth.gaurd';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
+import { ProjectComponent } from 'src/app/shared/components/Project/User/project/project.component';
+import { ProjectdetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
+import { ProgressDashboardComponent } from './shared/components/Project/User/progress-dashboard/progress-dashboard.component';
+import { DashboardProjectComponent } from './shared/components/Project/Admin/dashboard-project/dashboard-project.component';
+import { AddProjectComponent } from './shared/components/Project/Admin/add-project/add-project.component';
+import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdetails/viewdetails.component';
+import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
+
 
 const adminRoutes: Routes = [
     {
@@ -49,7 +57,16 @@ const adminRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-    }
+    } ,
+    { path: 'getallprojects', component: ProjectComponent},
+    { path: 'projectdetails', component: ProjectdetailsComponent},
+    { path: 'ProgressDashboard', component: ProgressDashboardComponent},
+    { path: 'projects', component: DashboardProjectComponent},
+    { path: 'addprojects', component: AddProjectComponent},
+    { path: 'project/:id', component: ViewdetailsComponent },
+    { path: 'pdf', component: PdfComponent },
+
+  
   ];
 
 const routes: Routes = [
