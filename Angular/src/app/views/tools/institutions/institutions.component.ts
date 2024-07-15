@@ -7,7 +7,7 @@ import {InstitutionService} from '../../../shared/services/institution/instituti
 import {PaginatedInstitutionsResponse} from '../../../shared/models/institution/PaginatedInstitutionsResponse';
 import {ToastrService} from 'ngx-toastr';
 import {InstitutionRequest} from '../../../shared/models/institution/InstitutionRequest';
-import {UserService} from "../../../shared/services/user/user.service";
+import {UserService} from '../../../shared/services/user/user.service';
 
 @Component({
   selector: 'app-institutions',
@@ -39,7 +39,7 @@ export class InstitutionsComponent implements OnInit {
   _currentPage = 1;
   totalPages = 0;
   totalItems = 0;
-  itemsPerPage = 5;
+  itemsPerPage = 2;
   loading = false;
   searchControl: FormControl = new FormControl();
     addInstitutionForm = this.formBuilder.group({
@@ -72,8 +72,9 @@ export class InstitutionsComponent implements OnInit {
         return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
     }
     addInstitution() {
-      this.institutionRequest = this.addInstitutionForm.value;
-      this.institutionRequest.latitude = 0;
+        if (this.addInstitutionForm.valid) {
+            this.institutionRequest = this.addInstitutionForm.value;
+        this.institutionRequest.latitude = 0;
         this.institutionRequest.longitude = 0;
         this.institutionService.addInstitution(this.institutionRequest).subscribe(
             response => {
@@ -83,6 +84,8 @@ export class InstitutionsComponent implements OnInit {
                 this.handleResponse.handleError(error);
             }
         );
+    }
+        this.toastr.error('Please fill all fields');
     }
   loadInstitutions(page: number, size: number, keyword: string) {
     this.loading = true;

@@ -6,59 +6,39 @@
     <div class="separator-breadcrumb border-top"></div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-8 ">
             <div class="form-group">
                 <input id="keyword" placeholder="Search Institutions" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
             </div>
         </div>
+        <div class="col-md-4 d-flex justify-content-center align-items-center" style="height: 4vh;">
+            <button (click)="addInstitution()" class="btn btn-success btn-sm " >Add Institution</button>
+        </div>
         <div class="col-md-12">
             <div class="card o-hidden">
+
                 <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 50vh;">
                     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                         <span class="spinner-glow spinner-glow-primary mr-5" style="font-size: 3rem;"></span>
                     </div>
                 </div>
                 <div *ngIf="!loading">
+
                     <ngx-datatable
                             style="height: calc(100vh - 270px); box-shadow: none"
                             class="material fullscreen"
                             [columnMode]="'force'"
+                            [columns]="[{ name: 'Name' }, { name: 'Slogan' }, { name: 'Country' }, { name: 'Address' }, { name: 'Description' }, { name: 'Website' }]"
                             [headerHeight]="50"
-                            [footerHeight]="0"
+                            [footerHeight]="50"
                             [rowHeight]="80"
                             [scrollbarV]="true"
                             [scrollbarH]="true"
+                            [externalPaging]="true"
+                            [count]="totalItems"
+                            [offset]="(currentPage - 1) * itemsPerPage"
+                            [limit]="itemsPerPage"
                             [rows]="institutions | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
-                        <ngx-datatable-column name="name" [width]="250" [maxWidth]="300">
-                            <ng-template ngx-datatable-header-template>
-                                Name
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="slogan" [width]="300">
-                            <ng-template ngx-datatable-header-template>
-                                Slogan
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="country">
-                            <ng-template ngx-datatable-header-template>
-                                Country
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="address">
-                            <ng-template ngx-datatable-header-template>
-                                Address
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="description">
-                            <ng-template ngx-datatable-header-template>
-                                Description
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="website">
-                            <ng-template ngx-datatable-header-template>
-                                Website
-                            </ng-template>
-                        </ngx-datatable-column>
                     </ngx-datatable>
                 </div>
                 <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
