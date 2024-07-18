@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
+
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -14,6 +15,10 @@ import { AddProjectComponent } from './shared/components/Project/Admin/add-proje
 import { DashboardProjectComponent } from './shared/components/Project/Admin/dashboard-project/dashboard-project.component';
 import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdetails/viewdetails.component';
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
+
+
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {Interceptor} from './shared/services/user/Interceptor';
 
 
 @NgModule({
@@ -38,9 +43,19 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
     BrowserAnimationsModule,
    
   ],
+
   providers: [DatePipe],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
+  providers: [
+     {
+      provide: HTTP_INTERCEPTORS,
+       useClass: Interceptor,
+       multi: true
+     }
+  ],
+  bootstrap: [AppComponent]
 
 })
 export class AppModule { }
