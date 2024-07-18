@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
+
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -18,6 +19,10 @@ import { ProjectComponent } from './shared/components/Project/User/project/proje
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectDetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
 import { ProgressDashboardComponent } from './shared/components/Project/User/progress-dashboard/progress-dashboard.component';
+
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {Interceptor} from './shared/services/user/Interceptor';
+
 
 @NgModule({
   declarations: [
@@ -50,9 +55,19 @@ import { ProgressDashboardComponent } from './shared/components/Project/User/pro
    RouterModule.forRoot([]),
    
   ],
+
   providers: [DatePipe],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
+  providers: [
+     {
+      provide: HTTP_INTERCEPTORS,
+       useClass: Interceptor,
+       multi: true
+     }
+  ],
+  bootstrap: [AppComponent]
 
 })
 export class AppModule { }

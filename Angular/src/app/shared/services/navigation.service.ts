@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import {SessionStorageService} from "./user/session-storage.service";
 
 export interface IMenuItem {
     id?: string;
@@ -46,7 +47,7 @@ export class NavigationService {
     };
     selectedItem: IMenuItem;
     
-    constructor() {
+    constructor(private storageService: SessionStorageService) {
     }
 
     defaultMenu: IMenuItem[] = [
@@ -137,7 +138,8 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
                 { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' },
+                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' }
             ]
         },
         {
@@ -146,7 +148,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Windows-2',
             sub: [
-                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile', type: 'link' }
+                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.storageService.getUserEmail(), type: 'link' }
             ]
         },
         {
