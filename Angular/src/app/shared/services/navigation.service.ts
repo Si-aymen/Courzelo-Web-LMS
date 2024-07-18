@@ -128,6 +128,20 @@ export class NavigationService {
                 { icon: 'i-Full-View-Window', name: 'Fullscreen', state: '/tables/full', type: 'link' },
                 { icon: 'i-Code-Window', name: 'Paging', state: '/tables/paging', type: 'link' },
                 { icon: 'i-Filter-2', name: 'Filter', state: '/tables/filter', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Filter', state: '/tables/create-quiz', type: 'link' },
+            ]
+        },
+        {
+            name: 'Quiz',
+            description: '',
+            type: 'dropDown',
+            icon: 'i-File-Horizontal-Text',
+            sub: [
+                { icon: 'i-File-Horizontal-Text', name: 'Create Quiz', state: '/forms/create-quiz', type: 'link' },
+                { icon: 'i-Full-View-Window', name: 'Take Quiz', state: '/forms/take-quiz', type: 'link' },
+                { icon: 'i-Code-Window', name: 'Quiz Table', state: '/tables/QuizTable', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Quiz List', state: '/tables/QuizList', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Scoring', state: '/forms/QuizResult', type: 'link' },
             ]
         },
         {

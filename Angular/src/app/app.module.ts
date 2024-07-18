@@ -9,6 +9,7 @@ import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 
 import { HttpClientModule } from '@angular/common/http';
+import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddProjectComponent } from './shared/components/Project/Admin/add-project/add-project.component';

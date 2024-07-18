@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: 'v4',
     component: DashboardV4Component
-  }
+  },
 ];
 
 @NgModule({
