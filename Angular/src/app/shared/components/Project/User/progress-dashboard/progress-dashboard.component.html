@@ -1,41 +1,55 @@
 <div class="container">
-    <div class="row">
-      <!-- To Do Section -->
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">To Do</div>
-          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #todoList>
-            <div id="task3" cdkDrag>Begin back end</div>
-          </div>
-        </div>
-      </div>
-      <!-- In Progress Section -->
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">In Progress</div>
-          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'Done')" #inProgressList>
-            <div id="task2" cdkDrag>Begin the first ecommerce try website</div>
-          </div>
-        </div>
-      </div>
-      <!-- Done Section -->
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">Done</div>
-          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #doneList>
-            <div id="task1" cdkDrag>Begin sprint 0 with class diag</div>
-          </div>
+  <h2 class="text-center mb-4">Welcome to Project Progress !!</h2>
+  <div class="row">
+    <!-- To Do Section -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">To Do</div>
+        <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #todoList>
+          <div *ngFor="let task of todoTasks$" id="{{task.id}}" cdkDrag>{{task.name}}</div>
         </div>
       </div>
     </div>
-    <div class="card-footer">
-      <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="calculateProgress()" aria-valuemin="0" aria-valuemax="100">{{ calculateProgress() }}%</div>
-          </div>
+    <!-- In Progress Section -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">In Progress</div>
+        <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'Done')" #inProgressList>
+          <div *ngFor="let task of inProgressTasks$" id="{{task.id}}" cdkDrag>{{task.name}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- Done Section -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">Done</div>
+        <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #doneList>
+          <div *ngFor="let task of doneTasks$" id="{{task.id}}" cdkDrag>{{task.name}}</div>
         </div>
       </div>
     </div>
   </div>
   
+  <!-- Progress Bar -->
+  <div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+      <div class="progress">
+        <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="calculateProgress()" aria-valuemin="0" aria-valuemax="100">{{ calculateProgress() }}%</div>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="areAllTasksDone()" class="container">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+      <div class="trophy-container">
+        <p class="narrow spinme">
+          <picture>
+            <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f38a/512.webp" type="image/webp">
+            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f38a/512.gif" alt="🎊" width="200" height="200">
+          </picture>
+        </p>
+      </div>
+    </div>
+    <audio #winAudio src="assets/clapping.mp3"></audio>
+  </div>
+</div>

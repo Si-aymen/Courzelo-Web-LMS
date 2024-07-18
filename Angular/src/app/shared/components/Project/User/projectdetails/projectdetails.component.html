@@ -1,17 +1,23 @@
-<div role="tab" class="card-header" id="ngb-panel-0-header"><button type="button" class="btn btn-link ng-star-inserted" ng-reflect-ngb-panel-toggle="[object Object]" aria-expanded="true" aria-controls="ngb-panel-0"> E Commerce websites<!--bindings={
-    "ng-reflect-ng-template-outlet": null
-  }--></button><!--bindings={
-    "ng-reflect-ng-template-outlet-context": "[object Object]"
-  }--></div>
-  <div class="card-body"><div _ngcontent-ery-c45="" class="ng-tns-c45-0 ng-trigger ng-trigger-animate ng-star-inserted"> Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. </div><!--bindings={
-    "ng-reflect-ng-template-outlet": "[object Object]"
-  }--></div>
-
-  <button _ngcontent-eja-c36="" type="submit" ng-reflect-ng-class="[object Object]"  (click)="ProgressDashboard()"  class="btn btn-primary btn-rounded m-1">
-    <span _ngcontent-eja-c36=""> Progress Dashboard </span>
+<div role="tab" class="card-header" id="ngb-panel-0-header">
+  <button type="button" class="btn btn-link" aria-expanded="true" aria-controls="ngb-panel-0" style="font-size: 20px;">
+    {{ project.name }}
   </button>
-  
-  <button _ngcontent-mqb-c42="" type="button"  (click)="calendar()"  class="btn btn-warning btn-rounded m-1">Check Your Deadlines </button>
-  
-  <button _ngcontent-quw-c42="" type="button" (click)="chat()" class="btn btn-info btn-rounded m-1">Chat with your Team Mates</button>
-  
+</div>
+
+<div class="card-body">
+  <div class="project-description" style="font-size: 1.5em; padding: 10px;">
+    {{ project.description }}
+  </div>
+</div>
+
+<button type="submit" (click)="ProgressDashboard(project?.id)" class="btn btn-primary btn-rounded m-1">
+  <span>Progress Dashboard</span>
+</button>
+
+<button type="button" (click)="calendar()" class="btn btn-warning btn-rounded m-1">
+  Check Your Deadlines
+</button>
+
+<button type="button" (click)="chat()" class="btn btn-info btn-rounded m-1">
+  Chat with your Team Mates
+</button>

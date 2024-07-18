@@ -14,7 +14,10 @@ import { AddProjectComponent } from './shared/components/Project/Admin/add-proje
 import { DashboardProjectComponent } from './shared/components/Project/Admin/dashboard-project/dashboard-project.component';
 import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdetails/viewdetails.component';
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
-
+import { ProjectComponent } from './shared/components/Project/User/project/project.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ProjectDetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
+import { ProgressDashboardComponent } from './shared/components/Project/User/progress-dashboard/progress-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +26,13 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
     DashboardProjectComponent,
     ViewdetailsComponent ,
     PdfComponent ,
+    ProjectComponent,
+    ProjectDetailsComponent,
+    ProgressDashboardComponent,
+    
+   
+
+
     
   ],
   imports: [
@@ -36,6 +46,8 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
     CommonModule,
     ReactiveFormsModule ,
     BrowserAnimationsModule,
+   DragDropModule ,
+   RouterModule.forRoot([]),
    
   ],
   providers: [DatePipe],

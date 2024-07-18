@@ -28,8 +28,7 @@ export class DashboardProjectComponent implements OnInit{
   specialities: Speciality[] = this.project.specialities;
   constructor(
     private projectService: ProjectService,
-    private toastr: ToastrService,
-    private route: ActivatedRoute,
+
     private router: Router,
     private modalService: NgbModal
   ) { }
