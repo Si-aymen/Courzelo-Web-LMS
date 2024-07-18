@@ -1,0 +1,17 @@
+export enum Speciality{
+    BD = 'BD',
+    Angular = 'Angular',
+    Spring = 'Spring',
+    DotNet = 'DotNet',
+    Reseau = 'Reseau',
+    IA = 'IA',
+    Mobile = 'Mobile',
+    Web = 'Web',
+    Cloud = 'Cloud',
+    DevOps = 'DevOps',
+    Security = 'Security',
+    Design = 'Design',
+    Management = 'Management',
+    Marketing = 'Marketing',
+    Finance = 'Finance',
+}
