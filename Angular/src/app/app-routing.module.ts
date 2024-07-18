@@ -71,9 +71,6 @@ const userRoutes: Routes = [
     { path: 'addprojects', component: AddProjectComponent},
     { path: 'project/:id', component: ViewdetailsComponent },
     { path: 'pdf', component: PdfComponent },
-
-
-     
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)

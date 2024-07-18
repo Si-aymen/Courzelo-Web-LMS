@@ -8,7 +8,6 @@ import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 
-import { HttpClientModule } from '@angular/common/http';
 import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -28,8 +27,7 @@ import {Interceptor} from './shared/services/user/Interceptor';
     AddProjectComponent,
     DashboardProjectComponent,
     ViewdetailsComponent ,
-    PdfComponent ,
-    
+    PdfComponent
   ],
   imports: [
     BrowserModule,
@@ -41,22 +39,20 @@ import {Interceptor} from './shared/services/user/Interceptor';
     FormsModule,
     CommonModule,
     ReactiveFormsModule ,
-    BrowserAnimationsModule,
-   
+    BrowserAnimationsModule
   ],
 
-  providers: [DatePipe],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
      {
       provide: HTTP_INTERCEPTORS,
        useClass: Interceptor,
        multi: true
-     }
-  ],
-  bootstrap: [AppComponent]
-
+     },
+    {
+        provide: DatePipe
+    }
+  ]
 })
 export class AppModule { }
