@@ -1,7 +1,19 @@
 <!-- faq-list.component.html -->
 
 <div class="container mt-4">
-  <h2>FAQ List</h2>
+  <div>
+    <div class="breadcrumb">
+      <h1>FAQ :</h1>
+      <ul>
+        <button
+          _ngcontent-hdd-c88=""
+          type="button"
+          class="btn btn-info btn-rounded m-1"
+          [routerLink]="['/tickets/faq/add']">
+          Add FAQ
+        </button>
+      </ul>
+    </div>
 
   <div *ngIf="faqs && faqs.length > 0">
     <ul class="list-group">

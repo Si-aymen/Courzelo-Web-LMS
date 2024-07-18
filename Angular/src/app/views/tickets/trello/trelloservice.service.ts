@@ -29,7 +29,7 @@ export class TrelloserviceService {
   }
 
   getBoardList(id:any){
-    return this.http.get('/api/1/lists/'+ id +'/cards',{params:{
+    return this.http.get('https://api.trello.com/1/boards/'+ id +'/lists',{params:{
       key: environment.KEY,
       token: environment.TOKEN,
     }})

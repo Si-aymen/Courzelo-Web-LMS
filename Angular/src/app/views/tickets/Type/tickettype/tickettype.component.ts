@@ -42,6 +42,7 @@ export class TickettypeComponent implements OnInit {
       if (type.id) {
         console.log("name board", type.type);
         this.trelloService.addBoard(type.type).subscribe((board: any) => {
+          console.log("LE BOARD DETAILS:",board)
           this.trelloService.getBoardList(board.id).subscribe((res: any) => {
             res.forEach((r: any) => {
               switch (r.name) {
