@@ -72,9 +72,10 @@ export class HeaderSidebarCompactComponent implements OnInit {
     ];
   }
   imageSrc: any;
-  user: UserResponse = this.sessionStorageService.getUser();
+  user: UserResponse;
   ngOnInit() {
-    this.userService.getProfileImageBlobUrl().subscribe((blob: Blob) => {
+   this.user = this.sessionStorageService.getUser();
+    this.userService.getProfileImageBlobUrl(this.user.email).subscribe((blob: Blob) => {
       const objectURL = URL.createObjectURL(blob);
       this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
     });
@@ -86,6 +87,6 @@ export class HeaderSidebarCompactComponent implements OnInit {
     state.childnavOpen = !state.childnavOpen;
   }
   signout() {
-    this.auth.logout();
+    this.auth.logoutImpl();
   }
 }

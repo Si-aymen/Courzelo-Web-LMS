@@ -6,6 +6,7 @@ import {SessionStorageService} from '../../../shared/services/user/session-stora
 import {UpdatePasswordRequest} from '../../../shared/models/user/requests/UpdatePasswordRequest';
 import {SignupRequest} from '../../../shared/models/user/requests/SignupRequest';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
+import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
 
 @Component({
   selector: 'app-account',
@@ -17,7 +18,8 @@ export class AccountComponent implements OnInit {
       private formBuilder: FormBuilder,
       private toastr: ToastrService,
       private userService: UserService,
-      private sessionStorageService: SessionStorageService
+      private sessionStorageService: SessionStorageService,
+        private responseHandlerService: ResponseHandlerService
   ) { }
   loading: boolean;
   updatePasswordForm = this.formBuilder.group({
@@ -35,8 +37,9 @@ export class AccountComponent implements OnInit {
   );
   updatePasswordRequest: UpdatePasswordRequest;
   qrCodeImage = '';
-  user: UserResponse = this.sessionStorageService.getUser();
+  user: UserResponse;
   ngOnInit() {
+      this.user = this.sessionStorageService.getUser();
     this.updatePasswordForm.controls.newPassword.valueChanges.subscribe(() => {
       this.updatePasswordForm.controls.cPassword.updateValueAndValidity();
     });
@@ -70,30 +73,12 @@ export class AccountComponent implements OnInit {
           this.loading = false;
         },
         error => {
-          this.handleErrorResponse(error);
-          this.loading = false;
+            this.responseHandlerService.handleError(error);
+            this.loading = false;
         }
     );
   }
-  handleErrorResponse(error) {
-    console.error(error);
-    let errorMessage = 'An unexpected error occurred';
-    if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    }
-    switch (error.status) {
-      case 409:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 400:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-        break;
-      case 401:
-        break;
-      default:
-        this.toastr.error(errorMessage, 'Error!', {progressBar: true});
-    }
-  }
+
 
   generateTwoFactorAuthQrCode() {
     this.userService.getQRCode().subscribe(
@@ -102,7 +87,7 @@ export class AccountComponent implements OnInit {
           this.toastr.success('QR code generated successfully', 'Success!', {progressBar: true});
         },
         error => {
-          this.handleErrorResponse(error);
+            this.responseHandlerService.handleError(error);
         }
     );
   }
@@ -122,7 +107,7 @@ export class AccountComponent implements OnInit {
           this.loading = false;
         },
         error => {
-          this.handleErrorResponse(error);
+            this.responseHandlerService.handleError(error);
           this.loading = false;
         }
     );
@@ -138,7 +123,7 @@ export class AccountComponent implements OnInit {
           this.loading = false;
         },
         error => {
-          this.handleErrorResponse(error);
+            this.responseHandlerService.handleError(error);
           this.loading = false;
         }
     );

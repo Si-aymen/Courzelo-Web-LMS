@@ -9,7 +9,6 @@ import org.example.courzelo.dto.requests.SignupRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.services.IAuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +35,27 @@ public class AuthController {
         if(principal != null) {
             return authService.logout(principal.getName(), request, response);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new StatusMessageResponse("error", "User already logged out"));
+    return authService.logout(request, response);
     }
     @PostMapping("/tfa")
     ResponseEntity<LoginResponse> verifyTFA(@RequestParam String code,@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return authService.twoFactorAuthentication(code, loginRequest, response);
+    }
+    @GetMapping("/verify-email")
+    ResponseEntity<StatusMessageResponse> verifyEmail(@RequestParam String code) {
+        return authService.verifyEmail(code);
+    }
+    @GetMapping("/resend-verification-email")
+    ResponseEntity<StatusMessageResponse> resendVerificationCode(@RequestParam String email) {
+        return authService.sendVerificationCode(email);
+    }
+    @GetMapping("/forgot-password")
+    ResponseEntity<StatusMessageResponse> forgotPassword(@RequestParam String email) {
+        return authService.sendPasswordResetCode(email);
+    }
+    @GetMapping("/check-auth")
+    ResponseEntity<LoginResponse> checkAuth(Principal principal) {
+        return authService.checkAuth(principal);
     }
 
 }

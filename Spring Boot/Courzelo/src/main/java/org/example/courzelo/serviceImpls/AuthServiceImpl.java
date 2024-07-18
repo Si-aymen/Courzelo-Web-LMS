@@ -3,19 +3,20 @@ package org.example.courzelo.serviceImpls;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
 import org.example.courzelo.dto.requests.SignupRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.models.CodeType;
+import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.JWTUtils;
-import org.example.courzelo.services.IAuthService;
-import org.example.courzelo.services.IRefreshTokenService;
-import org.example.courzelo.services.IUserService;
+import org.example.courzelo.services.*;
 import org.example.courzelo.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.Instant;
 
 @Service
@@ -47,6 +49,8 @@ public class AuthServiceImpl implements IAuthService {
     private final CookieUtil cookieUtil;
     private final AuthenticationManager authenticationManager;
     private final IUserService userService;
+    private final IMailService mailService;
+    private final ICodeVerificationService codeVerificationService;
     @Value("${Security.app.jwtExpirationMs}")
     private long jwtExpirationMs;
     @Value("${Security.app.refreshExpirationMs}")
@@ -54,7 +58,7 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${Security.app.refreshRememberMeExpirationMs}")
     private long refreshRememberMeExpirationMs;
 
-    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService) {
+    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService) {
         this.userRepository = userRepository;
         this.iRefreshTokenService = iRefreshTokenService;
         this.jwtUtils = jwtUtils;
@@ -62,6 +66,8 @@ public class AuthServiceImpl implements IAuthService {
         this.cookieUtil = cookieUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.mailService = mailService;
+        this.codeVerificationService = codeVerificationService;
     }
 
     @Override
@@ -69,6 +75,7 @@ public class AuthServiceImpl implements IAuthService {
         log.info("Logging out user");
         User user = userRepository.findUserByEmail(email);
         if(user != null){
+            iRefreshTokenService.deleteUserTokens(user);
             log.info("User found");
             user.getActivity().setLastLogout(Instant.now());
             userRepository.save(user);
@@ -83,6 +90,18 @@ public class AuthServiceImpl implements IAuthService {
             throw new UsernameNotFoundException(USER_NOT_FOUND + email);
         }
     }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, null);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie("accessToken", 0L).toString());
+        log.info("Logout: Access Token removed");
+        response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie("refreshToken", 0L).toString());
+        log.info("Logout :Refresh Token removed");
+        log.info("User logged out");
+        return ResponseEntity.ok(new StatusMessageResponse("success","User logged out successfully"));
+    }
+
     boolean isUserAuthenticated(){
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
@@ -117,7 +136,7 @@ public class AuthServiceImpl implements IAuthService {
                 log.info("Two factor authentication enabled");
                 return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("succes","TFA code required",true));
             }
-            setHeaders(response,userDetails);
+            setHeaders(response,userDetails,loginRequest.isRememberMe());
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
@@ -135,24 +154,32 @@ public class AuthServiceImpl implements IAuthService {
         }
     }
 
-    void setHeaders(HttpServletResponse response,User userDetails){
+    void setHeaders(HttpServletResponse response,User userDetails,boolean rememberMe){
+        iRefreshTokenService.deleteUserTokens(userDetails);
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(jwtUtils.generateJwtToken(userDetails.getEmail()), jwtExpirationMs).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, cookieUtil.createRefreshTokenCookie(
-                iRefreshTokenService.createRefreshToken(userDetails.getEmail(), userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
-                , userDetails.getSecurity().isRememberMe() ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
+                iRefreshTokenService.createRefreshToken(userDetails.getEmail(), rememberMe ? refreshRememberMeExpirationMs : refreshExpirationMs).getToken()
+                , rememberMe ? refreshRememberMeExpirationMs : refreshExpirationMs).toString());
     }
 
     @Override
     public ResponseEntity<StatusMessageResponse> saveUser(SignupRequest signupRequest) {
+        log.info(signupRequest.toString());
         if(userRepository.existsByEmail(signupRequest.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new StatusMessageResponse("error","Email already in use"));
         }
         User user = new User(
                 signupRequest.getEmail().toLowerCase(),
+                signupRequest.getName(),
+                signupRequest.getLastname(),
+                signupRequest.getBirthDate(),
+                signupRequest.getGender(),
+                signupRequest.getCountry(),
                 encoder.encode(signupRequest.getPassword()),
                 Role.STUDENT
         );
         userRepository.save(user);
+        sendVerificationCode(user.getEmail());
         return ResponseEntity.ok(new StatusMessageResponse("success","User registered successfully"));
     }
 
@@ -172,7 +199,7 @@ public class AuthServiceImpl implements IAuthService {
                 log.error("Invalid two factor authentication code");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid two factor authentication code"));
             }
-            setHeaders(response,userDetails);
+            setHeaders(response,userDetails,loginRequest.isRememberMe());
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
@@ -188,5 +215,61 @@ public class AuthServiceImpl implements IAuthService {
             log.error("Invalid email or password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse("error","Invalid email or password"));
         }
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> sendVerificationCode(String email) {
+        if(userRepository.existsByEmail(email)){
+            CodeVerification codeVerification = codeVerificationService.saveCode(
+                    CodeType.EMAIL_VERIFICATION,
+                    email,
+                    codeVerificationService.generateCode(),
+                    Instant.now().plusSeconds(3600*24)
+            );
+            mailService.sendConfirmationEmail(userRepository.findUserByEmail(email),codeVerification);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Verification code sent successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error","User not found"));
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> sendPasswordResetCode(String email) {
+        if(userRepository.existsByEmail(email)){
+            CodeVerification codeVerification = codeVerificationService.saveCode(
+                    CodeType.PASSWORD_RESET,
+                    email,
+                    codeVerificationService.generateCode(),
+                    Instant.now().plusSeconds(3600)
+            );
+            mailService.sendPasswordResetEmail(userRepository.findUserByEmail(email),codeVerification);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Verification code sent successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error","User not found"));
+    }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> verifyEmail(String code) {
+        log.info("Verifying email");
+        log.info("Code: "+code);
+        String email = codeVerificationService.verifyCode(code);
+        if(email!= null){
+            log.info("Email verified");
+            User user = userRepository.findUserByEmail(email);
+            user.getSecurity().setEnabled(true);
+            userRepository.save(user);
+            codeVerificationService.deleteCode(email,CodeType.EMAIL_VERIFICATION);
+            return ResponseEntity.ok(new StatusMessageResponse("success","Email verified successfully"));
+        }
+        log.info("Invalid verification code");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error","Invalid verification code"));
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> checkAuth(Principal principal) {
+        if(isUserAuthenticated()){
+            User user = userRepository.findUserByEmail(principal.getName());
+            return ResponseEntity.ok(new LoginResponse("success","User authenticated", new UserResponse(user)));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("error","User not authenticated"));
     }
 }

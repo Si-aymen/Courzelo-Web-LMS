@@ -4,4 +4,6 @@ export interface ProfileInformationRequest {
     bio?: string;
     title?: string;
     birthDate?: string;
+    gender?: string;
+    country?: string;
 }

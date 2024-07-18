@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { number } from 'ngx-custom-validators/src/app/number/validator';
 import { echartStyles } from 'src/app/shared/echart-styles';
 import { ProductService } from 'src/app/shared/services/product.service';
 
@@ -11,7 +10,6 @@ import { ProductService } from 'src/app/shared/services/product.service';
 export class DashboardV2Component implements OnInit {
   chartPie1: any;
   chartLineOption3: any;
-	//chartData2 = [40, 40, 40, 90, 30, 40, 40, 40];
 	products$: any;
 
   constructor(
@@ -50,7 +48,7 @@ export class DashboardV2Component implements OnInit {
     this.chartLineOption3 = {
 			...echartStyles.lineNoAxis, ...{
 				series: [{
-					data:[0,0],
+					data: [40, 80, 20, 90, 30, 80, 40],
 					lineStyle: {
 						color: 'rgba(102, 51, 153, .86)',
 						width: 3,
@@ -68,8 +66,6 @@ export class DashboardV2Component implements OnInit {
 				}]
 			}
 		};
-		const newChartData = [20, 20];
-		this.chartLineOption3.series[0].data = newChartData;		
 		this.chartLineOption3.xAxis.data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 		this.products$ = this.productService.getProducts();
 

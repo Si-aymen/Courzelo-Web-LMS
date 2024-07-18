@@ -10,6 +10,8 @@ public class UserProfileResponse {
     private String name;
     private String lastname;
     private Date birthDate;
+    private String gender;
+    private String country;
     private String title;
     private String bio;
 
@@ -17,6 +19,8 @@ public class UserProfileResponse {
         this.name = userProfile.getName();
         this.lastname = userProfile.getLastname();
         this.birthDate = userProfile.getBirthDate();
+        this.gender = userProfile.getGender();
+        this.country = userProfile.getCountry();
         this.title = userProfile.getTitle();
         this.bio = userProfile.getBio();
     }

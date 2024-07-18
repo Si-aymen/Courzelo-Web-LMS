@@ -18,9 +18,13 @@ import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.models.CodeType;
+import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.UserProfile;
+import org.example.courzelo.repositories.CodeVerificationRepository;
 import org.example.courzelo.repositories.UserRepository;
+import org.example.courzelo.services.ICodeVerificationService;
 import org.example.courzelo.services.IUserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -48,10 +52,11 @@ import java.util.*;
 public class UserServiceImpl implements UserDetailsService, IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-
-    public UserServiceImpl(UserRepository userRepository,@Lazy PasswordEncoder encoder) {
+    private final ICodeVerificationService codeVerificationService;
+    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder encoder, CodeVerificationService codeVerificationService) {
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.codeVerificationService = codeVerificationService;
     }
 
 
@@ -104,6 +109,8 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         }
         user.getProfile().setBio(profileInformationRequest.getBio());
         user.getProfile().setTitle(profileInformationRequest.getTitle());
+        user.getProfile().setGender(profileInformationRequest.getGender());
+        user.getProfile().setCountry(profileInformationRequest.getCountry());
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Profile updated successfully"));
     }
@@ -159,11 +166,13 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getProfileImage(Principal principal) {
+    public ResponseEntity<byte[]> getProfileImage(Principal principal, String email) {
         try {
             // Get the user
-            User user = userRepository.findUserByEmail(principal.getName());
-            // Get the file path
+            User user = userRepository.findUserByEmail(email);
+            if(user.getProfile().getProfileImage() == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
             String filePath = user.getProfile().getProfileImage();
             // Read the file
             byte[] image = Files.readAllBytes(new File(filePath).toPath());
@@ -195,6 +204,20 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Password updated successfully"));
     }
+
+    @Override
+    public ResponseEntity<StatusMessageResponse> resetPassword(UpdatePasswordRequest updatePasswordRequest, String code) {
+        String email = codeVerificationService.verifyCode(code);
+        if (email==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error", "Invalid or expired reset code"));
+        }
+        User user = userRepository.findUserByEmail(email);
+        user.setPassword(encoder.encode(updatePasswordRequest.getNewPassword()));
+        codeVerificationService.deleteCode(email, CodeType.PASSWORD_RESET);
+        userRepository.save(user);
+        return ResponseEntity.ok(new StatusMessageResponse("success", "Password reset successfully"));
+    }
+
     @Override
     public ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(String email) {
         User user = userRepository.findUserByEmail(email);
@@ -258,6 +281,15 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
             log.warn("Invalid TFA code {} for user: {}", verificationCode ,email);
         }
         return isCodeValid;
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal, String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
+        }
+        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
     }
 
 

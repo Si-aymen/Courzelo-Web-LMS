@@ -4,6 +4,8 @@ import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 import { ForgotComponent } from './forgot/forgot.component';
 import {TfaComponent} from './tfa/tfa.component';
+import {VerifyEmailComponent} from './verify-email/verify-email.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
 
 const routes: Routes = [
   {
@@ -21,6 +23,14 @@ const routes: Routes = [
   {
     path: 'tfa',
     component: TfaComponent
+  },
+  {
+    path: 'verify-email',
+    component: VerifyEmailComponent
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent
   }
 ];
 

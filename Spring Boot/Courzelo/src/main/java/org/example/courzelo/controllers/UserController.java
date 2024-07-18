@@ -1,12 +1,14 @@
 package org.example.courzelo.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.requests.UserProfileRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
+import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,16 +34,25 @@ public class UserController {
         return userService.uploadProfileImage(file, principal);
     }
     @GetMapping("/image")
-    public ResponseEntity<byte[]> getProfileImage(Principal principal) {
-        return userService.getProfileImage(principal);
+    public ResponseEntity<byte[]> getProfileImage(Principal principal, @RequestParam String email) {
+        return userService.getProfileImage(principal, email);
     }
     @GetMapping("/profile")
     public ResponseEntity<LoginResponse> getUserProfile(Principal principal) {
         return userService.getUserProfile(principal.getName());
     }
+    @GetMapping("/profile/{email}")
+    public ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal, @PathVariable String email) {
+        return userService.getUserProfileByEmail(principal, email);
+    }
     @PostMapping("/updatePassword")
     public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest , Principal principal) {
         return userService.updatePassword(updatePasswordRequest, principal);
+    }
+    @PostMapping("/reset-password")
+    @PreAuthorize("permitAll")
+    public ResponseEntity<StatusMessageResponse> resetPassword(@RequestBody UpdatePasswordRequest updatePasswordRequest, @RequestParam String code) {
+        return userService.resetPassword(updatePasswordRequest, code);
     }
     @GetMapping("/qrCode")
     public ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(Principal principal) {

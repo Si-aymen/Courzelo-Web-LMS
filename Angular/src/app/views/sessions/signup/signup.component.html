@@ -29,36 +29,88 @@
               <h1 class="mb-3 text-18">Sign Up</h1>
               <form (ngSubmit)="saveUser()" [formGroup]="signupForm">
                   <div class="form-group">
-                      <label for="username">Your name</label>
-                      <input id="username" class="form-control form-control-rounded" type="text">
-                  </div>
-                  <div class="form-group">
                       <label for="email">Email address</label>
                       <input formControlName="email" id="email" class="form-control form-control-rounded" type="email">
-                      <div *ngIf="signupForm.controls.email.errors?.required && (signupForm.controls.email.dirty || signupForm.controls.email.touched)" class="text-danger">
+                      <div *ngIf="shouldShowError('email', 'required')" class="text-danger">
                           Email is required.
                       </div>
-                      <div *ngIf="signupForm.controls.email.invalid && (signupForm.controls.email.dirty || signupForm.controls.email.touched)" class="text-danger">
+                      <div *ngIf="shouldShowError('email', 'email')" class="text-danger">
                           Email must be valid.
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="name">Your name</label>
+                      <input id="name" formControlName="name" class="form-control form-control-rounded" type="text">
+                      <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
+                          Name is required.
+                      </div>
+                      <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
+                          Name must be at least 3 characters long.
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="lastname">Your lastname</label>
+                      <input id="lastname" formControlName="lastname" class="form-control form-control-rounded" type="text">
+                      <div *ngIf="shouldShowError('lastname', 'required')" class="text-danger">
+                          Lastname is required.
+                      </div>
+                      <div *ngIf="shouldShowError('lastname', 'minlength')" class="text-danger">
+                          Lastname must be at least 3 characters long.
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="picker1">Birth date</label>
+                      <div class="input-group">
+                          <input formControlName="birthDate" id="picker1" class="form-control form-control-rounded" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker" [maxDate]="maxDate" [minDate]="{year: 1900, month: 1, day: 1}">
+                          <div class="input-group-append">
+                              <button class="btn btn-secondary" (click)="dp.toggle()" type="button">
+                                  <i class="icon-regular i-Calendar-4"></i>
+                              </button>
+                          </div>
+                      </div>
+                      <div *ngIf="shouldShowError('birthDate', 'required')" class="text-danger">
+                          Birth date is required.
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="picker1">Gender</label>
+                      <select formControlName="gender" class="form-control form-control-rounded">
+                          <option>Male</option>
+                          <option>Female</option>
+                      </select>
+                      <div *ngIf="shouldShowError('gender', 'required')" class="text-danger">
+                          Gender is required.
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="countrySelect">Country</label>
+                      <select formControlName="country" class="form-control form-control-rounded" id="countrySelect">
+                          <option *ngFor="let country of countries" [value]="country.country">{{ country.country }}</option>
+                      </select>
+                      <div *ngIf="shouldShowError('country', 'required')" class="text-danger">
+                          Country is required.
                       </div>
                   </div>
                   <div class="form-group">
                       <label for="password">Password</label>
                       <input formControlName="password" id="password" class="form-control form-control-rounded" type="password">
-                      <div *ngIf="signupForm.controls.password.errors?.required && (signupForm.controls.password.dirty || signupForm.controls.password.touched)" class="text-danger">
+                      <div *ngIf="shouldShowError('password', 'required')" class="text-danger">
                           Password is required.
                       </div>
-                      <div *ngIf="signupForm.controls.password.errors?.minlength && (signupForm.controls.password.dirty || signupForm.controls.password.touched)" class="text-danger">
+                      <div *ngIf="shouldShowError('password', 'minlength')" class="text-danger">
                           Password must be at least 8 characters long.
+                      </div>
+                      <div *ngIf="shouldShowError('password', 'maxlength')" class="text-danger">
+                            Password must be at most 20 characters long.
                       </div>
                   </div>
                   <div class="form-group">
                       <label for="repassword">Retype password</label>
                       <input formControlName="confirmPassword" id="repassword" class="form-control form-control-rounded" type="password">
-                      <div *ngIf="signupForm.controls.confirmPassword.errors?.confirmedValidator  && (signupForm.controls.confirmPassword.dirty || signupForm.controls.confirmPassword.touched)  " class="text-danger">
+                      <div *ngIf="shouldShowError('confirmPassword', 'confirmedValidator')" class="text-danger">
                           Passwords must match.
                       </div>
-                      <div *ngIf="signupForm.controls.confirmPassword.errors?.required && (signupForm.controls.confirmPassword.dirty || signupForm.controls.confirmPassword.touched) " class="text-danger">
+                      <div *ngIf="shouldShowError('confirmPassword', 'required')" class="text-danger">
                           Confirm password is required.
                       </div>
                   </div>

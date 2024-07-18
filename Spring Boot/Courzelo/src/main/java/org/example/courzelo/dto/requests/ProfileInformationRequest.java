@@ -11,6 +11,8 @@ public class ProfileInformationRequest {
     String bio;
     String title;
     String birthDate;
+    String gender;
+    String country;
 
 
 }
