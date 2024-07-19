@@ -38,4 +38,7 @@ public class Ticket {
 
     @DBRef
     private Rating rating;
+
+    @DBRef
+    private User user;
 }

@@ -16,6 +16,14 @@ const userRoutes: Routes = [
       loadChildren: () => import('./views/tickets/tickets.module').then(m => m.TicketsModule)
     },
     {
+      path: 'mailing',
+      loadChildren: () => import('./views/Mail/mail.module').then(m => m.MailModule)
+    },
+    {
+      path: 'ticketsStudent',
+      loadChildren: () => import('./views/ticketsStudent/ticket-student.module').then(m => m.TicketStudentModule)
+    },
+    {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
     },

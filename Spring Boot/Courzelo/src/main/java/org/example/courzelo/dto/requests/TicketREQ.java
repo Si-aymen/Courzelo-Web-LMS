@@ -17,6 +17,16 @@ public class TicketREQ {
 
     private String type;
 
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     public String getId() {
         return id;
     }
@@ -67,13 +77,14 @@ public class TicketREQ {
 
     @Override
     public String toString() {
-        return "ReclamationDT{" +
+        return "TicketREQ{" +
                 "id='" + id + '\'' +
                 ", sujet='" + sujet + '\'' +
                 ", details='" + details + '\'' +
                 ", dateCreation=" + dateCreation +
                 ", status=" + status +
                 ", type='" + type + '\'' +
+                ", user='" + user + '\'' +
                 '}';
     }
 }

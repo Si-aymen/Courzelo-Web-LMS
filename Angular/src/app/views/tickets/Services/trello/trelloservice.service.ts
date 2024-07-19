@@ -29,7 +29,7 @@ export class TrelloserviceService {
   }
 
   getBoardList(id:any){
-    return this.http.get('https://api.trello.com/1/boards/'+ id +'/lists',{params:{
+    return this.http.get('/api/1/boards/'+ id +'/lists',{params:{
       key: environment.KEY,
       token: environment.TOKEN,
     }})
@@ -57,7 +57,7 @@ export class TrelloserviceService {
   }
 
   createCard(idListToDo:any,cardName:any,description:any) {
-    return this.http.post('https://api.trello.com/1/cards',null,{
+    return this.http.post('/api/1/cards',null,{
       params:{
         key: environment.KEY,
         token: environment.TOKEN,
@@ -69,7 +69,7 @@ export class TrelloserviceService {
   }
 
   addCard1(idListToDo:any,cardName:any,description:any){
-    return this.http.post('https://api.trello.com/1/cards',null,{params:{
+    return this.http.post('/api/1/cards',null,{params:{
      key: environment.KEY,
      token: environment.TOKEN,
       idList: idListToDo,
@@ -79,7 +79,7 @@ export class TrelloserviceService {
   }
 
   addEmployeToCard(cardId:any,memberId:any){
-    return this.http.post('https://api.trello.com/1/cards/' + cardId+ '/idMembers',null,{params:{
+    return this.http.post('/api/1/cards/' + cardId+ '/idMembers',null,{params:{
       key: environment.KEY,
       token: environment.TOKEN,
       value: memberId
@@ -87,7 +87,7 @@ export class TrelloserviceService {
   }
 
   addCheckList(cardId:any){
-    return this.http.post('https://api.trello.com/1/checklists/',null,{params:{
+    return this.http.post('/api/1/checklists/',null,{params:{
       key: environment.KEY,
       token: environment.TOKEN,
       idCard: cardId,
@@ -97,7 +97,7 @@ export class TrelloserviceService {
   }
 
   addItemToCheckList(idCheckList:any,name:any){
-    return this.http.post('https://api.trello.com/1/checklists/'+ idCheckList+ '/checkItems',null,{params:{
+    return this.http.post('/api/1/checklists/'+ idCheckList+ '/checkItems',null,{params:{
       key: environment.KEY,
       token: environment.TOKEN,
       name: name
@@ -113,7 +113,7 @@ export class TrelloserviceService {
     }})
   }
   getAllcardInListDoing(idListDoing:any){
-    return this.http.get('https://api.trello.com/1/lists/'+ idListDoing+'/cards',{params:{
+    return this.http.get('/api/1/lists/'+ idListDoing+'/cards',{params:{
       key: environment.KEY,
       token: environment.TOKEN,
 

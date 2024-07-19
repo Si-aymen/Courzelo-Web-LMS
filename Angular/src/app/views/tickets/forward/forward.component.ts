@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { TicketDataService } from 'src/app/views/tickets/ticketdata.service'; // Adjust the path as necessary
+import { TicketDataService } from 'src/app/views/tickets/Services/TicketService/ticketdata.service'; // Adjust the path as necessary
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TrelloserviceService } from './../trello/trelloservice.service'; // Adjust the path as necessary
+import { TrelloserviceService } from '../Services/trello/trelloservice.service'; // Adjust the path as necessary
 import { environment } from 'src/environments/environment';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CardREQ } from 'src/app/shared/models/CardREQ';
-import { TicketServiceService } from '../Services/ticket-service.service';
+import { TicketServiceService } from '../Services/TicketService/ticket-service.service';
 import { Etat } from 'src/app/shared/models/Etat';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -22,10 +22,11 @@ export class ForwardComponent implements OnInit {
   sujet: any; // Define sujet property
   details: any; // Define details property
   type:any;
-  TrelloCard = new FormGroup({
+  CardREQ: CardREQ = { cardId: '', ticketID: '' }; // Initialize CardREQ with default values
+  /*TrelloCard = new FormGroup({
     cardId: new FormControl('',Validators.required),
     ticketID: new FormControl('',Validators.required),
-  })
+  })*/
   ticketData$: Observable<any>;
   data = new FormGroup({
     developper: new FormControl('', Validators.required),
@@ -57,6 +58,7 @@ export class ForwardComponent implements OnInit {
 
   forward() {
     const member = this.data.value['developper'];
+  
     const ticketId = this.id; 
     const ticketName = this.sujet;
     const ticketDetails = this.details; 
@@ -70,11 +72,18 @@ export class ForwardComponent implements OnInit {
       console.log("le type ",res);
       this.trelloService.createCard(res.idListToDo,this.sujet,this.details).subscribe((card:any)=>{
         console.log("le card",card.id)
-        this.TrelloCard.patchValue({ cardId: card.id })
-        this.TrelloCard.patchValue({ ticketID: ticketId })
-        console.log(this.TrelloCard.value)
-        this.ticketservice.addCardTrello(this.TrelloCard.value);
-        console.log("ajouter Success")
+        this.CardREQ.cardId=card.id;
+        this.CardREQ.ticketID=ticketId ;
+        console.log(this.CardREQ)
+        this.ticketservice.addCardTrello(this.CardREQ).subscribe(
+          (response: any) => {
+            console.log("Card added successfully:", response);
+          },
+          (error: any) => {
+            console.error("Error adding card:", error);
+          }
+        );
+        console.log("ajouter Card a DB Success")
         this.trelloService.addCheckList(card.id).subscribe((checklist:any)=>{
           console.log("le checklist",checklist)
           console.log("le member",member)

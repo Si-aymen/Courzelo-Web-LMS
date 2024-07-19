@@ -1,4 +1,5 @@
 import { TicketType } from "./TicketType";
+import { UserResponse } from "./user/UserResponse";
 
 export interface Ticket {
   id : string,	
@@ -6,5 +7,6 @@ export interface Ticket {
   details:string,	
   dateCreation:Date,
   type:TicketType,	
-  status:string
+  status:string,
+  user:UserResponse
 }

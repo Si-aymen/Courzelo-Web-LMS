@@ -1,14 +1,15 @@
-import { TickettypeService } from './../TicketTypeService/tickettype.service';
+import { TickettypeService } from '../Services/TicketTypeService/tickettype.service';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ForwardComponent } from '../forward/forward.component';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { TicketServiceService } from '../Services/ticket-service.service';
+import { TicketServiceService } from '../Services/TicketService/ticket-service.service';
 import { Ticket } from 'src/app/shared/models/Ticket';
 import { TicketType } from 'src/app/shared/models/TicketType';
 import { Router } from '@angular/router';
-import { TicketDataService } from '../ticketdata.service';
+import { TicketDataService } from '../Services/TicketService/ticketdata.service';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update-ticket',
@@ -16,6 +17,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./update-ticket.component.scss']
 })
 export class UpdateTicketComponent implements OnInit{
+onClose() {
+  this.dialogRef.close();
+}
 
   ticketForm:FormGroup= new FormGroup({});
   employee = ["touatiahmed","ahmed_touati"];
@@ -23,18 +27,30 @@ export class UpdateTicketComponent implements OnInit{
   id: any;
   sujet: string ="";
   details: string ="";
-  typerec:string ="";
   types:any;
+  date:Date;
+  status:any;
   ticketData$: Observable<any>;
 
 
-  constructor(private router : Router,private typeticketervice:TickettypeService,private ticketDataService: TicketDataService,private typeservice:TickettypeService
-  ,private ticketservice:TicketServiceService,private formBuilder: FormBuilder
-  ){}
+  constructor(public dialogRef: MatDialogRef<UpdateTicketComponent>,
+    private router : Router,private typeticketervice:TickettypeService,
+    private ticketDataService: TicketDataService,private typeservice:TickettypeService
+  ,private ticketservice:TicketServiceService,
+  private formBuilder: FormBuilder,
+  @Optional() @Inject(MAT_DIALOG_DATA) public ticket: any
+  ){this.id=ticket.ticket}
 
 
   ngOnInit(): void {
+    console.log(this.id);
     this.createForm();
+    this.typeticketervice.getTypeList().subscribe((data: TicketType[]) => {
+      // Extracting 'type' property from each element and storing in an array
+this.types = data.map(item => item.type);
+console.log(this.types); // This will log the array of 'type' values
+// Assign the data (array of Typereclamation) to this.type
+  });
     //const id = this.route.snapshot.params.id;
     this.ticketData$ = this.ticketDataService.ticketData$;
     this.ticketData$.subscribe(data => {
@@ -48,21 +64,56 @@ export class UpdateTicketComponent implements OnInit{
         console.log('Description:', this.details);
       }
     });
-    this.ticketForm.setValue({
-      id: this.id,
-      sujet: this.sujet,
-      details: this.details,
-    });
+    this.ticketservice.getTicketById(this.id).subscribe((res:any)=>{
+      console.log(res);
+      this.ticketForm.patchValue({
+        id: res.id,
+        sujet: res.sujet,
+        details: res.details,
+      });
+    })
+
   }
   createForm() {
     this.ticketForm = this.formBuilder.group({
-      id:[],
       sujet: [''],
       details: [''],
     });
   }
   onSubmit() {
-    throw new Error('Method not implemented.');
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to update the ticket with the provided details?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, update it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If confirmed, proceed with the update
+        this.ticketservice.updateTicket(this.id, this.ticketForm.value).subscribe((res: any) => {
+          if (res) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success...',
+              text: 'Ticket updated successfully!',
+            });
+            this.onClose(); // Close the dialog if needed
+          }
+        }, error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+          });
+        });
+      } else {
+        // Optionally handle the case where the user cancels the update
+        console.log('Update canceled');
+      }
+    });
+  }
 
 }

@@ -2,12 +2,12 @@
   <div class="breadcrumb">
     <h1>Tickets :</h1>
     <ul>
-      <button
+     <button
         _ngcontent-hdd-c88=""
         type="button"
         class="btn btn-info btn-rounded m-1"
-        [routerLink]="['/tickets/add']">
-        Submit Tickets
+        [routerLink]="['/tickets/listtype']">
+        All Types
       </button>
       <button
         _ngcontent-hdd-c88=""
@@ -88,24 +88,6 @@
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <button *ngIf="row.status !== 'FINIE'" class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Forward</button>
-            </ng-template>
-          </ngx-datatable-column>
-          
-          <ngx-datatable-column name="actions" [width]="100">
-            <ng-template ngx-datatable-header-template>
-              Update
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-row="row">
-              <button *ngIf="row.status !== 'FINIE'" class="btn btn-primary btn-sm" (click)="onUpdate(row)">Update</button>
-            </ng-template>
-          </ngx-datatable-column>
-          
-          <ngx-datatable-column name="actions" [width]="100">
-            <ng-template ngx-datatable-header-template>
-              Rate
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-row="row">
-              <button *ngIf="row.status === 'FINIE'" class="btn btn-primary btn-sm" (click)="onRate(row)">Rate</button>
             </ng-template>
           </ngx-datatable-column>
           

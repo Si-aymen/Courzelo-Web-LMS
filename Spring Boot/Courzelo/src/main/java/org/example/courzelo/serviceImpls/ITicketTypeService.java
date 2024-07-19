@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ITicketTypeService {
-    Optional<TicketType> getTicketType(String id);
+    TicketType getTicketType(String id);
     List<TicketType> getAllTicketTypes();
 
     void deleteTicketType(String id);
@@ -14,7 +14,8 @@ public interface ITicketTypeService {
 
     TicketType saveTicketType(TicketType ticket);
 
-    void updateTicketType(TicketType ticket);
+    TicketType updateTicketType(TicketType ticket);
 
     TicketType findByType(String type);
+
 }

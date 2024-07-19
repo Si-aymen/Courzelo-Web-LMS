@@ -44,12 +44,20 @@
            
             
             <!-- New Column for Button -->
-            <ngx-datatable-column name="actions" [width]="100">
+            <ngx-datatable-column name="Update" [width]="100">
               <ng-template ngx-datatable-header-template>
-                Actions
+                Update
               </ng-template>
               <ng-template ngx-datatable-cell-template let-row="row">
-                <button class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Action</button>
+                <button class="btn btn-primary btn-sm" (click)="update(row.id)">Update</button>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Delete" [width]="100">
+              <ng-template ngx-datatable-header-template>
+                Delete
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <button class="btn btn-primary btn-sm" (click)="delete(row.id)">Delete</button>
               </ng-template>
             </ngx-datatable-column>
           </ngx-datatable>

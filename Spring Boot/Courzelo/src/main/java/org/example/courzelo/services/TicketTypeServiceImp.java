@@ -3,11 +3,13 @@ package org.example.courzelo.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.models.TicketType;
+import org.example.courzelo.repositories.TicketRepository;
 import org.example.courzelo.repositories.TicketTypeRepository;
 import org.example.courzelo.serviceImpls.ITicketTypeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -15,9 +17,10 @@ import java.util.Optional;
 @Slf4j
 public class TicketTypeServiceImp implements ITicketTypeService {
     private final TicketTypeRepository ticketTypeRepository;
+    private final TicketRepository ticketRepository;
     @Override
-    public Optional<TicketType> getTicketType(String id) {
-        return ticketTypeRepository.findById(id);
+    public TicketType getTicketType(String id) {
+        return ticketTypeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("TicketType not found with id: " + id));
     }
 
     @Override
@@ -40,9 +43,11 @@ public class TicketTypeServiceImp implements ITicketTypeService {
     public TicketType findByType(String type) {
         return ticketTypeRepository.findByType(type);
     }
+
+
     @Override
-    public void updateTicketType(TicketType type) {
-        ticketTypeRepository.save(type);
+    public TicketType updateTicketType(TicketType type) {
+        return ticketTypeRepository.save(type);
     }
 
 }

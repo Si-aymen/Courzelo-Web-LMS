@@ -4,18 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.TicketREQ;
 import org.example.courzelo.dto.requests.TrelloCardReq;
-import org.example.courzelo.models.Status;
-import org.example.courzelo.models.Ticket;
-import org.example.courzelo.models.TicketType;
-import org.example.courzelo.models.TrelloCard;
+import org.example.courzelo.models.*;
 import org.example.courzelo.repositories.TicketRepository;
 import org.example.courzelo.repositories.TrelloCardRepository;
+import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.serviceImpls.ITicketService;
 import org.example.courzelo.serviceImpls.ITicketTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.apache.velocity.exception.ResourceNotFoundException;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +28,10 @@ public class TicketController {
     private final ITicketTypeService typeService;
     private final TrelloCardRepository trellorepository;
     private final TicketRepository ticketrepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/all")
-    public List<Ticket> getReclamations() {
+    public List<Ticket> getTickets() {
         return iTicketService.getAllTickets();
     }
 
@@ -39,6 +40,8 @@ public class TicketController {
         try {
             TicketType type = typeService.findByType(ticket.getType());
             Ticket tick = new Ticket();
+            User user = userRepository.findUserByEmail(ticket.getUser());
+            tick.setUser(user);
             tick.setSujet(ticket.getSujet());
             tick.setDetails(ticket.getDetails());
             tick.setStatus(Status.EN_ATTENTE);
@@ -50,8 +53,15 @@ public class TicketController {
                     .body("{\"error\": \"Échec de l'ajout du ticket: " + e.getMessage() + "\"}"); // Return JSON object
         }
     }
+
+    @GetMapping("/user/{email}")
+    public List<Ticket> getTicketsByUser(@PathVariable String email) {
+        // Assuming you have a way to get a User object by its ID
+        User user = userRepository.findUserByEmail(email);
+        return iTicketService.getTicketsByUser(user);
+    }
     @GetMapping("/get/{id}")
-    public Optional<Ticket> getReclamation(@PathVariable String id) {
+    public Optional<Ticket> getTicket(@PathVariable String id) {
         return iTicketService.getTicket( id);
     }
 
@@ -99,12 +109,27 @@ public class TicketController {
 
 
     @DeleteMapping("/delete/{ID}")
-    public void deleteClass(@PathVariable String ID) {
-        iTicketService.deleteTicket(ID);
+    public ResponseEntity<?> deleteTicket(@PathVariable String ID) {
+        try {
+            iTicketService.deleteTicket(ID);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Ticket deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Failed to delete ticket"));
+        }
     }
 
-    @PutMapping("/update/{id}")
-    public void updateClass(@RequestBody Ticket ticket) {
-        iTicketService.updateTicket(ticket);
+
+    @PutMapping("/update1/{id}")
+    public Ticket updateTicket(@PathVariable String id,@RequestBody Ticket ticket) {
+        String sujet = ticket.getSujet();
+        String details = ticket.getDetails();
+        return iTicketService.updateTicket1(id, sujet, details);
     }
+    @GetMapping("/tickets/type/{typeId}")
+    public List<Ticket> getTicketsByType(@PathVariable String typename) {
+        TicketType type = typeService.findByType(typename);
+        return iTicketService.getTicketsByType(type.getId());
+    }
+
 }

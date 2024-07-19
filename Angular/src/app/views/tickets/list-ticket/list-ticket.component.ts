@@ -1,19 +1,22 @@
-import { TrelloserviceService } from './../trello/trelloservice.service';
+import { TrelloserviceService } from '../Services/trello/trelloservice.service';
 import { TrelloBoard } from './../../../shared/models/TrelloBoard';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { TicketDataService } from 'src/app/views/tickets/ticketdata.service'; // Adjust the path as necessary
-import { TicketServiceService } from '../Services/ticket-service.service';
+import { TicketDataService } from 'src/app/views/tickets/Services/TicketService/ticketdata.service'; // Adjust the path as necessary
+import { TicketServiceService } from '../Services/TicketService/ticket-service.service';
 import { Ticket } from 'src/app/shared/models/Ticket';
 import { catchError, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { UpdateTicketComponent } from '../update-ticket/update-ticket.component';
 import { ForwardComponent } from '../forward/forward.component';
 import Swal from 'sweetalert2';
-import { TickettypeService } from '../TicketTypeService/tickettype.service';
+import { TickettypeService } from '../Services/TicketTypeService/tickettype.service';
 import { Etat } from 'src/app/shared/models/Etat';
 import { Message } from 'src/app/shared/models/Message';
+import { UserResponse } from 'src/app/shared/models/user/UserResponse';
+import { SessionStorageService } from 'src/app/shared/services/user/session-storage.service';
+import { AddTicketComponent } from '../add-ticket/add-ticket.component';
 
 @Component({
   selector: 'app-list-ticket',
@@ -29,13 +32,19 @@ export class ListTicketComponent implements OnInit{
   idCards: string[] = [];
 ticketIds: string[] = [];
 cardDetails: any[] = [];
+connectedUser: UserResponse;
  message: Message = {
   to: "spnahmed2@gmail.com",
   subject: "Ticket",
   text: "Hello, I am happy to inform you that your problem is resolved.",
 };
-    constructor (private router : Router,private typeservice:TickettypeService,private trelloservice:TrelloserviceService,
-    private ticketservice:TicketServiceService,private ticketDataService:TicketDataService,public dialog: MatDialog){}
+    constructor (private router : Router,
+      private typeservice:TickettypeService,
+      private trelloservice:TrelloserviceService,
+    private ticketservice:TicketServiceService,
+    private ticketDataService:TicketDataService,
+    private sessionStorageService: SessionStorageService,
+    public dialog: MatDialog){}
 
   ngOnInit(): void {
     this.getTickets();
@@ -154,6 +163,8 @@ updateTicketStatus(ticketId: string, status: string) {
 
 
  getTickets(): void {
+  this.connectedUser = this.sessionStorageService.getUser();
+  console.log("Le USERRRRR CONNECTED :",this.connectedUser);
     this.tickets$ = this.ticketservice.getTicketList().pipe(
       tap(data => {
         console.log('Fetched tickets:', data);
@@ -187,8 +198,8 @@ updateTicketStatus(ticketId: string, status: string) {
 
   update(id:any){
     const dialogRef = this.dialog.open(UpdateTicketComponent,{
-      width : "40%",
-      height: "80%",
+      width : "10%",
+      height: "10%",
       data: { ticket:id}
     });
     dialogRef.afterClosed().subscribe(res =>{
@@ -196,11 +207,10 @@ updateTicketStatus(ticketId: string, status: string) {
     })   
   }
 
-  Affecter(id: any) {
-    const dialogRef = this.dialog.open(ForwardComponent,{
+  Affecter() {
+    const dialogRef = this.dialog.open(AddTicketComponent,{
       width : "50%",
       height: "100%",
-      data: { Ticket:id}
     });
     dialogRef.afterClosed().subscribe(res =>{
      this.ngOnInit();

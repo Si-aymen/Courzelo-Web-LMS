@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CardDetails } from 'src/app/shared/models/CardDetails';
+import { CardREQ } from 'src/app/shared/models/CardREQ';
 import { Message } from 'src/app/shared/models/Message';
 import { Ticket } from 'src/app/shared/models/Ticket';
 import { TicketREQ } from 'src/app/shared/models/TicketREQ';
@@ -31,8 +32,8 @@ export class TicketServiceService {
         return this.http.post(`${this.baseURL1}/update/statusdoing/${id}/${statusId}`,null);
        }
 
-       addCardTrello(data:any):any{
-        return this.http.post('tk/vi/ticket/card/add',data);
+       addCardTrello(data:CardREQ):any{
+        return this.http.post(`${this.baseURL1}/card/add`,data);
         } 
       forwardToEmployee(id:any,idEmployee:any):Observable<HttpEvent<Object>>{
         return this.http.post<HttpEvent<any>>(`${this.baseURL}/updateEmp/${id}/${idEmployee}`, null, {
@@ -53,15 +54,19 @@ export class TicketServiceService {
   }
  
   getTicketById(id: string): Observable<Ticket>{
-    return this.http.get<Ticket>(`${this.baseURL}/get/${id}`);
+    return this.http.get<Ticket>(`${this.baseURL1}/get/${id}`);
   }
 
-  updateTicket(ticket: Ticket,id:string): Observable<Object>{
-    return this.http.put(`${this.baseURL}/update/${id}`, ticket);
+  updateTicket(id:string,ticket: Ticket): Observable<Object>{
+    return this.http.put(`${this.baseURL1}/update1/${id}`, ticket);
   }
 
   deleteTicket(id: string): Observable<Object>{
-    return this.http.delete(`${this.baseURL}/delete1/${id}`);
+    return this.http.delete(`${this.baseURL1}/delete/${id}`);
+  }
+
+  getTicketsByUser(email: string): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(`${this.baseURL1}/user/${email}`);
   }
 
    

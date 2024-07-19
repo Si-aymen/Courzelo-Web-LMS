@@ -1,8 +1,8 @@
-import { TicketServiceService } from './../Services/ticket-service.service';
+import { TicketServiceService } from '../Services/TicketService/ticket-service.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { TickettypeService } from '../TicketTypeService/tickettype.service';
+import { TickettypeService } from '../Services/TicketTypeService/tickettype.service';
 import { TicketType } from 'src/app/shared/models/TicketType';
 import { Router } from '@angular/router';
 
@@ -17,7 +17,9 @@ export class AddTicketComponent implements OnInit {
   statuses = ['waiting', 'doing', 'done'];
   ticketForm: FormGroup = new FormGroup({});
   types:String[]=[];
-  constructor(private fb: FormBuilder,private router:Router,private formBuilder: FormBuilder,private ticketservice:TicketServiceService,private typeservice:TickettypeService) { }
+  constructor(private fb: FormBuilder,private router:Router,
+    private formBuilder: FormBuilder,private ticketservice:TicketServiceService,
+    private typeservice:TickettypeService) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -59,6 +61,7 @@ console.log('Selected value:', selectedValue);
         text: 'Ajouter avec succès !',
       })
       this.ngOnInit();
+      this.router.navigate(['tickets/list']); // Navigate to forward component
       console.log("success")
      // this.router.navigate(['tickets/list']); // Navigate to forward component
     }

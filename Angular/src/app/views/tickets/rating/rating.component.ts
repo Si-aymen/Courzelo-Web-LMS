@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { TicketDataService } from '../ticketdata.service';
+import { TicketDataService } from '../Services/TicketService/ticketdata.service';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RatingserviceService } from '../Services/ratingservice.service';
+import { RatingserviceService } from '../Services/Rating/ratingservice.service';
 
 @Component({
   selector: 'app-rating',

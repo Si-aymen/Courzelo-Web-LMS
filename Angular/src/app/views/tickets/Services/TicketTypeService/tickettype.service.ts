@@ -10,7 +10,6 @@ import { TrelloBoard } from 'src/app/shared/models/TrelloBoard';
 export class TickettypeService {
 
   private baseURL = '/tk/api/v1/tickettype/';
-  private baseURL1 = '/tk/api/v1/tickettype/';
   constructor(private http:HttpClient) {}
     getTypeList():Observable<TicketType[]>{
       return this.http.get<TicketType[]>(`${this.baseURL}/all`);    }
@@ -34,10 +33,15 @@ export class TickettypeService {
   deleteType(id: string): Observable<Object>{
     return this.http.delete(`${this.baseURL}/delete/${id}`);
   }
+  deleteTicketType(id: string): Observable<any> {
+    return this.http.delete(`${this.baseURL}/delete1/${id}`);
+  }
   getTrelloBoard(type:string):Observable<Object>{
     return this.http.get('/tk/v1/Board/bytype',{params:{
       type: type
     }})  }
+
+    
 
     
 }

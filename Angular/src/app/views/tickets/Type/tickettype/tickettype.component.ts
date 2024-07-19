@@ -1,8 +1,8 @@
-import { TickettypeService } from './../../TicketTypeService/tickettype.service';
+import { TickettypeService } from '../../Services/TicketTypeService/tickettype.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { TrelloserviceService } from '../../trello/trelloservice.service';
+import { TrelloserviceService } from '../../Services/trello/trelloservice.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -70,7 +70,7 @@ export class TickettypeComponent implements OnInit {
                   text: 'Ajouté avec succès !',
                 });
                 this.data.reset();
-                this.router.navigate(['tickets/list']); // Navigate to forward component
+                //this.router.navigate(['tickets/list']); // Navigate to forward component
               }
             }).catch((err: any) => {
               if (err.error && err.error.message) {

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ListTicketComponent } from './list-ticket/list-ticket.component';
 import { AddTicketComponent } from './add-ticket/add-ticket.component';

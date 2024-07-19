@@ -1,5 +1,5 @@
 export interface CardREQ {
-    CardId:string,	
-    TicketID:string,	
+    cardId:string,	
+    ticketID:string,	
 
 }
