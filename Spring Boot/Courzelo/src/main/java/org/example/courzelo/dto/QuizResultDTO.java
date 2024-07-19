@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class QuizResultDTO {
     private String id;
-    private String studentId;
+    private String studentEmail;
     private double timeSpent;
     private double score;
 }

@@ -9,6 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Participation {
     @Id
     private String id;
-    private String studentId;
+    private String student;
     private int score;
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,8 +26,8 @@ public class AttendanceController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AttendanceDTO> saveAttendance(@RequestBody AttendanceDTO attendanceDTO) {
-        AttendanceDTO savedAttendanceDTO = attendanceService.saveAttendance(attendanceDTO);
+    public ResponseEntity<AttendanceDTO> saveAttendance(@RequestBody AttendanceDTO attendanceDTO, Principal principal) {
+        AttendanceDTO savedAttendanceDTO = attendanceService.saveAttendance(attendanceDTO, principal.getName());
         return new ResponseEntity<>(savedAttendanceDTO, HttpStatus.CREATED);
     }
 
@@ -43,9 +44,9 @@ public class AttendanceController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/count/student/{studentId}")
-    public ResponseEntity<Integer> getAttendanceCount(@PathVariable String studentId) {
-        int count = attendanceService.getAttendanceCount(studentId);
+    @GetMapping("/count/student/{studentEmail}")
+    public ResponseEntity<Integer> getAttendanceCount(@PathVariable String studentEmail) {
+        int count = attendanceService.getAttendanceCount(studentEmail);
         return ResponseEntity.ok(count);
     }
 }

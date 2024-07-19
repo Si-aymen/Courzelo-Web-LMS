@@ -10,7 +10,7 @@ import {id} from 'date-fns/locale';
   providedIn: 'root'
 })
 export class QuizService {
-  private apiUrl = 'http://localhost:8081/api/quizzes';
+  private apiUrl = 'http://localhost:8080/api/quizzes';
   quizzes: Quiz[] = [];
   constructor(private http: HttpClient, public toastr: ToastrService) { }
 

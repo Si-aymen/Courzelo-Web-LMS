@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class AttendanceDTO {
     private String id;
-    private String studentId;
+    private String studentEmail;
     private String sessionId;
     private boolean present;
     private boolean lateArrival;

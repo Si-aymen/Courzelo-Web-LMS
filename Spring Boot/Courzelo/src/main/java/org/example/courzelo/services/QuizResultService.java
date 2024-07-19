@@ -14,32 +14,33 @@ public class QuizResultService {
     @Autowired
     private QuizResultRepository quizResultRepository;
 
-    public List<QuizResultDTO> findByStudentId(String studentId) {
-        return quizResultRepository.findByStudentId(studentId).stream()
+    public List<QuizResultDTO> findByStudentId(String studentEmail) {
+        return quizResultRepository.findByStudent(studentEmail).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public QuizResultDTO saveQuizResult(QuizResultDTO quizResultDTO) {
+    public QuizResultDTO saveQuizResult(QuizResultDTO quizResultDTO, String studentEmail) {
         QuizResult quizResult = convertToEntity(quizResultDTO);
+        quizResult.setStudent(studentEmail);
         quizResult = quizResultRepository.save(quizResult);
         return convertToDTO(quizResult);
     }
 
-    public double getTotalQuizTimeSpent(String studentId) {
-        List<QuizResult> quizResults = quizResultRepository.findByStudentId(studentId);
+    public double getTotalQuizTimeSpent(String studentEmail) {
+        List<QuizResult> quizResults = quizResultRepository.findByStudent(studentEmail);
         return quizResults.stream().mapToDouble(QuizResult::getTimeSpent).sum();
     }
 
-    public double calculateAverageQuizScore(String studentId) {
-        List<QuizResult> quizResults = quizResultRepository.findByStudentId(studentId);
+    public double calculateAverageQuizScore(String studentEmail) {
+        List<QuizResult> quizResults = quizResultRepository.findByStudent(studentEmail);
         return quizResults.stream().mapToDouble(QuizResult::getScore).average().orElse(0.0);
     }
 
     private QuizResultDTO convertToDTO(QuizResult quizResult) {
         QuizResultDTO dto = new QuizResultDTO();
         dto.setId(quizResult.getId());
-        dto.setStudentId(quizResult.getStudentId());
+        dto.setStudentEmail(quizResult.getStudent());
         dto.setTimeSpent(quizResult.getTimeSpent());
         dto.setScore(quizResult.getScore());
         return dto;
@@ -48,7 +49,6 @@ public class QuizResultService {
     private QuizResult convertToEntity(QuizResultDTO dto) {
         QuizResult quizResult = new QuizResult();
         quizResult.setId(dto.getId());
-        quizResult.setStudentId(dto.getStudentId());
         quizResult.setTimeSpent(dto.getTimeSpent());
         quizResult.setScore(dto.getScore());
         return quizResult;

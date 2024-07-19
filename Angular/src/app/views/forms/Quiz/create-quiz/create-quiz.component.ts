@@ -19,6 +19,7 @@ export class CreateQuizComponent  {
     category: '',
     isSelected: false,
     id: '',
+    userEmail: '',
     title: '',
     description: '',
     questions: [],

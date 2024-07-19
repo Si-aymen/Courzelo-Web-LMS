@@ -50,6 +50,14 @@
                             {{ row.description }}
                         </ng-template>
                     </ngx-datatable-column>
+                    <ngx-datatable-column name="userEmail" [width]="300">
+                        <ng-template ngx-datatable-header-template>
+                            Creator
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            {{ row.userEmail || "None" }}
+                        </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column name="status">
                         <ng-template ngx-datatable-header-template>
                             Status

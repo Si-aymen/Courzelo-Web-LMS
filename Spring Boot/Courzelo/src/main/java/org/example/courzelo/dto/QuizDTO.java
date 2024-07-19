@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class QuizDTO {
     private String id;
+    private String userEmail;
     private String title;
     private String description;
     private List<QuestionDTO> questions;

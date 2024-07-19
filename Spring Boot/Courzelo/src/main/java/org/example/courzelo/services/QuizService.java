@@ -115,9 +115,10 @@ public class QuizService {
         return result;
     }
 
-    public QuizDTO createQuizWithQuestions(QuizDTO quizDTO) {
+    public QuizDTO createQuizWithQuestions(QuizDTO quizDTO,String email) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz.setStatus(quizDTO.getStatus()); // explicitly set the status
+        quiz.setUser(email);
         quiz = quizRepository.save(quiz);
         logger.info("Quiz ID after save: {}", quiz.getId());
         List<Question> questions = quiz.getQuestions().stream()
@@ -133,8 +134,9 @@ public class QuizService {
         return mapToDTO(quiz);
     }
 
-    public QuizDTO createQuizWithAnswers(QuizDTO quizDTO) {
+    public QuizDTO createQuizWithAnswers(QuizDTO quizDTO,String email) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
+        quiz.setUser(email);
         Quiz savedQuiz = quizRepository.save(quiz);
         for (Question question : quiz.getQuestions()) {
             question.setQuizID(savedQuiz.getId());
@@ -161,6 +163,7 @@ public class QuizService {
     }
 
     private QuizDTO mapToDTO(final Quiz quiz, final QuizDTO quizDTO) {
+        quizDTO.setUserEmail(quiz.getUser());
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
         quizDTO.setQuestions(quiz.getQuestions().stream()

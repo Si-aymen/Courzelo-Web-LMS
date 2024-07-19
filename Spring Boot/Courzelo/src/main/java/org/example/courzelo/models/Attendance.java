@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Attendance {
     @Id
     private String id;
-    private String studentId;
+    private String student;
     private String sessionId;
     private boolean present;
     private boolean lateArrival;

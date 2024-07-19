@@ -3,7 +3,6 @@ package org.example.courzelo.services;
 import org.example.courzelo.dto.AttendanceDTO;
 import org.example.courzelo.models.Attendance;
 import org.example.courzelo.repositories.AttendanceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +16,15 @@ public class AttendanceService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public List<AttendanceDTO> getAttendanceByStudentId(String studentId) {
-        return attendanceRepository.findByStudentId(studentId).stream()
+    public List<AttendanceDTO> getAttendanceByStudentId(String studentEmail) {
+        return attendanceRepository.findByStudent(studentEmail).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public AttendanceDTO saveAttendance(AttendanceDTO attendanceDTO) {
+    public AttendanceDTO saveAttendance(AttendanceDTO attendanceDTO, String studentEmail) {
         Attendance attendance = convertToEntity(attendanceDTO);
+        attendance.setStudent(studentEmail);
         attendance = attendanceRepository.save(attendance);
         return convertToDTO(attendance);
     }
@@ -39,14 +39,14 @@ public class AttendanceService {
         attendanceRepository.deleteById(id);
     }
 
-    public int getAttendanceCount(String studentId) {
-        return attendanceRepository.countByStudentIdAndPresentTrue(studentId);
+    public int getAttendanceCount(String studentEmail) {
+        return attendanceRepository.countByStudentAndPresentTrue(studentEmail);
     }
 
     private AttendanceDTO convertToDTO(Attendance attendance) {
         AttendanceDTO dto = new AttendanceDTO();
         dto.setId(attendance.getId());
-        dto.setStudentId(attendance.getStudentId());
+        dto.setStudentEmail(attendance.getStudent());
         dto.setSessionId(attendance.getSessionId());
         dto.setPresent(attendance.isPresent());
         dto.setLateArrival(attendance.isLateArrival());
@@ -57,7 +57,6 @@ public class AttendanceService {
     private Attendance convertToEntity(AttendanceDTO dto) {
         Attendance attendance = new Attendance();
         attendance.setId(dto.getId());
-        attendance.setStudentId(dto.getStudentId());
         attendance.setSessionId(dto.getSessionId());
         attendance.setPresent(dto.isPresent());
         attendance.setLateArrival(dto.isLateArrival());

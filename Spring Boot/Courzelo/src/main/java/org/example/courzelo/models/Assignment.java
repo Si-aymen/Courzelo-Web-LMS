@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Assignment {
     @Id
     private String id;
-    private String studentId;
+    private String student;
     private String assignmentId;
     private boolean completed;
     private double totalMarks;
