@@ -38,7 +38,7 @@ public class TransportsController {
 
 
     @PostMapping("/add-Transports")
-    public Transports addBloc(@RequestBody Transports transports) {
+    public Transports addTransport(@RequestBody Transports transports) {
         return transportsService.addTransports(transports);
     }
 

@@ -66,7 +66,7 @@
     <div class="card mb-4">
       <div class="card-body p-0">
         <h5 class="card-title m-0 p-3">Users per day</h5>
-        <div echarts [options]="chartLineOption3" style="height: 300px"></div>
+        <div echarts [options]="chartLineOption3" style="height: 400px; width: 100%"></div>
       </div>
     </div>
   </div>
@@ -153,21 +153,40 @@
 	  <form [formGroup]="transportForm" (ngSubmit)="onSubmit()">
 		<div class="form-row">
 		  <div class="form-group col-md-4">
-			<label for="departure">departure</label>
-			<input type="text" id="departure" formControlName="departure" class="form-control" required>
+        <label for="departure">Departure</label>
+        <select id="departure"
+          formControlName="departure"
+          class="form-control form-control-rounded"
+        >
+          <option value="" disabled selected>Select departure</option>
+          <option value="ARIENA">ARIENA</option>
+          <option value="RADES">RADES</option>
+          <option value="LAC">LAC</option>
+          <option value="MANZAH">MANZAH</option>
+          <option value="COURZELO">COURZELO</option>
+        </select>
 		  </div>
 		  <div class="form-group col-md-4">
 			<label for="destination">destination</label>
-			<input type="text" id="destination" formControlName="destination" class="form-control" required>
-		  </div>
+      <select id="destination"
+      formControlName="destination"
+      class="form-control form-control-rounded"
+    >
+      <option value="" disabled selected>Select destination</option>
+      <option value="ARIENA">ARIENA</option>
+      <option value="RADES">RADES</option>
+      <option value="LAC">LAC</option>
+      <option value="MANZAH">MANZAH</option>
+      <option value="COURZELO">COURZELO</option>
+    </select>		  </div>
 		  <div class="form-group col-md-4">
 			<label for="price">price</label>
-			<input type="price" id="price" formControlName="price" class="form-control" required>
+			<input type="number" id="price" formControlName="price" class="form-control" required>
 		  </div>
-		  <div class="form-group col-md-4">
-			<label for="time">Time</label>
-			<input type="date" id="time" formControlName="time" class="form-control" required>
-		  </div>
+      <div class="form-group col-md-4">
+        <label for="time">Time</label>
+        <input type="datetime-local" id="time" formControlName="time" class="form-control" required>
+      </div>
 
 
 		</div>

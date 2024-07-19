@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EChartOption } from 'echarts';
 import { Observable, of } from 'rxjs';
 import { Stages } from 'src/app/shared/models/stages/stages';
@@ -16,6 +17,8 @@ export class StagesComponent {
   salesChartBar: EChartOption;
   salesChartPie: EChartOption;
   stages$ :   Observable<Stages[]>;   ;
+  stageForm: FormGroup;
+
 
   constructor(
     private dl: DataLayerService , 
@@ -24,10 +27,22 @@ export class StagesComponent {
   ) { }
 
   ngOnInit() {
+
+    this.stageForm = new FormGroup({
+      name: new FormControl('', Validators.required),
+      description: new FormControl('', Validators.required),
+      location: new FormControl('', Validators.required),
+      type: new FormControl('', Validators.required),
+      status: new FormControl('', Validators.required),
+      entName: new FormControl('', Validators.required),
+      duration: new FormControl('', Validators.required)
+
+
+    });
+
+
     this.loadStages();
     this.Chart1();
-
-
 
 
   }
@@ -53,6 +68,17 @@ export class StagesComponent {
 
     console.log(nameCounts); 
   }
+
+  onSubmit(): void {
+    if (this.stageForm.valid) {
+      const newStage: Stages = this.stageForm.value;
+      this.stageService.register(newStage);
+      this.loadStages();
+    } else {
+      alert('Please fill in all required fields.');
+    }
+  }
+
 
   Chart1():void{
 

@@ -8,7 +8,7 @@ import {StatusMessageResponse} from '../../models/user/StatusMessageResponse';
 })
 export class SuperAdminService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/super-admin';
+  private baseUrl = 'http://localhost:8089/api/v1/super-admin';
 
   constructor(private http: HttpClient) { }
   getUsers(page: number, size: number, keyword: string) {

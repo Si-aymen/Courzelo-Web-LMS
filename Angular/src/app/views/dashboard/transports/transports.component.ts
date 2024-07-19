@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { echartStyles } from 'src/app/shared/echart-styles';
 import { Transports } from 'src/app/shared/models/transports/Transports';
 import { TransportsService } from 'src/app/shared/services/transports/transports.service';
 import { DataLayerService } from 'src/app/shared/services/data-layer.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TagInputsComponent } from '../../forms/tag-inputs/tag-inputs.component';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
 
 
@@ -22,9 +22,9 @@ export class TransportsComponent implements OnInit {
   count$: number;
   data : number[]
   items = ['Javascript', 'Typescript'];
-  autocompletes$;
-  tagsCtrl2 = new FormControl([{display: 'Bangladesh', value: 'BD'}]);
   transportForm: FormGroup;
+  private destroy$ = new Subject<void>();
+  
 
 
 
@@ -32,68 +32,87 @@ export class TransportsComponent implements OnInit {
 
   constructor(
     private transportsService: TransportsService,
-    private dl: DataLayerService
+    private dl: DataLayerService,
+    private fb: FormBuilder
+    
 
   ) 
     { }
     
 
   ngOnInit(): void {
-
-    this.transportForm = new FormGroup({
-      departure: new FormControl('', Validators.required),
-      destination: new FormControl('', Validators.required),
-      time: new FormControl('', Validators.required),
-      price: new FormControl('', Validators.required)
+    this.initForm();
+    this.loadData();
+  }
 
 
-    });
+  private loadData(): void {
+    this.initializeChart();
     this.loadTransports();
     this.loadCount();
-    this.initializeChart();
-    this.autocompletes$ = this.dl.getCountries();
+    this.fetchTransports().pipe(
+      takeUntil(this.destroy$),
+      finalize(() => {
+      })
+    ).subscribe({
+      next: (transports) => this.updateChart(transports),
+      error: (error) => console.error('Error fetching transports:', error)
+    });
+
 
   }
+
+  private initForm(): void {
+    this.transportForm = this.fb.group({
+      departure: ['', Validators.required],
+      destination: ['', Validators.required],
+      time: ['', Validators.required],
+      price: ['', [Validators.required, Validators.min(0)]]
+    });
+  }
+
 
   initializeChart(): void {
     this.chartLineOption3 = {
-			...echartStyles.lineNoAxis, ...{
-				series: [{
-					data: [0,0],
-					lineStyle: {
-						color: 'rgba(102, 51, 153, .86)',
-						width: 3,
-						shadowColor: 'rgba(0, 0, 0, .2)',
-						shadowOffsetX: -1,
-						shadowOffsetY: 8,
-						shadowBlur: 10
-					},
-					label: { show: true, color: '#212121' },
-					type: 'line',
-					smooth: true,
-					itemStyle: {
-						borderColor: 'rgba(69, 86, 172, 0.86)'
-					}
-				}]
-			}
-		};
-
-		this.chartLineOption3.xAxis.data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
+      ...echartStyles.lineNoAxis,
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      series: [{
+        data: [50,10],
+        lineStyle: {
+          color: 'rgba(102, 51, 153, .86)',
+          width: 3,
+          shadowColor: 'rgba(0, 0, 0, .2)',
+          shadowOffsetX: -1,
+          shadowOffsetY: 8,
+          shadowBlur: 10
+        },
+        label: { show: true, color: '#212121' },
+        type: 'line',
+        smooth: true,
+        itemStyle: {
+          borderColor: 'rgba(69, 86, 172, 0.86)'
+        }
+      }]
+    };
   }
-
+  
   updateChart(transports: Transports[]): void {
     console.log('Updating chart with transports:', transports);
-    const data = transports.map(transport => transport.price); 
-    this.chartLineOption3.series[0].data = data;		
-
-    this.data = data;
+    const prices = transports.map(transport => transport.price);
+    console.log('Extracted prices:', prices);
+    this.chartLineOption3.series[0].data = prices;
+    console.log('Updated chart data:', this.chartLineOption3.series[0].data);
   }
+  
+    
 
   loadTransports(): void {
     this.transportsService.getTransports().subscribe({
       next: (transports: Transports[]) => {
-        this.updateChart(transports);
+       this.updateChart(transports);
         this.transports$ = of(transports); 
       },
       error: (error) => {
@@ -123,14 +142,24 @@ export class TransportsComponent implements OnInit {
     }
   }
 
-
-
   public onSelect(item) {
     console.log('tag selected: value is ' + item);
   }
 
-  
+  fetchTransports(): Observable<Transports[]> {
+    return this.transportsService.getTransports().pipe(
+      catchError(error => {
+        console.error('Error fetching transports:', error);
+        // You might want to show an error message to the user here
+        return throwError(() => new Error('Failed to fetch transports. Please try again later.'));
+      })
+    );
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 
 }
