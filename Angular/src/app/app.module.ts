@@ -7,11 +7,12 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
-import { HttpClientModule } from '@angular/common/http';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TicketsRoutingModule } from './views/tickets/tickets-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {Interceptor} from './shared/services/user/Interceptor';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,13 @@ import { MatDialogModule } from '@angular/material/dialog';
     TicketsRoutingModule,
     MatDialogModule,
   ],
-  providers: [],
+  providers: [
+     {
+      provide: HTTP_INTERCEPTORS,
+       useClass: Interceptor,
+       multi: true
+     }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
