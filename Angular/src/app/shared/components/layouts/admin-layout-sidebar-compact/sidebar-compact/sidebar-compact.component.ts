@@ -7,6 +7,7 @@ import {
 import { Router, NavigationEnd } from "@angular/router";
 import { filter } from "rxjs/operators";
 import { Utils } from "../../../../utils";
+import {SessionStorageService} from "../../../../services/user/session-storage.service";
 
 @Component({
   selector: "app-sidebar-compact",
@@ -18,7 +19,7 @@ export class SidebarCompactComponent implements OnInit {
 
   nav: IMenuItem[];
 
-  constructor(public router: Router, public navService: NavigationService) {}
+  constructor(public router: Router, public navService: NavigationService,  private sessionService: SessionStorageService) {}
 
   ngOnInit() {
     this.updateSidebar();
@@ -32,8 +33,12 @@ export class SidebarCompactComponent implements OnInit {
         }
       });
 
+    const currentUserRole = this.sessionService.getUser().roles; // Implement this method as needed
+
     this.navService.menuItems$.subscribe(items => {
-      this.nav = items;
+      // Filter items based on the current user's role before setting them to this.nav
+      this.nav = this.navService.filterMenuItemsByRole(items, currentUserRole);
+      console.log(this.nav);
       this.setActiveFlag();
     });
   }

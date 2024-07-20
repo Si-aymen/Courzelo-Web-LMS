@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {SessionStorageService} from "./user/session-storage.service";
+import {SessionStorageService} from './user/session-storage.service';
 
 export interface IMenuItem {
     id?: string;
@@ -15,6 +15,7 @@ export interface IMenuItem {
     sub?: IChildItem[]; // Dropdown items
     badges?: IBadge[];
     active?: boolean;
+    roles?: string[];
 }
 export interface IChildItem {
     id?: string;
@@ -25,6 +26,7 @@ export interface IChildItem {
     icon?: string;
     sub?: IChildItem[];
     active?: boolean;
+    roles?: string[];
 }
 
 interface IBadge {
@@ -41,17 +43,17 @@ interface ISidebarState {
     providedIn: 'root'
 })
 export class NavigationService {
+
+    constructor(private storageService: SessionStorageService) {
+    }
     public sidebarState: ISidebarState = {
         sidenavOpen: true,
         childnavOpen: false
     };
     selectedItem: IMenuItem;
-    
-    constructor(private storageService: SessionStorageService) {
-    }
 
     defaultMenu: IMenuItem[] = [
-        {   
+        {
             name: 'Dashboard',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
             type: 'dropDown',
@@ -61,6 +63,8 @@ export class NavigationService {
                 { icon: 'i-Clock-4', name: 'Version 2', state: '/dashboard/v2', type: 'link' },
                 { icon: 'i-Over-Time', name: 'Version 3', state: '/dashboard/v3', type: 'link' },
                 { icon: 'i-Clock', name: 'Version 4', state: '/dashboard/v4', type: 'link' },
+                { icon: 'i-Jeep', name: 'Transportation', state: '/dashboard/transports', type: 'link' },
+                { icon: 'i-Add-Window', name: 'Stages', state: '/dashboard/stages', type: 'link' },
             ]
         },
         {
@@ -128,17 +132,31 @@ export class NavigationService {
                 { icon: 'i-Full-View-Window', name: 'Fullscreen', state: '/tables/full', type: 'link' },
                 { icon: 'i-Code-Window', name: 'Paging', state: '/tables/paging', type: 'link' },
                 { icon: 'i-Filter-2', name: 'Filter', state: '/tables/filter', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Filter', state: '/tables/create-quiz', type: 'link' },
             ]
         },
         {
-            name: 'Super Admin',
-            description: 'Tools for super admins',
+            name: 'Quiz',
+            description: '',
+            type: 'dropDown',
+            icon: 'i-File-Horizontal-Text',
+            sub: [
+                { icon: 'i-File-Horizontal-Text', name: 'Create Quiz', state: '/forms/create-quiz', type: 'link' },
+                { icon: 'i-Full-View-Window', name: 'Take Quiz', state: '/forms/take-quiz', type: 'link' },
+                { icon: 'i-Code-Window', name: 'Quiz Table', state: '/tables/QuizTable', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Quiz List', state: '/tables/QuizList', type: 'link' },
+                { icon: 'i-Filter-2', name: 'Scoring', state: '/forms/QuizResult', type: 'link' },
+            ]
+        },
+        {
+            name: 'Tools',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Institutions', state: '/tools/institutions', type: 'link' },
-                { icon: 'i-Administrator', name: 'Users', state: '/tools/users', type: 'link' }
-            ]
+                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' , roles: ['SUPERADMIN']}
+            ],
+            roles: ['SUPERADMIN']
         },
         {
             name: 'Pages',
@@ -174,11 +192,28 @@ export class NavigationService {
         }
     ];
 
-
     // sets iconMenu as default;
     menuItems = new BehaviorSubject<IMenuItem[]>(this.defaultMenu);
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
+    filterMenuItemsByRole(menuItems: IMenuItem[], userRoles: string[]): IMenuItem[] {
+        return menuItems.filter(item => {
+            // Check if the item is accessible by any of the user's roles
+            const accessibleByRole = !item.roles || item.roles.some(role => userRoles.includes(role));
+            if (accessibleByRole && item.sub) {
+                // Recursively filter sub-items
+                item.sub = this.filterChildItemsByRole(item.sub, userRoles);
+            }
+            return accessibleByRole;
+        });
+    }
+
+    filterChildItemsByRole(childItems: IChildItem[], userRoles: string[]): IChildItem[] {
+        return childItems.filter(item => {
+            // Check if the item is accessible by any of the user's roles
+            return !item.roles || item.roles.some(role => userRoles.includes(role));
+        });
+    }
 
     // You can customize this method to supply different menu for
     // different user type.
