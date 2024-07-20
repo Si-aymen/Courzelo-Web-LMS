@@ -1,5 +1,8 @@
 package org.example.courzelo.controllers;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.PaginatedSimplifiedUserResponse;
@@ -7,6 +10,7 @@ import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
 import org.example.courzelo.services.IInstitutionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,39 +31,58 @@ public class InstitutionController {
         return iInstitutionService.getInstitutions(page, sizePerPage, keyword);
     }
     @PostMapping("/add")
-    public ResponseEntity<StatusMessageResponse> addInstitution(@RequestBody InstitutionRequest institutionRequest) {
+    public ResponseEntity<StatusMessageResponse> addInstitution(@RequestBody @Valid InstitutionRequest institutionRequest) {
         return iInstitutionService.addInstitution(institutionRequest);
     }
     @PutMapping("/update/{institutionID}")
-    public ResponseEntity<StatusMessageResponse> updateInstitution(@PathVariable String institutionID,
-                                                                  @RequestBody InstitutionRequest institutionRequest) {
-        return iInstitutionService.updateInstitution(institutionID, institutionRequest);
+    public ResponseEntity<StatusMessageResponse> updateInstitution(@PathVariable @NotNull String institutionID,
+                                                                  @RequestBody @Valid InstitutionRequest institutionRequest) {
+        return iInstitutionService.updateInstitutionInformation(institutionID, institutionRequest);
     }
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<StatusMessageResponse> updateMyInstitution(Principal principal, @RequestBody InstitutionRequest institutionRequest) {
-        return iInstitutionService.updateMyInstitution(principal,institutionRequest);
+    public ResponseEntity<StatusMessageResponse> updateMyInstitution(Principal principal, @RequestBody @Valid InstitutionRequest institutionRequest) {
+        return iInstitutionService.updateMyInstitutionInformation(principal,institutionRequest);
     }
     @DeleteMapping("/delete/{institutionID}")
-    public ResponseEntity<StatusMessageResponse> deleteInstitution(@PathVariable String institutionID) {
+    public ResponseEntity<StatusMessageResponse> deleteInstitution(@PathVariable @NotNull String institutionID) {
         return iInstitutionService.deleteInstitution(institutionID);
     }
     @GetMapping("/{institutionID}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<InstitutionResponse> getInstitutionByID(@PathVariable String institutionID) {
+    public ResponseEntity<InstitutionResponse> getInstitutionByID(@PathVariable @NotNull String institutionID) {
         return iInstitutionService.getInstitutionByID(institutionID);
-    }
-    @GetMapping("/my")
-    @PreAuthorize("hasAnyRole('ADMIN','TEACHER','STUDENT')")
-    public ResponseEntity<InstitutionResponse> getMyInstitution(Principal principal) {
-        return iInstitutionService.getMyInstitution(principal);
     }
     @GetMapping("/{institutionID}/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PaginatedSimplifiedUserResponse> getInstitutionUsers(@PathVariable String institutionID,
+    public ResponseEntity<PaginatedSimplifiedUserResponse> getInstitutionUsers(@PathVariable @NotNull String institutionID,
+                                                                               @RequestParam(required = false) String keyword,
                                                                                @RequestParam(required = false) String role,
                                                                                @RequestParam(defaultValue = "0") int page,
                                                                                @RequestParam(defaultValue = "10") int sizePerPage) {
-        return iInstitutionService.getInstitutionUsers(institutionID, role, page, sizePerPage);
+        return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
+    }
+    @PutMapping("/{institutionID}/addUser")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    public ResponseEntity<HttpStatus> addInstitutionUser(@PathVariable @NotNull String institutionID,
+                                                         @RequestParam @Email String email,
+                                                         @RequestParam @NotNull String role,
+                                                         Principal principal) {
+        return iInstitutionService.addInstitutionUser(institutionID, email, role, principal);
+    }
+    @DeleteMapping("/{institutionID}/removeUser")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    public ResponseEntity<HttpStatus> removeInstitutionUser(@PathVariable @NotNull String institutionID,
+                                                            @RequestParam @Email String email,
+                                                            Principal principal) {
+        return iInstitutionService.removeInstitutionUser(institutionID, email, principal);
+    }
+    @PutMapping("/{institutionID}/updateUserRole")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    public ResponseEntity<HttpStatus> updateInstitutionUserRole(@PathVariable @NotNull String institutionID,
+                                                               @RequestParam @Email String email,
+                                                               @RequestParam @NotNull String role,
+                                                               Principal principal) {
+        return iInstitutionService.updateInstitutionUserRole(institutionID, email, role, principal);
     }
 }

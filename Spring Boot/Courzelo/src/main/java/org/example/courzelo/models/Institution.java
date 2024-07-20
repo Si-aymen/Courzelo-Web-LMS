@@ -51,7 +51,7 @@ public class Institution {
         this.latitude = institutionRequest.getLatitude();
         this.longitude = institutionRequest.getLongitude();
     }
-    public Institution updateInstitution(InstitutionRequest institutionRequest){
+    public void updateInstitution(InstitutionRequest institutionRequest){
         this.name = institutionRequest.getName();
         this.slogan = institutionRequest.getSlogan();
         this.country = institutionRequest.getCountry();
@@ -60,6 +60,5 @@ public class Institution {
         this.website = institutionRequest.getWebsite();
         this.latitude = institutionRequest.getLatitude();
         this.longitude = institutionRequest.getLongitude();
-        return this;
     }
 }

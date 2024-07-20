@@ -89,7 +89,9 @@ const userRoutes: Routes = [
     },
     {
         path: 'tools',
-        loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule)
+        loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule),
+        canActivate: [AuthGuard],
+        data: { roles: ['SUPERADMIN'] }
     }
 
   ];

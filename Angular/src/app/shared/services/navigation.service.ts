@@ -154,7 +154,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link'},
+                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/users', type: 'link'},
                 { icon: 'i-Administrator', name: 'Institutions', state: '/tools/institutions', type: 'link' },
 
             ],
