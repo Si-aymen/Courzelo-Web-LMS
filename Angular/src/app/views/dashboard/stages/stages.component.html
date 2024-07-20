@@ -176,13 +176,21 @@
         </ngx-datatable-column>
 
         <ngx-datatable-column name="status">
-          <ng-template ngx-datatable-header-template> status </ng-template>
-          <ng-template
-            ngx-datatable-cell-template
-            let-value="value"
-            let-row="row"
-          >
-            {{ row.status }}
+          <ng-template ngx-datatable-header-template> Status </ng-template>
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <span
+              class="badge badge-pill px-3 py-1"
+              [ngClass]="{
+                'badge-success':
+                  row.status === 'ACTIF' ,
+                'badge-warning':
+                  row.status === 'IN_PROGRESS' || row.status === 'PAUSED',
+                'badge-danger':
+                  row.status === 'NOT_SUBMITTED' || row.status === 'CANNCELED'
+              }"
+            >
+              {{ row.status }}
+            </span>
           </ng-template>
         </ngx-datatable-column>
 

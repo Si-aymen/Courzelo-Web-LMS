@@ -80,7 +80,7 @@ export class TransportsComponent implements OnInit {
         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       series: [{
-        data: [50,10],
+        data: [50,10,20,10,50,70],
         lineStyle: {
           color: 'rgba(102, 51, 153, .86)',
           width: 3,

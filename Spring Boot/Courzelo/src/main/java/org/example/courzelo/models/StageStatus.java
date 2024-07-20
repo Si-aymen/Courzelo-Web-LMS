@@ -1,5 +1,5 @@
 package org.example.courzelo.models;
 
 public enum StageStatus {
-    ACTIF,PAUSED
+    ACTIF,PAUSED,CANNCELED
 }
