@@ -63,6 +63,8 @@ export class NavigationService {
                 { icon: 'i-Clock-4', name: 'Version 2', state: '/dashboard/v2', type: 'link' },
                 { icon: 'i-Over-Time', name: 'Version 3', state: '/dashboard/v3', type: 'link' },
                 { icon: 'i-Clock', name: 'Version 4', state: '/dashboard/v4', type: 'link' },
+                { icon: 'i-Jeep', name: 'Transportation', state: '/dashboard/transports', type: 'link' },
+                { icon: 'i-Add-Window', name: 'Stages', state: '/dashboard/stages', type: 'link' },
             ]
         },
         {
