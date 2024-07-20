@@ -3,7 +3,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTre
 import {Observable, of} from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
 import {AuthenticationService} from './user/authentication.service';
-import {switchMap} from "rxjs/operators";
+import {switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
