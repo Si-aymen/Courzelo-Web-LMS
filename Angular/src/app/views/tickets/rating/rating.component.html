@@ -1,0 +1,26 @@
+<div *ngIf="ticketData$ | async as ticketData">
+    <h2>Ticket Details :</h2>
+    <h5>Id :{{ticketData.id}}</h5>
+    <h5>Subject :{{ticketData.sujet}}</h5>
+  </div>
+   <div class="card-body">
+                <div class="m-sm-4">
+                    <form [formGroup]="data" (ngSubmit)="forward()">
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <textarea class="form-control" id="form6Example7" 
+                            formControlName="rating"
+                            rows="3"></textarea>
+                        </div>
+                        <div class="text-center m-3">
+                                <button class="btn btn-primary btn-rounded" style="margin-right: 10px;" [disabled]="! data.valid"> Rating</button>
+     
+                            <!--<button  class="btn btn-dark btn-lg" style="margin-right: 10px;" [disabled]="! data.valid">Transférer</button>-->
+                            <button type="reset" class="btn btn-danger btn-rounded" (click)="middle()">Annuler</button>
+                            <!-- <button type="submit" class="btn btn-lg btn-primary">Sign up</button> -->
+                        </div>
+                    </form>
+                </div>
+    </div>
+
+  

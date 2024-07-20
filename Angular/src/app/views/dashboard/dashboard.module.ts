@@ -15,6 +15,7 @@ import { AppFormsModule } from '../forms/forms.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StagesComponent } from './stages/stages.component';
 
+import {CreateQuizComponent} from '../forms/Quiz/create-quiz/create-quiz.component';
 
 @NgModule({
   imports: [

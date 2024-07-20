@@ -13,7 +13,7 @@ import {SessionStorageService} from './session-storage.service';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost:8089/api/v1/user';
+  private baseUrl = 'http://localhost:8080/api/v1/user';
   image: Blob;
   storedUser;
   constructor(private http: HttpClient ) { }

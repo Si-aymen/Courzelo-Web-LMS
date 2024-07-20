@@ -17,7 +17,7 @@ import {UserService} from "./user.service";
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private baseUrl = 'http://localhost:8089/api/v1/auth';
+  private baseUrl = 'http://localhost:8080/api/v1/auth';
   constructor(private http: HttpClient,
               private router: Router,
               private toastr: ToastrService,
