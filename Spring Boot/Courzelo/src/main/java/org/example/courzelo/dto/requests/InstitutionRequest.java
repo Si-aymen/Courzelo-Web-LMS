@@ -28,15 +28,13 @@ public class InstitutionRequest {
     @Size(max = 1000, message = "Description must be less than 1000 characters")
     private String description;
 
-    @URL(message = "Website must be a valid URL")
+    @Size(min = 5, max = 100, message = "Email must be between 5 and 100 characters")
     private String website;
 
-    @NotNull(message = "Latitude is required")
     @DecimalMin(value = "-90.0", message = "Latitude must be greater than or equal to -90")
     @DecimalMax(value = "90.0", message = "Latitude must be less than or equal to 90")
     private Double latitude;
 
-    @NotNull(message = "Longitude is required")
     @DecimalMin(value = "-180.0", message = "Longitude must be greater than or equal to -180")
     @DecimalMax(value = "180.0", message = "Longitude must be less than or equal to 180")
     private Double longitude;

@@ -36,7 +36,7 @@ public class InstitutionController {
     }
     @PutMapping("/update/{institutionID}")
     public ResponseEntity<StatusMessageResponse> updateInstitution(@PathVariable @NotNull String institutionID,
-                                                                  @RequestBody @Valid InstitutionRequest institutionRequest) {
+                                                                  @RequestBody InstitutionRequest institutionRequest) {
         return iInstitutionService.updateInstitutionInformation(institutionID, institutionRequest);
     }
     @PutMapping("/update")

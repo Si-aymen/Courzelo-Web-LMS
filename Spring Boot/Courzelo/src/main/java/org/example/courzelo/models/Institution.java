@@ -58,7 +58,7 @@ public class Institution {
         this.address = institutionRequest.getAddress();
         this.description = institutionRequest.getDescription();
         this.website = institutionRequest.getWebsite();
-        this.latitude = institutionRequest.getLatitude();
-        this.longitude = institutionRequest.getLongitude();
+        this.latitude = institutionRequest.getLatitude()!=null ? institutionRequest.getLatitude() : 0;
+        this.longitude = institutionRequest.getLongitude()!=null ? institutionRequest.getLongitude() : 0;
     }
 }

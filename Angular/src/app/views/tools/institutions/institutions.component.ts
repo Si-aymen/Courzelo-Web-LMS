@@ -8,6 +8,7 @@ import {PaginatedInstitutionsResponse} from '../../../shared/models/institution/
 import {ToastrService} from 'ngx-toastr';
 import {InstitutionRequest} from '../../../shared/models/institution/InstitutionRequest';
 import {UserService} from '../../../shared/services/user/user.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-institutions',
@@ -33,9 +34,11 @@ export class InstitutionsComponent implements OnInit {
       private handleResponse: ResponseHandlerService,
       private formBuilder: FormBuilder,
       private toastr: ToastrService,
-      private userService: UserService
+      private userService: UserService,
+      private modalService: NgbModal
   ) { }
   institutions: InstitutionResponse[] = [];
+  currentInstitution: InstitutionResponse;
   _currentPage = 1;
   totalPages = 0;
   totalItems = 0;
@@ -84,8 +87,10 @@ export class InstitutionsComponent implements OnInit {
                 this.handleResponse.handleError(error);
             }
         );
-    }
-        this.toastr.error('Please fill all fields');
+    } else {
+            this.toastr.error('Please fill all fields');
+
+        }
     }
   loadInstitutions(page: number, size: number, keyword: string) {
     this.loading = true;
@@ -103,4 +108,64 @@ export class InstitutionsComponent implements OnInit {
         }
     );
   }
+    addInstitutionModel(content) {
+        this.modalService.open(content, { ariaLabelledBy: 'add Institution' })
+            .result.then((result) => {
+            console.log(result);
+        }, (reason) => {
+            console.log('Err!', reason);
+        });
+    }
+    deleteInstitution(institutionID: string) {
+        this.institutionService.deleteInstitution(institutionID).subscribe(
+            response => {
+                this.toastr.success('Institution deleted successfully');
+                this.loadInstitutions(this.currentPage, this.itemsPerPage, '');
+            }, error => {
+                this.handleResponse.handleError(error);
+            }
+        );
+    }
+    updateInstitution(id: string) {
+      if(this.addInstitutionForm.valid) {
+          const institution: InstitutionRequest = this.addInstitutionForm.value;
+          this.institutionService.updateInstitution(id, institution).subscribe(
+              response => {
+                  this.toastr.success('Institution updated successfully');
+                  this.loadInstitutions(this.currentPage, this.itemsPerPage, '');
+              }, error => {
+                  this.handleResponse.handleError(error);
+              }
+          );
+      } else {
+          this.toastr.error('Please fill all fields');
+      }
+    }
+    deleteInstitutionModal(content, institution: InstitutionResponse) {
+        this.currentInstitution = institution;
+        const modalRef = this.modalService.open(content, { ariaLabelledBy: 'delete Institution'});
+        modalRef.result.then((result) => {
+            if (result === 'Ok') {
+                this.deleteInstitution(this.currentInstitution.id);
+            }
+        }, (reason) => {
+            console.log('Dismissed', reason);
+        });
+    }
+
+    editInstitutionModel(content, institution: InstitutionResponse) {
+        this.currentInstitution = institution;
+        this.addInstitutionForm.controls.name.setValue(institution.name);
+        this.addInstitutionForm.controls.slogan.setValue(institution.slogan);
+        this.addInstitutionForm.controls.country.setValue(institution.country);
+        this.addInstitutionForm.controls.address.setValue(institution.address);
+        this.addInstitutionForm.controls.description.setValue(institution.description);
+        this.addInstitutionForm.controls.website.setValue(institution.website);
+        this.modalService.open(content, { ariaLabelledBy: 'edit Institution' })
+            .result.then((result) => {
+            console.log(result);
+        }, (reason) => {
+            console.log('Err!', reason);
+        });
+    }
 }

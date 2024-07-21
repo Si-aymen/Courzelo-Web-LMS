@@ -46,10 +46,7 @@ export class InstitutionService {
   getInstitutionByID(institutionID: string): Observable<InstitutionResponse> {
     return this.http.get<InstitutionResponse>(`${this.baseUrl}/${institutionID}`);
   }
-  getMyInstitution(): Observable<InstitutionResponse> {
-    return this.http.get<InstitutionResponse>(`${this.baseUrl}/my`);
-  }
-  getInstitutionUsers(institutionID: string, role?: string, page: number = 0, sizePerPage: number = 10):
+  getInstitutionUsers(institutionID: string, keyword?: string, role?: string, page: number = 0, sizePerPage: number = 10):
       Observable<PaginatedInstitutionsResponse> {
     let params = new HttpParams()
         .set('page', page.toString())
@@ -57,6 +54,9 @@ export class InstitutionService {
 
     if (role) {
       params = params.set('role', role);
+    }
+    if (keyword) {
+      params = params.set('keyword', keyword);
     }
 
     return this.http.get<PaginatedInstitutionsResponse>(`${this.baseUrl}/${institutionID}/users`, { params });

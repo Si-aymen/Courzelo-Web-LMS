@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="col-md-4 d-flex justify-content-center align-items-center" style="height: 4vh;">
-            <button (click)="addInstitution()" class="btn btn-success btn-sm " >Add Institution</button>
+            <button (click)="addInstitutionModel(add)" class="btn btn-success btn-sm " >Add Institution</button>
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
@@ -28,7 +28,8 @@
                             style="height: calc(100vh - 270px); box-shadow: none"
                             class="material fullscreen"
                             [columnMode]="'force'"
-                            [columns]="[{ name: 'Name' }, { name: 'Slogan' }, { name: 'Country' }, { name: 'Address' }, { name: 'Description' }, { name: 'Website' }]"
+                            [columns]="[{ name: 'Name' }, { name: 'Slogan' }, { name: 'Country' }, { name: 'Address' }, { name: 'Description' }, { name: 'Website' },
+                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate }]"
                             [headerHeight]="50"
                             [footerHeight]="50"
                             [rowHeight]="80"
@@ -39,105 +40,226 @@
                             [offset]="(currentPage - 1) * itemsPerPage"
                             [limit]="itemsPerPage"
                             [rows]="institutions | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
+                        <ng-template #deleteBtnTemplate let-row="row" let-value="value">
+                            <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
+                            <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
+                        </ng-template>
                     </ngx-datatable>
                 </div>
                 <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
             </div>
         </div>
-
-        <div class="col-md-12 margin-top-20">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="card-title mb-3">Add</div>
-                    <form [formGroup]="addInstitutionForm" (ngSubmit)="addInstitution()">
-                        <div class="row">
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="firstName">Name</label>
-                                <input type="text" formControlName="name" class="form-control" id="firstName" placeholder="Enter institution's name">
-                                <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
-                                    Name is required.
-                                </div>
-                                <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
-                                    Name must be at least 3 characters long.
-                                </div>
-                                <div *ngIf="shouldShowError('name', 'maxlength')" class="text-danger">
-                                    Name must be at most 40 characters long.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="lastName">Slogan</label>
-                                <input type="text" formControlName="slogan" class="form-control" id="lastName" placeholder="Enter institution's slogan">
-                                <div *ngIf="shouldShowError('slogan', 'required')" class="text-danger">
-                                    Slogan is required.
-                                </div>
-                                <div *ngIf="shouldShowError('slogan', 'minlength')" class="text-danger">
-                                    Slogan must be at least 3 characters long.
-                                </div>
-                                <div *ngIf="shouldShowError('slogan', 'maxlength')" class="text-danger">
-                                    Slogan must be at most 50 characters long.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="countrySelect">Country</label>
-                                <select formControlName="country" class="form-control form-control" id="countrySelect">
-                                    <option *ngFor="let country of countries" [value]="country.country">{{ country.country }}</option>
-                                </select>
-                                <div *ngIf="shouldShowError('country', 'required')" class="text-danger">
-                                    Country is required.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="address">Address</label>
-                                <input type="text" formControlName="address" class="form-control" id="address" placeholder="Enter institution's address">
-                                <div *ngIf="shouldShowError('address', 'required')" class="text-danger">
-                                    Address is required.
-                                </div>
-                                <div *ngIf="shouldShowError('address', 'minlength')" class="text-danger">
-                                    Address must be at least 10 characters long.
-                                </div>
-                                <div *ngIf="shouldShowError('address', 'maxlength')" class="text-danger">
-                                    Address must be at most 100 characters long.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="description">Description</label>
-                                <input type="text" formControlName="description" class="form-control" id="description" placeholder="Enter institution's description">
-                                <div *ngIf="shouldShowError('description', 'required')" class="text-danger">
-                                    Description is required.
-                                </div>
-                                <div *ngIf="shouldShowError('description', 'minlength')" class="text-danger">
-                                    Description must be at least 10 characters long.
-                                </div>
-                                <div *ngIf="shouldShowError('description', 'maxlength')" class="text-danger">
-                                    Description must be at most 500 characters long.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="credit">Website</label>
-                                <input formControlName="website" class="form-control" id="credit" placeholder="Web address">
-                                <div *ngIf="shouldShowError('website', 'required')" class="text-danger">
-                                    Website is required.
-                                </div>
-                                <div *ngIf="shouldShowError('website', 'minlength')" class="text-danger">
-                                    Website must be at least 5 characters long.
-                                </div>
-                                <div *ngIf="shouldShowError('website', 'maxlength')" class="text-danger">
-                                    Website must be at most 100 characters long.
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Submit</btn-loading>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
+    <ng-template #edit let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title-Edit">Edit Institution</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="addInstitutionForm" (ngSubmit)="updateInstitution(currentInstitution.id)">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="firstName">Name</label>
+                        <input type="text" formControlName="name" class="form-control" id="firstNameEdit" placeholder="Enter institution's name">
+                        <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
+                            Name is required.
+                        </div>
+                        <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
+                            Name must be at least 3 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('name', 'maxlength')" class="text-danger">
+                            Name must be at most 40 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="lastName">Slogan</label>
+                        <input type="text" formControlName="slogan" class="form-control" id="lastNameEdit" placeholder="Enter institution's slogan">
+                        <div *ngIf="shouldShowError('slogan', 'required')" class="text-danger">
+                            Slogan is required.
+                        </div>
+                        <div *ngIf="shouldShowError('slogan', 'minlength')" class="text-danger">
+                            Slogan must be at least 3 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('slogan', 'maxlength')" class="text-danger">
+                            Slogan must be at most 50 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="countrySelect">Country</label>
+                        <select formControlName="country" class="form-control form-control" id="countrySelectEdit">
+                            <option *ngFor="let country of countries" [value]="country.country">{{ country.country }}</option>
+                        </select>
+                        <div *ngIf="shouldShowError('country', 'required')" class="text-danger">
+                            Country is required.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="address">Address</label>
+                        <input type="text" formControlName="address" class="form-control" id="addressEdit" placeholder="Enter institution's address">
+                        <div *ngIf="shouldShowError('address', 'required')" class="text-danger">
+                            Address is required.
+                        </div>
+                        <div *ngIf="shouldShowError('address', 'minlength')" class="text-danger">
+                            Address must be at least 10 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('address', 'maxlength')" class="text-danger">
+                            Address must be at most 100 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="description">Description</label>
+                        <input type="text" formControlName="description" class="form-control" id="descriptionEdit" placeholder="Enter institution's description">
+                        <div *ngIf="shouldShowError('description', 'required')" class="text-danger">
+                            Description is required.
+                        </div>
+                        <div *ngIf="shouldShowError('description', 'minlength')" class="text-danger">
+                            Description must be at least 10 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('description', 'maxlength')" class="text-danger">
+                            Description must be at most 500 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="credit">Website</label>
+                        <input formControlName="website" class="form-control" id="creditEdit" placeholder="Web address">
+                        <div *ngIf="shouldShowError('website', 'required')" class="text-danger">
+                            Website is required.
+                        </div>
+                        <div *ngIf="shouldShowError('website', 'minlength')" class="text-danger">
+                            Website must be at least 5 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('website', 'maxlength')" class="text-danger">
+                            Website must be at most 100 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Submit</btn-loading>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+    <ng-template #add let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Add Institution</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="addInstitutionForm" (ngSubmit)="addInstitution()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="firstName">Name</label>
+                        <input type="text" formControlName="name" class="form-control" id="firstName" placeholder="Enter institution's name">
+                        <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
+                            Name is required.
+                        </div>
+                        <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
+                            Name must be at least 3 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('name', 'maxlength')" class="text-danger">
+                            Name must be at most 40 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="lastName">Slogan</label>
+                        <input type="text" formControlName="slogan" class="form-control" id="lastName" placeholder="Enter institution's slogan">
+                        <div *ngIf="shouldShowError('slogan', 'required')" class="text-danger">
+                            Slogan is required.
+                        </div>
+                        <div *ngIf="shouldShowError('slogan', 'minlength')" class="text-danger">
+                            Slogan must be at least 3 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('slogan', 'maxlength')" class="text-danger">
+                            Slogan must be at most 50 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="countrySelect">Country</label>
+                        <select formControlName="country" class="form-control form-control" id="countrySelect">
+                            <option *ngFor="let country of countries" [value]="country.country">{{ country.country }}</option>
+                        </select>
+                        <div *ngIf="shouldShowError('country', 'required')" class="text-danger">
+                            Country is required.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="address">Address</label>
+                        <input type="text" formControlName="address" class="form-control" id="address" placeholder="Enter institution's address">
+                        <div *ngIf="shouldShowError('address', 'required')" class="text-danger">
+                            Address is required.
+                        </div>
+                        <div *ngIf="shouldShowError('address', 'minlength')" class="text-danger">
+                            Address must be at least 10 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('address', 'maxlength')" class="text-danger">
+                            Address must be at most 100 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="description">Description</label>
+                        <input type="text" formControlName="description" class="form-control" id="description" placeholder="Enter institution's description">
+                        <div *ngIf="shouldShowError('description', 'required')" class="text-danger">
+                            Description is required.
+                        </div>
+                        <div *ngIf="shouldShowError('description', 'minlength')" class="text-danger">
+                            Description must be at least 10 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('description', 'maxlength')" class="text-danger">
+                            Description must be at most 500 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="credit">Website</label>
+                        <input formControlName="website" class="form-control" id="credit" placeholder="Web address">
+                        <div *ngIf="shouldShowError('website', 'required')" class="text-danger">
+                            Website is required.
+                        </div>
+                        <div *ngIf="shouldShowError('website', 'minlength')" class="text-danger">
+                            Website must be at least 5 characters long.
+                        </div>
+                        <div *ngIf="shouldShowError('website', 'maxlength')" class="text-danger">
+                            Website must be at most 100 characters long.
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Submit</btn-loading>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+    <ng-template #modalConfirm let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Institution deletion</h4>
+            <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Are you sure you want to delete <span class="text-primary">{{ currentInstitution.name }}</span> institution?</strong></p>
+            <p>All information associated to this institution will be permanently deleted.
+                <span class="text-danger">This operation cannot be undone.</span>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="modal.dismiss('cancel')">Cancel</button>
+            <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
+        </div>
+    </ng-template>
 </div>
