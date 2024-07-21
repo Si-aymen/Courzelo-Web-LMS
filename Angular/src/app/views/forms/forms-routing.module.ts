@@ -10,6 +10,7 @@ import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import { CreateQuizComponent } from './Quiz/create-quiz/create-quiz.component';
 import {TakeQuizComponent} from './Quiz/take-quiz/take-quiz.component';
 import {QuizResultComponent} from './Quiz/quiz-result/quiz-result.component';
+import {AuthGuard} from '../../shared/services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -42,16 +43,21 @@ const routes: Routes = [
   },
   {
     path: 'create-quiz',
-    component: CreateQuizComponent
+    component: CreateQuizComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['TEACHER'] }
   },
   {
     path: 'take-quiz',
-    component: TakeQuizComponent
+    component: TakeQuizComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['STUDENT'] }
   },
 
   {
     path: 'QuizResult',
-    component: QuizResultComponent
+    component: QuizResultComponent,
+    canActivate: [AuthGuard]
   }];
 
 @NgModule({
