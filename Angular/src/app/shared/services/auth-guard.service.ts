@@ -28,6 +28,9 @@ export class AuthGuard implements CanActivate {
                 if (!isAuthenticated) {
                     return of(this.router.parseUrl('/sessions/signin'));
                 }
+                if (!requiredRoles) {
+                    return of(true);
+                }
                 const user = this.sessionService.getUser();
                 if (user && user.roles.some(role => requiredRoles.includes(role))) {
                     return of(true);
