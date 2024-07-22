@@ -79,9 +79,9 @@ const userRoutes: Routes = [
     { path: 'getallprojects', component: ProjectComponent},
     { path: 'projectdetails', component: ProjectdetailsComponent},
     { path: 'ProgressDashboard', component: ProgressDashboardComponent},
-    { path: 'projects', component: DashboardProjectComponent},
-    { path: 'addprojects', component: AddProjectComponent},
-    { path: 'project/:id', component: ViewdetailsComponent },
+    { path: 'projects', component: DashboardProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
+    { path: 'addprojects', component: AddProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
+    { path: 'project/:id', component: ViewdetailsComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
     { path: 'pdf', component: PdfComponent },
     {
         path: 'settings',

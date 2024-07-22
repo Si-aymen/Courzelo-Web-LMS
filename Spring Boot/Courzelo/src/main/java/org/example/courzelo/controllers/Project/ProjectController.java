@@ -6,6 +6,7 @@ import org.example.courzelo.models.ProjectEntities.Project;
 import org.example.courzelo.models.ProjectEntities.Validate;
 import org.example.courzelo.services.Project.IProjectService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,10 +21,12 @@ public class ProjectController {
 
 
     @GetMapping("/listofProjects")
+    @PreAuthorize("hasRole('TEACHER')")
     public List<Project> getAllProjects(){
         return iProjectService.GetProject();
     }
     @PostMapping("/addProject")
+    @PreAuthorize("hasRole('TEACHER')")
     public Project createProject(@RequestBody Project project) {
         return iProjectService.saveProject(project);
     }
@@ -41,6 +44,7 @@ public class ProjectController {
     }
 
     @GetMapping("getProjectbyid/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
     public Project getById(@PathVariable("id") String id){
         return iProjectService.getById(id);
     }
