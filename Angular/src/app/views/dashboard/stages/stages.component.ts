@@ -38,7 +38,6 @@ export class StagesComponent implements OnInit {
   }
 
   
-  
   loadStages(): void {
     this.stageService.getStages().subscribe({
       next: (stages: Stages[]) => {
