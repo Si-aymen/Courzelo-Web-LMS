@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EChartOption } from 'echarts';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 import { Stages } from 'src/app/shared/models/stages/stages';
 import { DataLayerService } from 'src/app/shared/services/data-layer.service';
 import { StagesService } from 'src/app/shared/services/stages/stages.service';
@@ -209,5 +209,48 @@ export class StagesComponent implements OnInit {
         console.error('There was an error!', error);
       }
     });
+  }
+
+
+  delete(id:any){
+    Swal.fire({
+      title: 'are you sur ?',
+      text: "Delete this Internship ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes Delete!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.stageService.deleteStage(id).subscribe((res:any) =>{
+          if (res.message){
+            Swal.fire({
+              icon: 'success',
+              title: 'Success...',
+              text: 'Internship Deleted !',
+            })
+            this.ngOnInit();
+          }
+          else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: "Error !",
+            })
+          }
+        },
+        err =>{
+          Swal.fire({
+            icon: 'warning',
+            title: 'Error in deleting this  Internship',
+            text: err.error.message,
+          })
+        }
+        )
+      }
+      this.loadStages();
+    }
+    )
   }
 }

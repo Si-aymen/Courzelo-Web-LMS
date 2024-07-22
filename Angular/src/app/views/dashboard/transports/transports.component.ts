@@ -7,6 +7,9 @@ import { DataLayerService } from 'src/app/shared/services/data-layer.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
+import Swal from 'sweetalert2';
+
+
 
 
 
@@ -161,5 +164,47 @@ export class TransportsComponent implements OnInit {
     this.destroy$.complete();
   }
 
+
+  delete(id:any){
+    Swal.fire({
+      title: 'are you sur ?',
+      text: "Delete this Transportation ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes Delete!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.transportsService.deleteTransports(id).subscribe((res:any) =>{
+          if (res.message){
+            Swal.fire({
+              icon: 'success',
+              title: 'Success...',
+              text: 'Transportation Deleted !',
+            })
+            this.ngOnInit();
+          }
+          else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: "Error !",
+            })
+          }
+        },
+        err =>{
+          Swal.fire({
+            icon: 'warning',
+            title: 'Error in deleting Transportation',
+            text: err.error.message,
+          })
+        }
+        )
+      }
+      this.ngOnInit();
+    }
+    )
+  }
 
 }

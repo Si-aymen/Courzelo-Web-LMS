@@ -36,7 +36,6 @@ public class TransportsController {
         return transportsService.retrieveTransport(transprotsId);
     }
 
-
     @PostMapping("/add-Transports")
     public Transports addTransport(@RequestBody Transports transports) {
         return transportsService.addTransports(transports);
