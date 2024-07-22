@@ -44,12 +44,15 @@ export class TransportsComponent implements OnInit {
     
 
   ngOnInit(): void {
+    this.updateChart2();
+
     this.initForm();
     this.loadData();
   }
 
 
   private loadData(): void {
+
     this.initializeChart();
     this.loadTransports();
     this.loadCount();
@@ -58,7 +61,7 @@ export class TransportsComponent implements OnInit {
       finalize(() => {
       })
     ).subscribe({
-      next: (transports) => this.updateChart(transports),
+     // next: (transports) => this.updateChart(transports),
       error: (error) => console.error('Error fetching transports:', error)
     });
 
@@ -75,7 +78,28 @@ export class TransportsComponent implements OnInit {
   }
 
 
+
+  updateChart2(): void {
+
+    this.transportsService.getTransports().subscribe({
+      next: (transports: Transports[]) => {
+        this.transports$ = of(transports); 
+        const prices = transports.map(transport => transport.price);
+        this.chartLineOption3.series[0].data = prices;
+        console.log(' chart data on init in chart option 2   :', this.chartLineOption3.series[0].data);
+        this.initializeChart();
+
+      },
+      error: (error) => {
+        console.error('There was an error loading transports:', error);
+      }
+    });
+
+  }
+  
+
   initializeChart(): void {
+    
     this.chartLineOption3 = {
       ...echartStyles.lineNoAxis,
       xAxis: {
@@ -83,7 +107,7 @@ export class TransportsComponent implements OnInit {
         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       series: [{
-        data: [50,10,20,10,50,70],
+        data: [],
         lineStyle: {
           color: 'rgba(102, 51, 153, .86)',
           width: 3,
@@ -100,22 +124,30 @@ export class TransportsComponent implements OnInit {
         }
       }]
     };
+    console.log(' chart data on init in chart option   :', this.chartLineOption3.series[0].data);
+
   }
   
-  updateChart(transports: Transports[]): void {
+  /*updateChart(transports: Transports[]): void {
+    console.log(' chart data on init   :', this.chartLineOption3.series[0].data);
     console.log('Updating chart with transports:', transports);
     const prices = transports.map(transport => transport.price);
     console.log('Extracted prices:', prices);
     this.chartLineOption3.series[0].data = prices;
     console.log('Updated chart data:', this.chartLineOption3.series[0].data);
-  }
-  
+    this.chartLineOption3.series[0].data.push(0); 
+    console.log('Updated chart data after pushing 0 :', this.chartLineOption3.series[0].data);
+
+
+  }*/
+
+
     
 
   loadTransports(): void {
     this.transportsService.getTransports().subscribe({
       next: (transports: Transports[]) => {
-       this.updateChart(transports);
+       //this.updateChart(transports);
         this.transports$ = of(transports); 
       },
       error: (error) => {
