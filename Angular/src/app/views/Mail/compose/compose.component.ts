@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserResponse } from 'src/app/shared/models/user/UserResponse';
@@ -15,8 +15,8 @@ import { Router } from '@angular/router';
 export class ComposeComponent implements OnInit {
   connectedUser: UserResponse;
   action: string;
-  email: any;
-  mailForm: FormGroup = new FormGroup({});
+  @Input() email: string;
+    mailForm: FormGroup = new FormGroup({});
   
   constructor(
     private mailService: MailexchangeService,
@@ -28,7 +28,9 @@ export class ComposeComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    console.log(this.email);
     const navigation = this.router.getCurrentNavigation();
+    this.mailForm.patchValue({recipient : this.email})
   }
 
   createForm() {
@@ -56,7 +58,7 @@ export class ComposeComponent implements OnInit {
           confirmButtonText: 'OK'
         }).then(() => {
           this.mailForm.reset();
-          this.router.navigate(['/mailing'])
+          this.activeModal.close();
         });
       },
       error: (err) => {

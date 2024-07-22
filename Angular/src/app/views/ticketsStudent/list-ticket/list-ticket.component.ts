@@ -180,18 +180,10 @@ updateTicketStatus(ticketId: string, status: string) {
   }
 
 
-  onButtonClick(row: any) {
-    this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/forward']); // Navigate to forward component
-  }
-  onUpdate(row: any) {
-    this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/update']); // Navigate to forward component
-  }
 
   onRate(row: any) {
     this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/rate']); // Navigate to forward component
+    this.router.navigate(['ticketsStudent/rate']); // Navigate to forward component
   }
   update(id:any){
     const dialogRef = this.dialog.open(UpdateTicketComponent,{

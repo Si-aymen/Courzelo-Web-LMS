@@ -93,6 +93,6 @@ this.ticketForm.patchValue({ user: this.connectedUser.email })
 //      this.reclamationservice.forwardToEmployee(res.id,this.token.getUser())
     }
     middle() {
-      this.router.navigate(['tickets/list']); // Navigate to forward component
+      this.router.navigate(['ticketsStudent/list']); // Navigate to forward component
         }
 }

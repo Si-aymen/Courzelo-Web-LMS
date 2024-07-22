@@ -3,6 +3,7 @@ package org.example.courzelo.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.models.FAQ;
+import org.example.courzelo.models.Ticket;
 import org.example.courzelo.repositories.FaqRepository;
 import org.example.courzelo.serviceImpls.IFaqService;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,21 @@ public class FaqService implements IFaqService {
     @Override
     public void updateFAQ(FAQ faq) {
         faqRepository.save(faq);
+    }
+
+    @Override
+    public Boolean existbyID(String id) {
+        return faqRepository.existsById(id);
+    }
+
+    @Override
+    public FAQ updateFAQ1(String id, String answer, String question) {
+        FAQ faq = faqRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Faq not found"));
+
+        // Update only specific fields
+        faq.setAnswer(answer);
+        faq.setQuestion(question);
+        return faqRepository.save(faq);
     }
 }
