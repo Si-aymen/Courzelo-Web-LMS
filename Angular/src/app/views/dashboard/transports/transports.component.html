@@ -1,0 +1,223 @@
+<p>transports works!</p>
+
+<div class="row">
+  <div class="col-lg-6 col-md-12">
+    <!-- CARD ICON -->
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon mb-4">
+          <div class="card-body text-center">
+            <i class="i-Share-on-Cloud"></i>
+            <p class="text-muted mt-2 mb-2">Today's users</p>
+            <p class="text-primary text-24 line-height-1 m-0">{{ count$ }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon mb-4">
+          <div class="card-body text-center">
+            <i class="i-Add-User"></i>
+            <p class="text-muted mt-2 mb-2">New Users</p>
+            <p class="text-primary text-24 line-height-1 m-0">21</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon mb-4">
+          <div class="card-body text-center">
+            <i class="i-Money-2"></i>
+            <p class="text-muted mt-2 mb-2">Destinations</p>
+            <p class="text-primary text-24 line-height-1 m-0">19</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon-big mb-4">
+          <div class="card-body text-center">
+            <i class="i-Money-2"></i>
+            <p class="line-height-1 text-title text-18 mt-2 mb-0">4021</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon-big mb-4">
+          <div class="card-body text-center">
+            <i class="i-Gear"></i>
+            <p class="line-height-1 text-title text-18 mt-2 mb-0">4021</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-icon-big mb-4">
+          <div class="card-body text-center">
+            <i class="i-Bell"></i>
+            <p class="line-height-1 text-title text-18 mt-2 mb-0">4021</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- sales charts-->
+  <div class="col-lg-6 col-md-12">
+    <div class="card mb-4">
+      <div class="card-body p-0">
+        <h5 class="card-title m-0 p-3">Users per day</h5>
+        <div
+          echarts
+          [options]="chartLineOption3"
+          style="height: 400px; width: 100%"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card o-hidden mb-4">
+      <ngx-datatable
+        style="height: calc(100vh - 270px); box-shadow: none"
+        class="material fullscreen"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="60"
+        [scrollbarV]="true"
+        [limit]="10"
+        [rows]="transports$ | async"
+      >
+        <ngx-datatable-column name="photo" [maxWidth]="100">
+          <ng-template ngx-datatable-header-template> Icon </ng-template>
+          <ng-template
+            ngx-datatable-cell-template
+            let-value="value"
+            let-row="row"
+          >
+            <i class="i-Jeep"></i>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="id">
+          <ng-template ngx-datatable-header-template> id </ng-template>
+          <ng-template
+            ngx-datatable-cell-template
+            let-value="value"
+            let-row="row"
+          >
+            {{ row.id }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="departure">
+          <ng-template ngx-datatable-header-template> departure </ng-template>
+          <ng-template
+            ngx-datatable-cell-template
+            let-value="value"
+            let-row="row"
+          >
+            {{ row.departure }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="destination">
+          <ng-template ngx-datatable-header-template> destination </ng-template>
+          <ng-template
+            ngx-datatable-cell-template
+            let-value="value"
+            let-row="row"
+          >
+            {{ row.destination }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="time">
+          <ng-template ngx-datatable-header-template> time </ng-template>
+          <ng-template
+            ngx-datatable-cell-template
+            let-value="value"
+            let-row="row"
+          >
+            {{ row.time }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Actions" [width]="210">
+          <ng-template ngx-datatable-header-template> Actions </ng-template>
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <button class="btn btn-primary mr-2" (click)="view(row)">
+              View
+            </button>
+            <button class="btn btn-warning mr-2" (click)="edit(row)">
+              Edit
+            </button>
+            <button class="btn btn-danger" (click)="delete(row)">Delete</button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form [formGroup]="transportForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="departure">Departure</label>
+          <select
+            id="departure"
+            formControlName="departure"
+            class="form-control form-control-rounded"
+          >
+            <option value="" disabled selected>Select departure</option>
+            <option value="ARIENA">ARIENA</option>
+            <option value="RADES">RADES</option>
+            <option value="LAC">LAC</option>
+            <option value="MANZAH">MANZAH</option>
+            <option value="COURZELO">COURZELO</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="destination">destination</label>
+          <select
+            id="destination"
+            formControlName="destination"
+            class="form-control form-control-rounded"
+          >
+            <option value="" disabled selected>Select destination</option>
+            <option value="ARIENA">ARIENA</option>
+            <option value="RADES">RADES</option>
+            <option value="LAC">LAC</option>
+            <option value="MANZAH">MANZAH</option>
+            <option value="COURZELO">COURZELO</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="price">price</label>
+          <input
+            type="number"
+            id="price"
+            formControlName="price"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="time">Time</label>
+          <input
+            type="datetime-local"
+            id="time"
+            formControlName="time"
+            class="form-control"
+            required
+          />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Transprots</button>
+    </form>
+  </div>
+</div>

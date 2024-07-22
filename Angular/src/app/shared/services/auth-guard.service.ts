@@ -3,7 +3,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTre
 import {Observable, of} from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
 import {AuthenticationService} from './user/authentication.service';
-import {switchMap} from "rxjs/operators";
+import {switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,9 @@ export class AuthGuard implements CanActivate {
             switchMap(isAuthenticated => {
                 if (!isAuthenticated) {
                     return of(this.router.parseUrl('/sessions/signin'));
+                }
+                if (!requiredRoles) {
+                    return of(true);
                 }
                 const user = this.sessionService.getUser();
                 if (user && user.roles.some(role => requiredRoles.includes(role))) {

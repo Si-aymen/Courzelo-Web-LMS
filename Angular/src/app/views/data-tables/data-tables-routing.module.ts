@@ -4,6 +4,9 @@ import { FullscreenTableComponent } from './fullscreen-table/fullscreen-table.co
 import { PagingTableComponent } from './paging-table/paging-table.component';
 import { FilterTableComponent } from './filter-table/filter-table.component';
 import { ListPaginationComponent } from './list-pagination/list-pagination.component';
+import {QuizTableComponent} from './Quiz/quiz-table/quiz-table.component';
+import {QuizListComponent} from './Quiz/quiz-list/quiz-list.component';
+import {AuthGuard} from '../../shared/services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -21,7 +24,18 @@ const routes: Routes = [
   {
     path: 'filter',
     component: FilterTableComponent
-  }
+  },
+  {
+    path: 'QuizTable',
+    component: QuizTableComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['TEACHER', 'ADMIN'] }
+  },
+  {
+    path: 'QuizList',
+    component: QuizListComponent,
+    canActivate:  [AuthGuard],
+  },
 ];
 
 @NgModule({
