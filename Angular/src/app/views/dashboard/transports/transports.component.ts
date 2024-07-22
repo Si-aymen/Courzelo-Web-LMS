@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { echartStyles } from 'src/app/shared/echart-styles';
 import { Transports } from 'src/app/shared/models/transports/Transports';
@@ -8,9 +8,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
 import Swal from 'sweetalert2';
-
-
-
 
 
 @Component({
@@ -23,20 +20,18 @@ export class TransportsComponent implements OnInit {
   transports$: Observable<Transports[]>;  
   Buttons: string;
   count$: number;
-  data : number[]
+  newData : number[]
   items = ['Javascript', 'Typescript'];
   transportForm: FormGroup;
   private destroy$ = new Subject<void>();
   
-
-
-
   
 
   constructor(
     private transportsService: TransportsService,
     private dl: DataLayerService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
     
 
   ) 
@@ -44,27 +39,19 @@ export class TransportsComponent implements OnInit {
     
 
   ngOnInit(): void {
-    this.updateChart2();
 
     this.initForm();
     this.loadData();
+
   }
 
 
-  private loadData(): void {
 
+  private loadData(): void {
+    this.updateChart2();
     this.initializeChart();
     this.loadTransports();
     this.loadCount();
-    this.fetchTransports().pipe(
-      takeUntil(this.destroy$),
-      finalize(() => {
-      })
-    ).subscribe({
-     // next: (transports) => this.updateChart(transports),
-      error: (error) => console.error('Error fetching transports:', error)
-    });
-
 
   }
 
@@ -86,8 +73,11 @@ export class TransportsComponent implements OnInit {
         this.transports$ = of(transports); 
         const prices = transports.map(transport => transport.price);
         this.chartLineOption3.series[0].data = prices;
+        this.newData=prices
         console.log(' chart data on init in chart option 2   :', this.chartLineOption3.series[0].data);
         this.initializeChart();
+        this.cdr.detectChanges();
+        
 
       },
       error: (error) => {
@@ -107,7 +97,7 @@ export class TransportsComponent implements OnInit {
         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       series: [{
-        data: [],
+        data :this.newData,
         lineStyle: {
           color: 'rgba(102, 51, 153, .86)',
           width: 3,
@@ -124,30 +114,15 @@ export class TransportsComponent implements OnInit {
         }
       }]
     };
+    
     console.log(' chart data on init in chart option   :', this.chartLineOption3.series[0].data);
 
   }
   
-  /*updateChart(transports: Transports[]): void {
-    console.log(' chart data on init   :', this.chartLineOption3.series[0].data);
-    console.log('Updating chart with transports:', transports);
-    const prices = transports.map(transport => transport.price);
-    console.log('Extracted prices:', prices);
-    this.chartLineOption3.series[0].data = prices;
-    console.log('Updated chart data:', this.chartLineOption3.series[0].data);
-    this.chartLineOption3.series[0].data.push(0); 
-    console.log('Updated chart data after pushing 0 :', this.chartLineOption3.series[0].data);
-
-
-  }*/
-
-
-    
-
+  
   loadTransports(): void {
     this.transportsService.getTransports().subscribe({
       next: (transports: Transports[]) => {
-       //this.updateChart(transports);
         this.transports$ = of(transports); 
       },
       error: (error) => {
@@ -185,15 +160,9 @@ export class TransportsComponent implements OnInit {
     return this.transportsService.getTransports().pipe(
       catchError(error => {
         console.error('Error fetching transports:', error);
-        // You might want to show an error message to the user here
         return throwError(() => new Error('Failed to fetch transports. Please try again later.'));
       })
     );
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
 
@@ -238,5 +207,10 @@ export class TransportsComponent implements OnInit {
     }
     )
   }
+
+
+  refresh(): void {
+    window.location.reload();
+}
 
 }
