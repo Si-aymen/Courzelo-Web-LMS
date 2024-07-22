@@ -20,12 +20,16 @@ export class MailexchangeService {
     return this.http.get<MailExchange[]>(this.baseURL);
   }
 
-  getMailsByRecipient(recipientId: string): Observable<MailExchange[]> {
-    return this.http.get<MailExchange[]>(`${this.baseURL}/recipient/${recipientId}`);
+  getMailsByRecipient(email: string): Observable<MailExchange[]> {
+    return this.http.get<MailExchange[]>(`${this.baseURL}/recipient`, {
+      params: { email }
+    });
   }
 
-  getMailsBySender(senderId: string): Observable<MailExchange[]> {
-    return this.http.get<MailExchange[]>(`${this.baseURL}/sender/${senderId}`);
+  getMailsBySender(email: string): Observable<MailExchange[]> {
+    return this.http.get<MailExchange[]>(`${this.baseURL}/sender`, {
+      params: { email }
+    });
   }
   deleteMail(mailId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseURL}/delete/${mailId}`);

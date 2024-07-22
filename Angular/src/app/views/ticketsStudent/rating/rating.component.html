@@ -2,22 +2,21 @@
     <h2>Ticket Details :</h2>
     <h5>Id :{{ticketData.id}}</h5>
     <h5>Subject :{{ticketData.sujet}}</h5>
+    <div class="rating-container">
+        <h3>Average Rating: 
+        <button class="btn btn-rounded btn-sm btn-outline-primary mr-2" (click)="heartRating = 1.35">{{ averageRating }}</button>
+    </h3>
   </div>
    <div class="card-body">
                 <div class="m-sm-4">
                     <form [formGroup]="data" (ngSubmit)="forward()">
                         <div class="mb-3">
                             <label class="form-label">Rating</label>
-                            <textarea class="form-control" id="form6Example7" 
-                            formControlName="rating"
-                            rows="3"></textarea>
-                        </div>
+                            <input id="decimalInput" formControlName="rating" type="number" step="0.1" />
+                        </div>                
                         <div class="text-center m-3">
-                                <button class="btn btn-primary btn-rounded" style="margin-right: 10px;" [disabled]="! data.valid"> Rating</button>
-     
-                            <!--<button  class="btn btn-dark btn-lg" style="margin-right: 10px;" [disabled]="! data.valid">Transférer</button>-->
+                            <button class="btn btn-primary btn-rounded" style="margin-right: 10px;" [disabled]="!data.valid">Rating</button>
                             <button type="reset" class="btn btn-danger btn-rounded" (click)="middle()">Annuler</button>
-                            <!-- <button type="submit" class="btn btn-lg btn-primary">Sign up</button> -->
                         </div>
                     </form>
                 </div>

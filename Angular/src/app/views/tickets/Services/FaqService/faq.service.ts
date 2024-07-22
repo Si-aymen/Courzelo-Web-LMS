@@ -18,18 +18,18 @@ export class FAQService {
   }
 
   getFAQById(id: string): Observable<FAQ> {
-    return this.http.get<FAQ>(`${this.baseUrl}/${id}`);
+    return this.http.get<FAQ>(`${this.baseUrl}/get/${id}`);
   }
 
   addFAQ(faq: FAQ): Observable<FAQ> {
     return this.http.post<FAQ>(`${this.baseUrl}/add`, faq);
   }
 
-  updateFAQ(id: string, faq: FAQ): Observable<FAQ> {
-    return this.http.put<FAQ>(`${this.baseUrl}/${id}`, faq);
+  updateFAQ(id:any,faq: FAQ): Observable<FAQ> {
+    return this.http.put<FAQ>(`${this.baseUrl}/update/${id}`, faq);
   }
 
   deleteFAQ(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`);
   }
 }

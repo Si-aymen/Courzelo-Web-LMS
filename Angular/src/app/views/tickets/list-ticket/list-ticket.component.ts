@@ -8,15 +8,12 @@ import { TicketServiceService } from '../Services/TicketService/ticket-service.s
 import { Ticket } from 'src/app/shared/models/Ticket';
 import { catchError, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { UpdateTicketComponent } from '../update-ticket/update-ticket.component';
-import { ForwardComponent } from '../forward/forward.component';
 import Swal from 'sweetalert2';
 import { TickettypeService } from '../Services/TicketTypeService/tickettype.service';
 import { Etat } from 'src/app/shared/models/Etat';
 import { Message } from 'src/app/shared/models/Message';
 import { UserResponse } from 'src/app/shared/models/user/UserResponse';
 import { SessionStorageService } from 'src/app/shared/services/user/session-storage.service';
-import { AddTicketComponent } from '../add-ticket/add-ticket.component';
 
 @Component({
   selector: 'app-list-ticket',
@@ -185,76 +182,6 @@ updateTicketStatus(ticketId: string, status: string) {
     this.ticketDataService.sendTicketData(row); // Send row data to service
     this.router.navigate(['tickets/forward']); // Navigate to forward component
   }
-  onUpdate(row: any) {
-    this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/update']); // Navigate to forward component
-  }
-
-  onRate(row: any) {
-    this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/rate']); // Navigate to forward component
-  }
 
 
-  update(id:any){
-    const dialogRef = this.dialog.open(UpdateTicketComponent,{
-      width : "10%",
-      height: "10%",
-      data: { ticket:id}
-    });
-    dialogRef.afterClosed().subscribe(res =>{
-     this.ngOnInit();
-    })   
-  }
-
-  Affecter() {
-    const dialogRef = this.dialog.open(AddTicketComponent,{
-      width : "50%",
-      height: "100%",
-    });
-    dialogRef.afterClosed().subscribe(res =>{
-     this.ngOnInit();
-    })  
-}
-delete(id:any){
-  Swal.fire({
-    title: 'Êtes-vous sûr ?',
-    text: "Voulez-vous vraiment supprimer cette appartment ?",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Oui, supprimez-le!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.ticketservice.deleteTicket(id).subscribe((res:any) =>{
-        if (res.message){
-          Swal.fire({
-            icon: 'success',
-            title: 'Success...',
-            text: 'Supprimé avec succès !',
-          })
-          this.ngOnInit();
-        }
-        else{
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: "Quelque chose s'est mal passé!",
-          })
-        }
-      },
-      err =>{
-        Swal.fire({
-          icon: 'warning',
-          title: 'La suppression a échoué!...',
-          text: err.error.message,
-        })
-      }
-      )
-    }
-    this.ngOnInit();
-  }
-  )
-}
 }
