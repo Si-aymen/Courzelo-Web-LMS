@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {DomSanitizer} from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Transports } from '../../models/transports/Transports';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 
 
 
@@ -17,13 +17,13 @@ export class TransportsService {
 
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
 
-   }
+  }
 
-   getTransports(): Observable<Transports[]> {
+  getTransports(): Observable<Transports[]> {
     return this.http.get<Transports[]>(`${this.baseUrl}/GetAll`);
   }
 
-  getCount(): Observable<number>{
+  getCount(): Observable<number> {
     return this.http.get<number>(`${this.baseUrl}/count/transports`);
   }
 
@@ -36,5 +36,13 @@ export class TransportsService {
         alert("Transport Registered Successfully");
       });
   }
+
+
+  deleteTransports(id: string): Observable<Object> {
+    return this.http.delete(`${this.baseUrl}/remove-Transports/${id}`);
+  }
+
+
+
 
 }

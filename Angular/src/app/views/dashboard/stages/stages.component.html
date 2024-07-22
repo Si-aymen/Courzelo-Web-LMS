@@ -109,7 +109,7 @@
         [limit]="10"
         [rows]="stages$ | async"
       >
-        <ngx-datatable-column name="photo" [maxWidth]="100">
+        <ngx-datatable-column name="photo" [maxWidth]="50">
           <ng-template ngx-datatable-header-template> Icon </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -120,7 +120,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="id">
+        <ngx-datatable-column name="id" [maxWidth]="60">
           <ng-template ngx-datatable-header-template> id </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -131,7 +131,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="name">
+        <ngx-datatable-column name="name" [maxWidth]="60">
           <ng-template ngx-datatable-header-template> name </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -153,7 +153,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="location">
+        <ngx-datatable-column name="location" [maxWidth]="60">
           <ng-template ngx-datatable-header-template> location </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -164,7 +164,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="type">
+        <ngx-datatable-column name="type"[maxWidth]="100">
           <ng-template ngx-datatable-header-template> type </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -175,7 +175,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="status">
+        <ngx-datatable-column name="status" [maxWidth]="100" >
           <ng-template ngx-datatable-header-template> Status </ng-template>
           <ng-template ngx-datatable-cell-template let-row="row">
             <span
@@ -194,7 +194,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="entName">
+        <ngx-datatable-column name="entName" [maxWidth]="60">
           <ng-template ngx-datatable-header-template> entName </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -205,7 +205,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="duration">
+        <ngx-datatable-column name="duration"[maxWidth]="20">
           <ng-template ngx-datatable-header-template> duration </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -216,7 +216,7 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="domain">
+        <ngx-datatable-column name="domain" [maxWidth]="60">
           <ng-template ngx-datatable-header-template> domain </ng-template>
           <ng-template
             ngx-datatable-cell-template
@@ -236,7 +236,7 @@
             <button class="btn btn-warning mr-2" (click)="edit(row)">
               Edit
             </button>
-            <button class="btn btn-danger" (click)="delete(row)">Delete</button>
+            <button class="btn btn-danger" (click)="delete(row.id)">Delete</button>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
@@ -293,6 +293,7 @@
             <option value="" disabled selected>Select type</option>
             <option value="ONSITE">On site</option>
             <option value="REMOTE">Remote</option>
+            <option value="CANNCELED">Cannceled</option>
           </select>
         </div>
         <div class="form-group col-md-4">
