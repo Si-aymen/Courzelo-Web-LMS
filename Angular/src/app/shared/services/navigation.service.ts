@@ -189,7 +189,20 @@ export class NavigationService {
             tooltip: 'Documentation',
             icon: 'i-Safe-Box1',
             state: 'http://demos.ui-lib.com/gull-doc'
-        }
+        },
+        {
+            name: 'Support',
+            description: 'Support Menu',
+            type: 'dropDown',
+            icon: 'i-File-Horizontal-Text',
+            sub: [
+                { icon: 'i-Support', name: 'Tickets', state: '/tickets/list', type: 'link' , roles: ['ADMIN'] },
+                { icon: 'i-Hand', name: 'FAQ', state: '/tickets/faq', type: 'link', roles: ['ADMIN'] },
+                { icon: 'i-Hand', name: 'FAQ', state: '/ticketsStudent/faq', type: 'link', roles: ['STUDENT'] },
+                { icon: 'i-Support', name: 'Support', state: '/ticketsStudent/list', type: 'link', roles: ['TEACHER', 'STUDENT'] },
+                { icon: 'icon-regular i-Mail-Reply', name: 'Mails', state: '/mailing', type: 'link' },
+            ]
+        },
     ];
 
     // sets iconMenu as default;
