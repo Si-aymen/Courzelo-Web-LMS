@@ -43,6 +43,7 @@
                         <ng-template #deleteBtnTemplate let-row="row" let-value="value">
                             <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
                             <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
+                            <button class=" btn btn-primary btn-rounded" (click)="addUserModel(addUser,row)">Add User</button>
                         </ng-template>
                     </ngx-datatable>
                 </div>
@@ -142,6 +143,43 @@
 
                     <div class="col-md-12">
                         <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Submit</btn-loading>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+    <ng-template #addUser let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title-user">Add User</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="addUserForm" (ngSubmit)="addInstitutionUser()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="email">Email</label>
+                        <input type="text" formControlName="email" class="form-control" id="email" placeholder="Enter user's email">
+                        <div *ngIf="shouldShowError('email', 'required')" class="text-danger">
+                            Email is required.
+                        </div>
+                        <div *ngIf="shouldShowError('name', 'email')" class="text-danger">
+                            Email must be a valid email address.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="role">Role</label>
+                        <select formControlName="role" class="form-control form-control" id="role">
+                            <option *ngFor="let role of roles" [value]="role">{{ role}}</option>
+                        </select>
+                        <div *ngIf="shouldShowError('role', 'required')" class="text-danger">
+                            Role is required.
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Add</btn-loading>
                     </div>
                 </div>
             </form>

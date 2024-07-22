@@ -42,8 +42,9 @@ export class InstitutionsComponent implements OnInit {
   _currentPage = 1;
   totalPages = 0;
   totalItems = 0;
-  itemsPerPage = 2;
+  itemsPerPage = 10;
   loading = false;
+  roles = ['Admin', 'Teacher', 'Student'];
   searchControl: FormControl = new FormControl();
     addInstitutionForm = this.formBuilder.group({
             name: ['', [Validators.required, Validators.maxLength(40), Validators.minLength(3)]],
@@ -52,6 +53,11 @@ export class InstitutionsComponent implements OnInit {
             address: ['', [Validators.required, Validators.maxLength(100), Validators.minLength(10)]],
             description: ['', [Validators.required, Validators.maxLength(500), Validators.minLength(10)]],
             website: ['', [Validators.required, Validators.maxLength(100), Validators.minLength(5)]],
+        }
+    );
+    addUserForm = this.formBuilder.group({
+            email: ['', [Validators.required, Validators.email]],
+            role: ['', [Validators.required]],
         }
     );
     institutionRequest: InstitutionRequest = {};
@@ -82,6 +88,7 @@ export class InstitutionsComponent implements OnInit {
         this.institutionService.addInstitution(this.institutionRequest).subscribe(
             response => {
                 this.toastr.success('Institution added successfully');
+                this.addInstitutionForm.reset();
                 this.loadInstitutions(this.currentPage, this.itemsPerPage, '');
             }, error => {
                 this.handleResponse.handleError(error);
@@ -90,6 +97,22 @@ export class InstitutionsComponent implements OnInit {
     } else {
             this.toastr.error('Please fill all fields');
 
+        }
+    }
+    addInstitutionUser() {
+        if (this.addUserForm.valid) {
+            this.institutionService.addInstitutionUser(this.currentInstitution.id,
+                this.addUserForm.controls.email.value,
+                this.addUserForm.controls.role.value.toUpperCase()).subscribe(
+                response => {
+                    this.toastr.success('User added successfully');
+                    this.addUserForm.reset();
+                }, error => {
+                    this.handleResponse.handleError(error);
+                }
+            );
+        } else {
+            this.toastr.error('Please fill all fields correctly');
         }
     }
   loadInstitutions(page: number, size: number, keyword: string) {
@@ -127,11 +150,12 @@ export class InstitutionsComponent implements OnInit {
         );
     }
     updateInstitution(id: string) {
-      if(this.addInstitutionForm.valid) {
+      if (this.addInstitutionForm.valid) {
           const institution: InstitutionRequest = this.addInstitutionForm.value;
           this.institutionService.updateInstitution(id, institution).subscribe(
               response => {
                   this.toastr.success('Institution updated successfully');
+                  this.addInstitutionForm.reset();
                   this.loadInstitutions(this.currentPage, this.itemsPerPage, '');
               }, error => {
                   this.handleResponse.handleError(error);
@@ -152,7 +176,15 @@ export class InstitutionsComponent implements OnInit {
             console.log('Dismissed', reason);
         });
     }
-
+    addUserModel(content, institution: InstitutionResponse) {
+        this.currentInstitution = institution;
+        this.modalService.open(content, { ariaLabelledBy: 'add User' })
+            .result.then((result) => {
+            console.log(result);
+        }, (reason) => {
+            console.log('Err!', reason);
+        });
+    }
     editInstitutionModel(content, institution: InstitutionResponse) {
         this.currentInstitution = institution;
         this.addInstitutionForm.controls.name.setValue(institution.name);

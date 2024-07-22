@@ -216,24 +216,40 @@ public class InstitutionServiceImpl implements IInstitutionService {
 
     @Override
     public ResponseEntity<HttpStatus> addInstitutionUser(String institutionID, String email, String role,Principal principal) {
+        log.info("Adding user to institution {} with email: {} and role : {} ", institutionID, email , role);
         User admin = userRepository.findUserByEmail(principal.getName());
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
         if(!isUserSuperAdmin(admin) && !isUserAdminInInstitution(admin, institution)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         User user = userRepository.findUserByEmail(email);
-        if(user == null || isUserInInstitution(user, institution)){
+        if(user == null || !isUserInInstitution(user, institution)){
             return ResponseEntity.badRequest().build();
         }
         switch (role) {
-            case "ADMIN" -> institution.getAdmins().add(user);
-            case "TEACHER" -> institution.getTeachers().add(user);
-            case "STUDENT" -> institution.getStudents().add(user);
+            case "ADMIN" -> {
+                institution.getAdmins().add(user);
+                addUserToInstitution(user, institution, Role.ADMIN);
+            }
+            case "TEACHER" -> {
+                institution.getTeachers().add(user);
+                addUserToInstitution(user, institution, Role.TEACHER);
+            }
+            case "STUDENT" -> {
+                institution.getStudents().add(user);
+                addUserToInstitution(user, institution, Role.STUDENT);
+            }
         }
         institutionRepository.save(institution);
         return ResponseEntity.ok().build();
     }
-
+    public void addUserToInstitution(User user, Institution institution, Role role){
+        user.getEducation().setInstitution(institution);
+        if(!user.getRoles().contains(role)){
+            user.getRoles().add(role);
+        }
+        userRepository.save(user);
+    }
     public boolean isUserInInstitution(User user, Institution institution){
         return user.getEducation().getInstitution() != null && Objects.equals(user.getEducation().getInstitution().getId(), institution.getId());
     }

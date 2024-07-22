@@ -62,7 +62,7 @@ public class InstitutionController {
                                                                                @RequestParam(defaultValue = "10") int sizePerPage) {
         return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
     }
-    @PutMapping("/{institutionID}/addUser")
+    @PutMapping("/{institutionID}/add-user")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
     public ResponseEntity<HttpStatus> addInstitutionUser(@PathVariable @NotNull String institutionID,
                                                          @RequestParam @Email String email,

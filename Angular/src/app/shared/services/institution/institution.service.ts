@@ -42,6 +42,12 @@ export class InstitutionService {
   deleteInstitution(institutionID: string): Observable<StatusMessageResponse> {
     return this.http.delete<StatusMessageResponse>(`${this.baseUrl}/delete/${institutionID}`);
   }
+  addInstitutionUser(institutionID: string, email: string, role: string): Observable<StatusMessageResponse> {
+    const params = new HttpParams()
+        .set('email', email)
+        .set('role', role);
+    return this.http.put<StatusMessageResponse>(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
+  }
 
   getInstitutionByID(institutionID: string): Observable<InstitutionResponse> {
     return this.http.get<InstitutionResponse>(`${this.baseUrl}/${institutionID}`);
