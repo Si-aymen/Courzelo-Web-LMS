@@ -31,22 +31,18 @@ export class InstitutionService {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/add`, institutionRequest);
   }
 
-  updateInstitution(institutionID: string, institutionRequest: InstitutionRequest): Observable<StatusMessageResponse> {
-    return this.http.put<StatusMessageResponse>(`${this.baseUrl}/update/${institutionID}`, institutionRequest);
-  }
-
-  updateMyInstitution(institutionRequest: InstitutionRequest): Observable<StatusMessageResponse> {
-    return this.http.put<StatusMessageResponse>(`${this.baseUrl}/update`, institutionRequest);
+  updateInstitution(institutionID: string, institutionRequest: InstitutionRequest) {
+    return this.http.put(`${this.baseUrl}/update/${institutionID}`, institutionRequest);
   }
 
   deleteInstitution(institutionID: string): Observable<StatusMessageResponse> {
     return this.http.delete<StatusMessageResponse>(`${this.baseUrl}/delete/${institutionID}`);
   }
-  addInstitutionUser(institutionID: string, email: string, role: string): Observable<StatusMessageResponse> {
+  addInstitutionUser(institutionID: string, email: string, role: string) {
     const params = new HttpParams()
         .set('email', email)
         .set('role', role);
-    return this.http.put<StatusMessageResponse>(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
+    return this.http.put(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
   }
 
   getInstitutionByID(institutionID: string): Observable<InstitutionResponse> {

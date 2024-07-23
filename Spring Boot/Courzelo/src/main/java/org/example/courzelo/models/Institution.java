@@ -2,6 +2,7 @@ package org.example.courzelo.models;
 
 import lombok.Data;
 import org.example.courzelo.dto.requests.InstitutionRequest;
+import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,8 +31,6 @@ public class Institution {
     private byte[] excelFile;
     private double latitude;
     private double longitude;
-    public Institution() {
-    }
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -40,7 +39,9 @@ public class Institution {
         users.addAll(students);
         return users;
     }
-
+    public Institution()
+    {
+    }
     public Institution(InstitutionRequest institutionRequest){
         this.name = institutionRequest.getName();
         this.slogan = institutionRequest.getSlogan();

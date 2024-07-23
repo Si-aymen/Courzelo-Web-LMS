@@ -14,8 +14,7 @@ import java.security.Principal;
 public interface IInstitutionService {
     ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword);
     ResponseEntity<StatusMessageResponse> addInstitution(InstitutionRequest institutionRequest);
-    ResponseEntity<StatusMessageResponse> updateInstitutionInformation(String institutionID, InstitutionRequest institutionRequest);
-    ResponseEntity<StatusMessageResponse> updateMyInstitutionInformation(Principal principal, InstitutionRequest institutionRequest);
+    ResponseEntity<HttpStatus> updateInstitutionInformation(String institutionID, InstitutionRequest institutionRequest,Principal principal);
     ResponseEntity<StatusMessageResponse> deleteInstitution(String institutionID);
     ResponseEntity<InstitutionResponse> getInstitutionByID(String institutionID);
     ResponseEntity<PaginatedSimplifiedUserResponse> getInstitutionUsers(String institutionID,String keyword, String role, int page, int sizePerPage);

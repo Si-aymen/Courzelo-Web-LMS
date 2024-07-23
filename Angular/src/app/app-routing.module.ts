@@ -4,8 +4,6 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGuard } from './shared/services/auth-guard.service';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
-import {TakeQuizComponent} from './views/forms/Quiz/take-quiz/take-quiz.component';
-import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 
 import { ProjectComponent } from 'src/app/shared/components/Project/User/project/project.component';
 import { ProjectdetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';

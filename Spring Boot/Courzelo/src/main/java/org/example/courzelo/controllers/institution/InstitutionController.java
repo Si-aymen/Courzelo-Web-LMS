@@ -1,4 +1,4 @@
-package org.example.courzelo.controllers;
+package org.example.courzelo.controllers.institution;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -35,14 +35,11 @@ public class InstitutionController {
         return iInstitutionService.addInstitution(institutionRequest);
     }
     @PutMapping("/update/{institutionID}")
-    public ResponseEntity<StatusMessageResponse> updateInstitution(@PathVariable @NotNull String institutionID,
-                                                                  @RequestBody InstitutionRequest institutionRequest) {
-        return iInstitutionService.updateInstitutionInformation(institutionID, institutionRequest);
-    }
-    @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<StatusMessageResponse> updateMyInstitution(Principal principal, @RequestBody @Valid InstitutionRequest institutionRequest) {
-        return iInstitutionService.updateMyInstitutionInformation(principal,institutionRequest);
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    public ResponseEntity<HttpStatus> updateInstitution(@PathVariable @NotNull String institutionID,
+                                                                  @RequestBody InstitutionRequest institutionRequest,
+                                                                   Principal principal) {
+        return iInstitutionService.updateInstitutionInformation(institutionID, institutionRequest,principal);
     }
     @DeleteMapping("/delete/{institutionID}")
     public ResponseEntity<StatusMessageResponse> deleteInstitution(@PathVariable @NotNull String institutionID) {

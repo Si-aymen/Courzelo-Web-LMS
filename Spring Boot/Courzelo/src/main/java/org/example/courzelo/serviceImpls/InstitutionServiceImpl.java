@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -51,14 +50,14 @@ public class InstitutionServiceImpl implements IInstitutionService {
             );
             query.addCriteria(criteria);
         }
-
+        log.info("Total institutions found: -1");
         List<Institution> institutions = mongoTemplate.find(query, Institution.class);
         long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Institution.class);
-
+        log.info("Total institutions found: {}", total);
         List<InstitutionResponse> institutionResponses = institutions.stream()
                 .map(InstitutionResponse::new)
                 .toList();
-
+        log.info("Total institutions found2: {}", total);
         PaginatedInstitutionsResponse response = new PaginatedInstitutionsResponse();
         response.setInstitutions(institutionResponses);
         response.setCurrentPage(page);
@@ -77,20 +76,15 @@ public class InstitutionServiceImpl implements IInstitutionService {
     }
 
     @Override
-    public ResponseEntity<StatusMessageResponse> updateInstitutionInformation(String institutionID, InstitutionRequest institutionRequest) {
-        Institution institution = institutionRepository.findById(institutionID).orElseThrow();
-        institution.updateInstitution(institutionRequest);
-        institutionRepository.save(institution);
-        return ResponseEntity.ok(new StatusMessageResponse("Success","Institution updated successfully"));
-    }
-
-    @Override
-    public ResponseEntity<StatusMessageResponse> updateMyInstitutionInformation(Principal principal, InstitutionRequest institutionRequest) {
+    public ResponseEntity<HttpStatus> updateInstitutionInformation(String institutionID, InstitutionRequest institutionRequest,Principal principal) {
         User user = userRepository.findUserByEmail(principal.getName());
-        Institution institution = institutionRepository.findById(user.getEducation().getInstitution().getId()).orElseThrow();
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+        if(!isUserAllowedToEditInstitution(user, institution)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         institution.updateInstitution(institutionRequest);
         institutionRepository.save(institution);
-        return ResponseEntity.ok(new StatusMessageResponse("Success","Institution updated successfully"));
+        return ResponseEntity.ok().build();
     }
 
     @Override
@@ -138,13 +132,13 @@ public class InstitutionServiceImpl implements IInstitutionService {
     @Override
     public void removeAllInstitutionUsers(Institution institution) {
         institution.getAdmins().stream().peek(
-                user -> user.getEducation().setInstitution(null)
+                user -> user.getEducation().setInstitutions(null)
         ).forEach(userRepository::save);
         institution.getTeachers().stream().peek(
-                user -> user.getEducation().setInstitution(null)
+                user -> user.getEducation().setInstitutions(null)
         ).forEach(userRepository::save);
         institution.getStudents().stream().peek(
-                user -> user.getEducation().setInstitution(null)
+                user -> user.getEducation().setInstitutions(null)
         ).forEach(userRepository::save);
     }
 
@@ -152,7 +146,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     public ResponseEntity<HttpStatus> removeInstitutionUser(String institutionID, String email, Principal principal) {
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
         User admin = userRepository.findUserByEmail(principal.getName());
-        if(!isUserSuperAdmin(admin) && !isUserAdminInInstitution(admin, institution)){
+        if(!isUserAllowedToEditInstitution(admin, institution)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         User user = userRepository.findUserByEmail(email);
@@ -163,7 +157,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
             institution.getAdmins().remove(user);
             institution.getTeachers().remove(user);
             institution.getStudents().remove(user);
-            user.getEducation().setInstitution(null);
+            user.getEducation().setInstitutions(null);
             userRepository.save(user);
             institutionRepository.save(institution);
             return ResponseEntity.ok().build();
@@ -175,7 +169,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     public ResponseEntity<HttpStatus> updateInstitutionUserRole(String institutionID, String email, String role, Principal principal) {
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
         User admin = userRepository.findUserByEmail(principal.getName());
-        if(!isUserSuperAdmin(admin) && !isUserAdminInInstitution(admin, institution)){
+        if(!isUserAllowedToEditInstitution(admin, institution)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         User user = userRepository.findUserByEmail(email);
@@ -219,11 +213,13 @@ public class InstitutionServiceImpl implements IInstitutionService {
         log.info("Adding user to institution {} with email: {} and role : {} ", institutionID, email , role);
         User admin = userRepository.findUserByEmail(principal.getName());
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
-        if(!isUserSuperAdmin(admin) && !isUserAdminInInstitution(admin, institution)){
+        if(!isUserAllowedToEditInstitution(admin, institution)){
+            log.info("User not allowed to edit institution");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         User user = userRepository.findUserByEmail(email);
         if(user == null || !isUserInInstitution(user, institution)){
+            log.info("User not found or not in institution");
             return ResponseEntity.badRequest().build();
         }
         switch (role) {
@@ -244,14 +240,20 @@ public class InstitutionServiceImpl implements IInstitutionService {
         return ResponseEntity.ok().build();
     }
     public void addUserToInstitution(User user, Institution institution, Role role){
-        user.getEducation().setInstitution(institution);
+        if(!user.getEducation().getInstitutions().contains(institution)){
+            user.getEducation().getInstitutions().add(institution);
+        }
         if(!user.getRoles().contains(role)){
             user.getRoles().add(role);
         }
         userRepository.save(user);
     }
+    public boolean isUserAllowedToEditInstitution(User user, Institution institution){
+        return isUserSuperAdmin(user) || isUserAdminInInstitution(user, institution);
+    }
     public boolean isUserInInstitution(User user, Institution institution){
-        return user.getEducation().getInstitution() != null && Objects.equals(user.getEducation().getInstitution().getId(), institution.getId());
+        return user.getEducation().getInstitutions() != null && user.getEducation().getInstitutions().stream()
+                .anyMatch(institution1 -> Objects.equals(institution1.getId(), institution.getId()));
     }
     public boolean isUserAdminInInstitution(User user, Institution institution){
         return institution.getAdmins().contains(user);
