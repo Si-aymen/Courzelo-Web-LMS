@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -17,6 +18,9 @@ public class Rating {
 
     @Min(1)
     @Max(5)
-    private int rating;
+    private double rating;
+
+    @DBRef
+    private Ticket ticket;
 
 }

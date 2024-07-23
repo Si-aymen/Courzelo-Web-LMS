@@ -16,26 +16,23 @@
                 Inbox
               </a>
               <div class="d-flex" *ngIf="selected">
-                <a href="" class="link-icon mr-3" (click)="openComposeModal1('Reply', selected)"> 
+                <button *ngIf="!isSentView" type="button" class="link-icon mr-3 btn-reset" (click)="openComposeModal2(selected?.sender?.email)">
                   <i class="icon-regular i-Mail-Reply"></i> Reply
-                </a>
-                <a href="#" class="link-icon mr-3">
-                  <i class="icon-regular i-Mail-Reply-All"></i> Forward
-                </a>
-                <a href="#" class="link-icon mr-3">
-                  <i class="icon-regular i-Mail-Reply-All"></i> Delete
-                </a>
+                </button>
+                <button type="button" class="link-icon mr-3 btn-reset" (click)="deleteMail1(selected?.id)">
+                  <i class="icon-regular i-Mail-Reply"></i> Delete
+                </button>   
               </div>
             </div>
             <!-- EMAIL DETAILS -->
             <div class="inbox-details rtl-ps-none" *ngIf="selected" [perfectScrollbar]="{suppressScrollX: true}">
               <div class="row no-gutters">
                 <div class="mr-2" style="width: 36px">
-                  <img class="rounded-circle" src='assets/images/faces/1.jpg' alt="">
+                  <img class="rounded-circle" [src]="selected?.sender?.profile?.profileImage" alt="">
                 </div>
                 <div class="col-xs-12">
                   <p class="m-0">From: {{selected?.sender?.email}}</p>
-                  <p class="text-12 text-muted">{{selected?.date | date}}</p>
+                  <p class="text-12 text-muted">{{selected?.dateCreation | date}}</p>
                 </div>
               </div>
               <h4 class="mb-3">{{selected?.subject}}</h4>
@@ -55,9 +52,9 @@
         </div>
         <div appSidebar="inbox-secondary-sidebar" class="inbox-secondary-sidebar rtl-ps-none" [perfectScrollbar]="{suppressScrollX: true}">
           <i class="sidebar-close i-Close" appSidebarToggler="inbox-secondary-sidebar"></i>
-          <div class="mail-item" *ngFor="let m of mails$ | async" (click)="select(m)">
+          <div class="mail-item" *ngFor="let m of currentMailList$ | async" (click)="select(m)">
             <div class="avatar">
-              <img src="assets/images/faces/1.jpg" alt="Logo">
+              <img [src]="m.sender.profile.profileImage" alt="Sender Profile Image">
             </div>
             <div class="col-xs-6 details">
               <span class="name text-muted">{{m.sender.profile.name}} {{m.sender.profile.lastname}}</span>
@@ -66,25 +63,30 @@
             <div class="col-xs-3 date">
               <span class="text-muted">{{m.dateCreation | date}}</span>
             </div>
-            <div class="col-xs-3 date">
-              <button type="button" class="btn btn-danger btn-rounded m-1" (click)="deleteMail(m.id, $event)">X</button>
-            </div>
           </div>
-        </div>
-        
+        </div> 
       </div>
     </div>
     <!-- MAIN SIDEBAR -->
     <div appSidebar="inbox-main-sidebar" class="inbox-main-sidebar">
       <div class="pt-3 pr-3 pb-3">
-          <i class="sidebar-close i-Close" appSidebarToggler="inbox-main-sidebar"></i>
-          <button class="btn btn-rounded btn-primary btn-block mb-4" (click)="openComposeModal()">Compose</button>
-          <p class="text-muted mb-2">Browse</p>
-          <ul class="inbox-main-nav">
-              <li><a href="" class="active"><i class="icon-regular i-Mail-2"></i> Recived</a></li>
-              <li><a href=""><i class="icon-regular i-Mail-Outbox"></i> Sent</a></li>
-          </ul>
+        <i class="sidebar-close i-Close" appSidebarToggler="inbox-main-sidebar"></i>
+        <button class="btn btn-rounded btn-primary btn-block mb-4" (click)="openComposeModal()">Compose</button>
+        <p class="text-muted mb-4" style="margin-bottom: 30px;">Browse</p> <!-- Adjust the margin as needed -->
+        <ul class="inbox-main-nav">
+          <li style="margin-bottom: 15px;"> <!-- Adjust the margin as needed -->
+            <button type="button" class="link-icon" (click)="loadToMe()">
+              <i class="icon-regular i-Mail-2"></i> Received
+            </button>
+          </li>
+          <li>
+            <button type="button" class="link-icon" (click)="loadByMe()">
+              <i class="icon-regular i-Mail-Outbox"></i> Sent
+            </button>
+          </li>
+        </ul>
       </div>
-  </div>
+    </div>
+    
   </div>
 </div>

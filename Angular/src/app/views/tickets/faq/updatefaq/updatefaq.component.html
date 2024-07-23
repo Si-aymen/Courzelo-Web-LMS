@@ -1,0 +1,25 @@
+<!-- add-faq.component.html -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Edit FAQ </h5>
+    </div>
+    <div class="card-body">
+        <div class="m-sm-4">
+            <form [formGroup]="data" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label class="form-label">Question</label>
+                    <input class="form-control form-control-lg" type="text" formControlName="question"  name="name" placeholder="Enter the name" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Answer</label>
+                  <input class="form-control form-control-lg" type="text" formControlName="answer"  name="name" placeholder="Enter the name" />
+              </div>
+                <div>                    <div class="col-md-12">
+                      <button class="btn btn-primary btn-rounded" type="submit"[disabled]="data.invalid">Update FAQ</button>
+                      <button type="reset" class="btn btn-danger btn-rounded" (click)="onClose()">Annuler</button>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

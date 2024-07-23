@@ -10,6 +10,7 @@ import org.example.courzelo.serviceImpls.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,14 +29,14 @@ public class RatingServiceImp implements IRatingService {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
-            Rating savedRating = ratingRepository.save(rating);
-            ticket.setRating(savedRating);
-            ticketRepository.save(ticket);
-            return savedRating;
+            rating.setTicket(ticket); // Set the ticket in the rating
+            Rating savedRating = ratingRepository.save(rating); // Save the rating to the repository
+            return savedRating; // Return the saved rating
         } else {
             throw new RuntimeException("Ticket not found with id: " + ticketId);
         }
     }
+
 
     @Override
     public Rating updateRating(String ratingId, Rating rating) {
@@ -44,14 +45,6 @@ public class RatingServiceImp implements IRatingService {
             Rating existingRating = ratingOptional.get();
             existingRating.setRating(rating.getRating());
             Rating updatedRating = ratingRepository.save(existingRating);
-
-            // Update the associated ticket's average rating
-            Optional<Ticket> ticketOptional = ticketRepository.findById(existingRating.getId());
-            if (ticketOptional.isPresent()) {
-                Ticket ticket = ticketOptional.get();
-                ticketRepository.save(ticket);
-            }
-
             return updatedRating;
         } else {
             throw new RuntimeException("Rating not found with id: " + ratingId);
@@ -69,17 +62,15 @@ public class RatingServiceImp implements IRatingService {
         Optional<Rating> ratingOptional = ratingRepository.findById(ratingId);
         if (ratingOptional.isPresent()) {
             Rating rating = ratingOptional.get();
-            ratingRepository.delete(rating);
-
+            ratingRepository.deleteById(rating.getId());
             // Update the associated ticket's average rating
-            Optional<Ticket> ticketOptional = ticketRepository.findById(rating.getId());
-            if (ticketOptional.isPresent()) {
-                Ticket ticket = ticketOptional.get();
-                ticket.setRating(null);
-                ticketRepository.save(ticket);
-            }
         } else {
             throw new RuntimeException("Rating not found with id: " + ratingId);
         }
+    }
+
+    @Override
+    public List<Rating> getAllRating() {
+        return ratingRepository.findAll();
     }
 }

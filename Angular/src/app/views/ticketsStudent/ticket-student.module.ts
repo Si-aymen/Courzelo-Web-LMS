@@ -10,13 +10,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { ListFaqComponent } from './list-faq/list-faq.component';
+import { RatingComponent } from './rating/rating.component';
 
 
 @NgModule({
   declarations: [
     AddTicketComponent,
     ListTicketComponent,
-    UpdateTicketComponent
+    UpdateTicketComponent,
+    ListFaqComponent,
+    RatingComponent
   ],
   imports: [
     CommonModule,

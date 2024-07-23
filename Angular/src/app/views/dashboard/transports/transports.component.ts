@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { echartStyles } from 'src/app/shared/echart-styles';
 import { Transports } from 'src/app/shared/models/transports/Transports';
@@ -7,7 +7,7 @@ import { DataLayerService } from 'src/app/shared/services/data-layer.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
-
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -20,20 +20,18 @@ export class TransportsComponent implements OnInit {
   transports$: Observable<Transports[]>;  
   Buttons: string;
   count$: number;
-  data : number[]
+  newData : number[]
   items = ['Javascript', 'Typescript'];
   transportForm: FormGroup;
   private destroy$ = new Subject<void>();
   
-
-
-
   
 
   constructor(
     private transportsService: TransportsService,
     private dl: DataLayerService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
     
 
   ) 
@@ -41,24 +39,19 @@ export class TransportsComponent implements OnInit {
     
 
   ngOnInit(): void {
+
     this.initForm();
     this.loadData();
+
   }
 
 
+
   private loadData(): void {
+    this.updateChart2();
     this.initializeChart();
     this.loadTransports();
     this.loadCount();
-    this.fetchTransports().pipe(
-      takeUntil(this.destroy$),
-      finalize(() => {
-      })
-    ).subscribe({
-      next: (transports) => this.updateChart(transports),
-      error: (error) => console.error('Error fetching transports:', error)
-    });
-
 
   }
 
@@ -72,7 +65,31 @@ export class TransportsComponent implements OnInit {
   }
 
 
+
+  updateChart2(): void {
+
+    this.transportsService.getTransports().subscribe({
+      next: (transports: Transports[]) => {
+        this.transports$ = of(transports); 
+        const prices = transports.map(transport => transport.price);
+        this.chartLineOption3.series[0].data = prices;
+        this.newData=prices
+        console.log(' chart data on init in chart option 2   :', this.chartLineOption3.series[0].data);
+        this.initializeChart();
+        this.cdr.detectChanges();
+        
+
+      },
+      error: (error) => {
+        console.error('There was an error loading transports:', error);
+      }
+    });
+
+  }
+  
+
   initializeChart(): void {
+    
     this.chartLineOption3 = {
       ...echartStyles.lineNoAxis,
       xAxis: {
@@ -80,7 +97,7 @@ export class TransportsComponent implements OnInit {
         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       series: [{
-        data: [50,10,20,10,50,70],
+        data :this.newData,
         lineStyle: {
           color: 'rgba(102, 51, 153, .86)',
           width: 3,
@@ -97,22 +114,15 @@ export class TransportsComponent implements OnInit {
         }
       }]
     };
-  }
-  
-  updateChart(transports: Transports[]): void {
-    console.log('Updating chart with transports:', transports);
-    const prices = transports.map(transport => transport.price);
-    console.log('Extracted prices:', prices);
-    this.chartLineOption3.series[0].data = prices;
-    console.log('Updated chart data:', this.chartLineOption3.series[0].data);
-  }
-  
     
+    console.log(' chart data on init in chart option   :', this.chartLineOption3.series[0].data);
 
+  }
+  
+  
   loadTransports(): void {
     this.transportsService.getTransports().subscribe({
       next: (transports: Transports[]) => {
-       this.updateChart(transports);
         this.transports$ = of(transports); 
       },
       error: (error) => {
@@ -150,16 +160,57 @@ export class TransportsComponent implements OnInit {
     return this.transportsService.getTransports().pipe(
       catchError(error => {
         console.error('Error fetching transports:', error);
-        // You might want to show an error message to the user here
         return throwError(() => new Error('Failed to fetch transports. Please try again later.'));
       })
     );
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+
+  delete(id:any){
+    Swal.fire({
+      title: 'are you sur ?',
+      text: "Delete this Transportation ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes Delete!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.transportsService.deleteTransports(id).subscribe((res:any) =>{
+          if (res.message){
+            Swal.fire({
+              icon: 'success',
+              title: 'Success...',
+              text: 'Transportation Deleted !',
+            })
+            this.ngOnInit();
+          }
+          else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: "Error !",
+            })
+          }
+        },
+        err =>{
+          Swal.fire({
+            icon: 'warning',
+            title: 'Error in deleting Transportation',
+            text: err.error.message,
+          })
+        }
+        )
+      }
+      this.ngOnInit();
+    }
+    )
   }
 
+
+  refresh(): void {
+    window.location.reload();
+}
 
 }

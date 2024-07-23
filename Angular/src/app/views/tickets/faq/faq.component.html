@@ -20,12 +20,11 @@
       <li *ngFor="let faq of faqs" class="list-group-item">
         <h5 class="mb-1">Question : {{ faq.question }}</h5>
         <p class="mb-1">Answer : {{ faq.answer }}</p>
-        <button class="btn btn-sm btn-outline-primary" (click)="editFAQ(faq)">Edit</button>
-        <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteFAQ(faq)">Delete</button>
+        <button class="btn btn-sm btn-outline-primary" (click)="editFAQ(faq.id)">Edit</button>
+        <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteFAQ(faq.id)">Delete</button>
       </li>
     </ul>
   </div>
-
   <div *ngIf="faqs && faqs.length === 0">
     <p>No FAQs found.</p>
   </div>

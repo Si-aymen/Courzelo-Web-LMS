@@ -3,12 +3,8 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Ticket } from 'src/app/shared/models/Ticket';
-import { TicketType } from 'src/app/shared/models/TicketType';
 import Swal from 'sweetalert2';
 import { TickettypeService } from '../../Services/TicketTypeService/tickettype.service';
-import { UpdateTicketComponent } from '../../update-ticket/update-ticket.component';
 
 @Component({
   selector: 'app-update-type',

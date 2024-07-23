@@ -46,6 +46,7 @@ middle() {
         }
         console.log(this.data.value)
         console.log('FAQ added successfully', response);
+        this.router.navigate(['tickets/faq']); // Navigate to forward component
         // Optionally clear form fields or handle success feedback
       },
       (error) => {

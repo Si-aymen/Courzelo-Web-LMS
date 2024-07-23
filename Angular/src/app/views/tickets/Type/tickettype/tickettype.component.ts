@@ -70,7 +70,7 @@ export class TickettypeComponent implements OnInit {
                   text: 'Ajouté avec succès !',
                 });
                 this.data.reset();
-                //this.router.navigate(['tickets/list']); // Navigate to forward component
+                this.router.navigate(['tickets/list']); // Navigate to forward component
               }
             }).catch((err: any) => {
               if (err.error && err.error.message) {
