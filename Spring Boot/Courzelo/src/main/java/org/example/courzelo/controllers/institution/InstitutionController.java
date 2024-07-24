@@ -9,6 +9,7 @@ import org.example.courzelo.dto.responses.PaginatedSimplifiedUserResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
+import org.example.courzelo.security.CustomAuthorization;
 import org.example.courzelo.services.IInstitutionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.security.Principal;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
 public class InstitutionController {
     private final IInstitutionService iInstitutionService;
+    private final CustomAuthorization customAuthorization;
     @GetMapping("/all")
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(@RequestParam(defaultValue = "0") int page,
                                                                          @RequestParam(defaultValue = "10") int sizePerPage,
@@ -35,7 +37,7 @@ public class InstitutionController {
         return iInstitutionService.addInstitution(institutionRequest);
     }
     @PutMapping("/update/{institutionID}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> updateInstitution(@PathVariable @NotNull String institutionID,
                                                                   @RequestBody InstitutionRequest institutionRequest,
                                                                    Principal principal) {
@@ -51,7 +53,7 @@ public class InstitutionController {
         return iInstitutionService.getInstitutionByID(institutionID);
     }
     @GetMapping("/{institutionID}/users")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<PaginatedSimplifiedUserResponse> getInstitutionUsers(@PathVariable @NotNull String institutionID,
                                                                                @RequestParam(required = false) String keyword,
                                                                                @RequestParam(required = false) String role,
@@ -60,7 +62,7 @@ public class InstitutionController {
         return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
     }
     @PutMapping("/{institutionID}/add-user")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> addInstitutionUser(@PathVariable @NotNull String institutionID,
                                                          @RequestParam @Email String email,
                                                          @RequestParam @NotNull String role,
@@ -68,14 +70,14 @@ public class InstitutionController {
         return iInstitutionService.addInstitutionUser(institutionID, email, role, principal);
     }
     @DeleteMapping("/{institutionID}/removeUser")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> removeInstitutionUser(@PathVariable @NotNull String institutionID,
                                                             @RequestParam @Email String email,
                                                             Principal principal) {
         return iInstitutionService.removeInstitutionUser(institutionID, email, principal);
     }
     @DeleteMapping("/{institutionID}/remove-user-role")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> removeInstitutionUserRole(@PathVariable @NotNull String institutionID,
                                                                @RequestParam @Email String email,
                                                                @RequestParam @NotNull String role,

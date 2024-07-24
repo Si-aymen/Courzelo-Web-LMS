@@ -240,12 +240,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     @Override
     public ResponseEntity<HttpStatus> addInstitutionUser(String institutionID, String email, String role,Principal principal) {
         log.info("Adding user to institution {} with email: {} and role : {} ", institutionID, email , role);
-        User admin = userRepository.findUserByEmail(principal.getName());
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
-        if(!isUserAllowedToEditInstitution(admin, institution)){
-            log.info("User not allowed to edit institution");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         User user = userRepository.findUserByEmail(email);
         if(user == null){
             log.info("User not found");
