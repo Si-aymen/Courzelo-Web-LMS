@@ -28,6 +28,14 @@ const userRoutes: Routes = [
       loadChildren: () => import('./views/tickets/tickets.module').then(m => m.TicketsModule)
     },
     {
+      path: 'transports',
+      loadChildren: () => import('./views/transports/transports.module').then(m => m.TransportsModule)
+    },
+    {
+      path: 'stages',
+      loadChildren: () => import('./views/stages/stages.module').then(m => m.StagesModule)
+    },
+    {
       path: 'mailing',
       loadChildren: () => import('./views/Mail/mail.module').then(m => m.MailModule)
     },

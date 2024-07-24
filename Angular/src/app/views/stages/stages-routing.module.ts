@@ -1,0 +1,16 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { StagesComponent } from './stages/stages.component';
+
+const routes: Routes = [
+  {
+    path: 'stages',
+    component: StagesComponent
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class StagesRoutingModule { }
