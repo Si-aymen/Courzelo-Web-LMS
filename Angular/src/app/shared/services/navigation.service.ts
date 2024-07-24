@@ -67,6 +67,7 @@ export class NavigationService {
                 { icon: 'i-Add-Window', name: 'Stages', state: '/dashboard/stages', type: 'link' },
             ]
         },
+       
         {
             name: 'UI kits',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
@@ -165,6 +166,24 @@ export class NavigationService {
             icon: 'i-Windows-2',
             sub: [
                 { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.storageService.getUserEmail(), type: 'link' }
+            ]
+        },
+        {
+            name: 'Transportations',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-Jeep',
+            sub: [
+                { icon: 'i-Jeep', name: 'Transportation', state: '/dashboard/transports', type: 'link' },
+            ]
+        },
+        {
+            name: 'Internshipq',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-Add-Window',
+            sub: [
+                { icon: 'i-Add-Window', name: 'Internships', state: '/dashboard/stages', type: 'link' },
             ]
         },
         {

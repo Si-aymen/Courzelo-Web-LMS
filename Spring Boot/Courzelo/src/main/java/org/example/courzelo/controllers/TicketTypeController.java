@@ -93,7 +93,6 @@ public class TicketTypeController {
 
             // Delete the TicketType
             iTicketTypeService.deleteTicketType(ID);
-
             return ResponseEntity.ok(Collections.singletonMap("message", "Tickets and TicketType deleted successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
