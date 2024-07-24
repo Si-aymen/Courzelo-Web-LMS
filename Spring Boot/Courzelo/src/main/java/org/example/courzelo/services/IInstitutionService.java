@@ -21,5 +21,5 @@ public interface IInstitutionService {
     void removeAllInstitutionUsers(Institution institution);
     ResponseEntity<HttpStatus> addInstitutionUser(String institutionID, String email, String role,Principal principal);
     ResponseEntity<HttpStatus> removeInstitutionUser(String institutionID, String email,Principal principal);
-    ResponseEntity<HttpStatus> updateInstitutionUserRole(String institutionID, String email, String role,Principal principal);
+    ResponseEntity<HttpStatus> removeInstitutionUserRole(String institutionID, String email, String role,Principal principal);
 }

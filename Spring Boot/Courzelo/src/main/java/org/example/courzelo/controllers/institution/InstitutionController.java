@@ -74,12 +74,12 @@ public class InstitutionController {
                                                             Principal principal) {
         return iInstitutionService.removeInstitutionUser(institutionID, email, principal);
     }
-    @PutMapping("/{institutionID}/updateUserRole")
+    @DeleteMapping("/{institutionID}/remove-user-role")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-    public ResponseEntity<HttpStatus> updateInstitutionUserRole(@PathVariable @NotNull String institutionID,
+    public ResponseEntity<HttpStatus> removeInstitutionUserRole(@PathVariable @NotNull String institutionID,
                                                                @RequestParam @Email String email,
                                                                @RequestParam @NotNull String role,
                                                                Principal principal) {
-        return iInstitutionService.updateInstitutionUserRole(institutionID, email, role, principal);
+        return iInstitutionService.removeInstitutionUserRole(institutionID, email, role, principal);
     }
 }

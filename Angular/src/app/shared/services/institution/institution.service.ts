@@ -44,6 +44,12 @@ export class InstitutionService {
         .set('role', role);
     return this.http.put(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
   }
+  removeInstitutionUserRole(institutionID: string, email: string, role: string) {
+    const params = new HttpParams()
+        .set('email', email)
+        .set('role', role);
+    return this.http.delete(`${this.baseUrl}/${institutionID}/remove-user-role`, { params });
+  }
 
   getInstitutionByID(institutionID: string): Observable<InstitutionResponse> {
     return this.http.get<InstitutionResponse>(`${this.baseUrl}/${institutionID}`);
