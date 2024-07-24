@@ -1,0 +1,71 @@
+<div *ngIf="stage$ | async as stage; else loading" class="card m-4 p-4">
+    <h1 class="mb-4">Stage Details: {{stage.name}}</h1>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>ID:</strong></div>
+      <div class="col-md-9">{{stage.id}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Name:</strong></div>
+      <div class="col-md-9">{{stage.name}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Description:</strong></div>
+      <div class="col-md-9">{{stage.description}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Location:</strong></div>
+      <div class="col-md-9">{{stage.location}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Type:</strong></div>
+      <div class="col-md-9">{{stage.type}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Status:</strong></div>
+      <div class="col-md-9">
+        <span class="badge badge-pill px-3 py-1"
+          [ngClass]="{
+            'badge-success': stage.status === 'ACTIF',
+            'badge-warning': stage.status === 'IN_PROGRESS' || stage.status === 'PAUSED',
+            'badge-danger': stage.status === 'NOT_SUBMITTED' || stage.status === 'CANNCELED'
+          }">
+          {{stage.status}}
+        </span>
+      </div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Enterprise Name:</strong></div>
+      <div class="col-md-9">{{stage.entName}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Duration:</strong></div>
+      <div class="col-md-9">{{stage.duration}}</div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-3"><strong>Domain:</strong></div>
+      <div class="col-md-9">{{stage.domain}}</div>
+    </div>
+  
+    <div class="mt-4">
+      <button class="btn btn-primary mr-2" (click)="goBack()">Back</button>
+      <button class="btn btn-warning mr-2" (click)="edit(stage)">Edit</button>
+      <button class="btn btn-danger" (click)="delete(stage.id)">Delete</button>
+    </div>
+  </div>
+  
+  <ng-template #loading>
+    <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </ng-template>

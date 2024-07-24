@@ -230,7 +230,7 @@
         <ngx-datatable-column name="Actions" [width]="210">
           <ng-template ngx-datatable-header-template> Actions </ng-template>
           <ng-template ngx-datatable-cell-template let-row="row">
-            <button class="btn btn-primary mr-2" (click)="view(row)">
+            <button class="btn btn-primary mr-2" (click)="view(row.id)">
               View
             </button>
             <button class="btn btn-warning mr-2" (click)="edit(row)">
