@@ -1,18 +1,18 @@
 <div class="">
+    <ng-template [ngIf]="showInstitutionsTable" >
     <div class="breadcrumb">
-        <h1>Institution</h1>
+        <h1>Institutions list</h1>
     </div>
 
     <div class="separator-breadcrumb border-top"></div>
-
     <div class="row">
         <div class="col-md-8 ">
             <div class="form-group">
                 <input id="keyword" placeholder="Search Institutions" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
             </div>
         </div>
-        <div class="col-md-4 d-flex justify-content-center align-items-center" style="height: 4vh;">
-            <button (click)="addInstitutionModel(add)" class="btn btn-success btn-sm " >Add Institution</button>
+        <div class="col-mb-3" style="height: 4vh;">
+            <button (click)="addInstitutionModel(add)" class="btn  btn-success btn-rounded btn-sm m-1 " >Add Institution</button>
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
@@ -43,8 +43,7 @@
                         <ng-template #deleteBtnTemplate let-row="row" let-value="value">
                             <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
                             <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
-                            <button class=" btn btn-primary btn-rounded" (click)="addUserModel(addUser,row)">Add User</button>
-                            <button class=" btn btn-primary btn-rounded" (click)="institutionUsersModel(usersList,row)">Users List</button>
+                            <button class=" btn btn-primary btn-rounded" (click)="toggleInstitutionUsersTable(row)">Users List</button>
 
                         </ng-template>
                     </ngx-datatable>
@@ -53,6 +52,7 @@
             </div>
         </div>
     </div>
+    </ng-template>
     <ng-template #edit let-modal>
         <div class="modal-header">
             <h4 class="modal-title" id="modal-basic-title-Edit">Edit Institution</h4>
@@ -302,15 +302,20 @@
             <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
         </div>
     </ng-template>
-    <ng-template  #usersList>
+    <ng-template [ngIf]="showInstitutionUsersTable" >
+        <div class="breadcrumb">
+            <h1><span class="btn btn-lg btn-rounded btn-primary m-1" (click)="toggleInstitutionUsersTable(null)">{{currentInstitution.name}}</span>'s users</h1>
+        </div>
+
+        <div class="separator-breadcrumb border-top"></div>
             <div class="row">
                 <div class="col-md-8 ">
                     <div class="form-group">
-                        <input id="keyword-users" placeholder="Search Users" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+                        <input id="keyword-users" placeholder="Search Users" [formControl]="searchControlUsers" class="form-control form-control-rounded" type="text">
                     </div>
                 </div>
-                <div class="col-md-4 d-flex justify-content-center align-items-center" style="height: 4vh;">
-                    <button (click)="addUserModel(addUser,currentInstitution)" class="btn btn-success btn-sm " >Add User</button>
+                <div class="col-md-2 btn-group-sm " style="height: 4vh;">
+                    <button (click)="addUserModel(addUser,currentInstitution)" class="btn btn-success btn-sm m-1 " >Add User</button>
                 </div>
                 <div class="col-md-12">
                     <div class="card o-hidden">
@@ -326,11 +331,11 @@
                                     style="height: calc(100vh - 270px); box-shadow: none"
                                     class="material fullscreen"
                                     [columnMode]="'force'"
-                                    [columns]="[{ name: 'Email' }, { name: 'Name' }, { name: 'Lastname' }, { name: 'Roles' }, { name: 'Country' }, { name: 'Gender' },
-                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate, width: 250 }]"
+                                    [columns]="[{ name: 'Email' }, { name: 'Name' }, { name: 'Lastname' }, { name: 'Roles', cellTemplate:roles , width: 200 }, { name: 'Country' }, { name: 'Gender' },
+                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate, width: 250 },{ name: 'Edit', prop: 'id', cellTemplate: editBtnTemplate, width: 250 }]"
                                     [headerHeight]="50"
                                     [footerHeight]="50"
-                                    [rowHeight]="80"
+                                    [rowHeight]="200"
                                     [scrollbarV]="true"
                                     [scrollbarH]="true"
                                     [externalPaging]="true"
@@ -338,10 +343,23 @@
                                     [offset]="(currentPageUsers - 1) * itemsPerPageUsers"
                                     [limit]="itemsPerPageUsers"
                                     [rows]="users | paginate: { itemsPerPage: itemsPerPageUsers, currentPage: currentPageUsers, totalItems: totalItemsUsers }">
+                                <ng-template #roles let-row="row" let-value="value">
+                                    <div class="role-tags">
+                                    <span *ngFor="let role of row.roles" class="btn btn-sm btn-primary m-1">{{ role }}</span>
+                                    </div>
+                                </ng-template>
                                 <ng-template #deleteBtnTemplate let-row="row" let-value="value">
-                                    <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
-                                    <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
-                                    <button class=" btn btn-primary btn-rounded" (click)="addUserModel(addUser,row)">Add User</button>
+                                    <button class=" btn btn-danger  m-1" (click)="modalConfirmUserFunction(modalConfirmUser,row)">Remove</button>
+                                </ng-template>
+                                <ng-template #editBtnTemplate let-row="row" let-value="value">
+                                    <form (ngSubmit)="changeUserRole(row)">
+                                        <div class="form-group">
+                                            <select [(ngModel)]="selectedRole" class="form-control" name="role">
+                                                <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+                                            </select>
+                                        </div>
+                                        <button class="btn btn-primary m-1" type="submit"><i class="fas fa-user-edit mr-2"></i>Edit</button>
+                                    </form>
                                 </ng-template>
                             </ngx-datatable>
                         </div>
@@ -349,5 +367,23 @@
                     </div>
                 </div>
             </div>
+    </ng-template>
+    <ng-template #modalConfirmUser let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title-user">User removal</h4>
+            <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Are you sure you want to remove <span class="text-primary">{{ currentUser.name }}</span>from {{currentInstitution.name}}?</strong></p>
+            <p>All information associated to this user will be permanently deleted from the institution.
+                <span class="text-danger">This operation cannot be undone.</span>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="modal.dismiss('cancel')">Cancel</button>
+            <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
+        </div>
     </ng-template>
 </div>

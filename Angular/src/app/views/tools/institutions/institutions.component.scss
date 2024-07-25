@@ -5,3 +5,16 @@
 .margin-bottom-20 {
   margin-bottom: 20px;
 }
+.role-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.role-tag {
+  padding: 5px 10px;
+  background-color: #512678;
+  color: white;
+  border-radius: 15px;
+  font-size: 14px;
+}

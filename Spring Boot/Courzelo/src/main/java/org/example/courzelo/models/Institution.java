@@ -34,10 +34,23 @@ public class Institution {
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
-        users.addAll(admins);
-        users.addAll(teachers);
-        users.addAll(students);
-        return users;
+        // only one instance of each user
+        for (User user : admins) {
+            if (!users.contains(user)) {
+                users.add(user);
+            }
+        }
+        for (User user : teachers) {
+            if (!users.contains(user)) {
+                users.add(user);
+            }
+        }
+        for (User user : students) {
+            if (!users.contains(user)) {
+                users.add(user);
+            }
+        }
+         return users;
     }
     public Institution()
     {

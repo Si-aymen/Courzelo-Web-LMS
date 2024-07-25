@@ -1,7 +1,6 @@
 package org.example.courzelo.services;
 
 import org.example.courzelo.dto.requests.InstitutionRequest;
-import org.example.courzelo.dto.responses.PaginatedSimplifiedUserResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
@@ -22,5 +21,6 @@ public interface IInstitutionService {
     void removeAllInstitutionUsers(Institution institution);
     ResponseEntity<HttpStatus> addInstitutionUser(String institutionID, String email, String role,Principal principal);
     ResponseEntity<HttpStatus> removeInstitutionUser(String institutionID, String email,Principal principal);
-    ResponseEntity<HttpStatus> removeInstitutionUserRole(String institutionID, String email, String role,Principal principal);
+    ResponseEntity<HttpStatus> addInstitutionUserRole(String institutionID, String email, String role, Principal principal);
+    ResponseEntity<HttpStatus> removeInstitutionUserRole(String institutionID, String email, String role, Principal principal);
 }

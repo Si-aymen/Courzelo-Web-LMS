@@ -10,6 +10,7 @@ import {InstitutionRequest} from '../../../shared/models/institution/Institution
 import {UserService} from '../../../shared/services/user/user.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {InstitutionUserResponse} from '../../../shared/models/institution/InstitutionUserResponse';
+import {UserResponse} from '../../../shared/models/user/UserResponse';
 
 @Component({
   selector: 'app-institutions',
@@ -25,7 +26,11 @@ export class InstitutionsComponent implements OnInit {
   }
   set currentPageUsers(value: number) {
     this._currentPageUsers = value;
-    this.getInstitutionUsers();
+    if (this.searchControlUsers.value == null) {
+        this.getInstitutionUsers(this._currentPageUsers, this.itemsPerPageUsers, null, null);
+    } else {
+        this.getInstitutionUsers(this._currentPageUsers, this.itemsPerPageUsers, this.searchControlUsers.value, null);
+    }
   }
   set currentPage(value: number) {
     this._currentPage = value;
@@ -43,12 +48,15 @@ export class InstitutionsComponent implements OnInit {
       private userService: UserService,
       private modalService: NgbModal
   ) { }
+    showInstitutionsTable = true;
   institutions: InstitutionResponse[] = [];
   currentInstitution: InstitutionResponse;
+  currentUser: InstitutionUserResponse;
   _currentPage = 1;
   totalPages = 0;
   totalItems = 0;
   itemsPerPage = 10;
+  showInstitutionUsersTable = false;
   users: InstitutionUserResponse[] = [];
     _currentPageUsers = 1;
     totalPagesUsers = 0;
@@ -58,6 +66,7 @@ export class InstitutionsComponent implements OnInit {
   loadingUsers = false;
     roles = ['Admin', 'Teacher', 'Student'];
   searchControl: FormControl = new FormControl();
+    searchControlUsers: FormControl = new FormControl();
     addInstitutionForm = this.formBuilder.group({
             name: ['', [Validators.required, Validators.maxLength(40), Validators.minLength(3)]],
             slogan: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
@@ -74,6 +83,8 @@ export class InstitutionsComponent implements OnInit {
     );
     institutionRequest: InstitutionRequest = {};
     countries = [];
+    selectedRole = '';
+    availableRoles: string[] = ['ADMIN', 'STUDENT', 'TEACHER'];
   ngOnInit() {
     this.loadInstitutions(this.currentPage, this.itemsPerPage, '');
     this.searchControl.valueChanges
@@ -81,6 +92,11 @@ export class InstitutionsComponent implements OnInit {
         .subscribe(value => {
           this.loadInstitutions(1, this.itemsPerPage, value);
         });
+      this.searchControlUsers.valueChanges
+          .pipe(debounceTime(200))
+          .subscribe(value => {
+              this.getInstitutionUsers(1, this.itemsPerPage, value, null);
+          });
       this.userService.getCountries().subscribe(
           countries => {
               this.countries = countries;
@@ -119,6 +135,7 @@ export class InstitutionsComponent implements OnInit {
                 response => {
                     this.toastr.success('User added successfully');
                     this.addUserForm.reset();
+                    this.getInstitutionUsers(this.currentPageUsers, this.itemsPerPageUsers, null, null);
                 }, error => {
                     this.handleResponse.handleError(error);
                 }
@@ -212,9 +229,9 @@ export class InstitutionsComponent implements OnInit {
             console.log('Err!', reason);
         });
     }
-    getInstitutionUsers() {
+    getInstitutionUsers(page: number, size: number, keyword: string, role: string) {
         this.loadingUsers = true;
-        this.institutionService.getInstitutionUsers(this.currentInstitution.id).subscribe(
+        this.institutionService.getInstitutionUsers(this.currentInstitution.id, keyword, role, page - 1, size).subscribe(
             response => {
                 console.log(response);
                 this.users = response.users;
@@ -230,14 +247,53 @@ export class InstitutionsComponent implements OnInit {
         );
         this.loadingUsers = false;
     }
-    institutionUsersModel(content, institution: InstitutionResponse) {
-        this.currentInstitution = institution;
-        this.getInstitutionUsers();
-        this.modalService.open(content, { ariaLabelledBy: 'edit Institution' })
+    toggleInstitutionUsersTable(institution: InstitutionResponse) {
+      if (this.showInstitutionsTable) {
+          this.showInstitutionsTable = false;
+          this.showInstitutionUsersTable = true;
+          this.currentInstitution = institution;
+          this.getInstitutionUsers(1, this.itemsPerPageUsers, null, null);
+      } else {
+            this.showInstitutionsTable = true;
+            this.showInstitutionUsersTable = false;
+      }
+    }
+    removeInstitutionuser(user: InstitutionUserResponse) {
+        this.institutionService.removeInstitutionUser(this.currentInstitution.id, user.email).subscribe(
+            response => {
+                this.toastr.success('User removed successfully');
+                this.getInstitutionUsers(this.currentPageUsers, this.itemsPerPageUsers, null, null);
+            }, error => {
+                this.handleResponse.handleError(error);
+            }
+        );
+    }
+    modalConfirmUserFunction(content, user: InstitutionUserResponse) {
+      this.currentUser = user;
+        this.modalService.open(content, { ariaLabelledBy: 'confirm User' })
             .result.then((result) => {
-            console.log(result);
+            if (result === 'Ok') {
+                this.removeInstitutionuser(user);
+            }
         }, (reason) => {
             console.log('Err!', reason);
         });
+    }
+    changeUserRole(user: UserResponse) {
+        if (this.selectedRole && !user.roles.includes(this.selectedRole)) {
+            this.institutionService.addInstitutionUserRole(this.currentInstitution.id, user.email, this.selectedRole).subscribe(res => {
+                this.toastr.success('User role updated successfully');
+                user.roles.push(this.selectedRole);
+            }, error => {
+                this.handleResponse.handleError(error);
+            });
+        } else if (this.selectedRole && user.roles.includes(this.selectedRole)) {
+            this.institutionService.removeInstitutionUserRole(this.currentInstitution.id, user.email, this.selectedRole).subscribe(res => {
+                this.toastr.success('User role updated successfully');
+                user.roles = user.roles.filter(role => role !== this.selectedRole);
+            }, error => {
+                this.handleResponse.handleError(error);
+            });
+        }
     }
 }

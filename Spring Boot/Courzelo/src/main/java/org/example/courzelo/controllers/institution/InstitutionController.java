@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.InstitutionRequest;
-import org.example.courzelo.dto.responses.PaginatedSimplifiedUserResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
@@ -70,19 +69,27 @@ public class InstitutionController {
                                                          Principal principal) {
         return iInstitutionService.addInstitutionUser(institutionID, email, role, principal);
     }
-    @DeleteMapping("/{institutionID}/removeUser")
+    @DeleteMapping("/{institutionID}/remove-user")
     @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> removeInstitutionUser(@PathVariable @NotNull String institutionID,
                                                             @RequestParam @Email String email,
                                                             Principal principal) {
         return iInstitutionService.removeInstitutionUser(institutionID, email, principal);
     }
-    @DeleteMapping("/{institutionID}/remove-user-role")
+    @PutMapping("/{institutionID}/remove-user-role")
     @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> removeInstitutionUserRole(@PathVariable @NotNull String institutionID,
                                                                @RequestParam @Email String email,
                                                                @RequestParam @NotNull String role,
                                                                Principal principal) {
         return iInstitutionService.removeInstitutionUserRole(institutionID, email, role, principal);
+    }
+    @PutMapping("/{institutionID}/add-user-role")
+    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<HttpStatus> addInstitutionUserRole(@PathVariable @NotNull String institutionID,
+                                                                @RequestParam @Email String email,
+                                                                @RequestParam @NotNull String role,
+                                                                Principal principal) {
+        return iInstitutionService.addInstitutionUserRole(institutionID, email, role, principal);
     }
 }

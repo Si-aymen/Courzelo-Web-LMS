@@ -46,10 +46,23 @@ export class InstitutionService {
     return this.http.put(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
   }
   removeInstitutionUserRole(institutionID: string, email: string, role: string) {
+    console.log(email, role, institutionID);
     const params = new HttpParams()
         .set('email', email)
         .set('role', role);
-    return this.http.delete(`${this.baseUrl}/${institutionID}/remove-user-role`, { params });
+    return this.http.put(`${this.baseUrl}/${institutionID}/remove-user-role`, null, { params });
+  }
+  addInstitutionUserRole(institutionID: string, email: string, role: string) {
+    console.log(email, role, institutionID);
+    const params = new HttpParams()
+        .set('email', email)
+        .set('role', role);
+    return this.http.put(`${this.baseUrl}/${institutionID}/add-user-role`, null, { params });
+  }
+  removeInstitutionUser(institutionID: string, email: string) {
+    const params = new HttpParams()
+        .set('email', email);
+    return this.http.delete(`${this.baseUrl}/${institutionID}/remove-user`,  { params });
   }
 
   getInstitutionByID(institutionID: string): Observable<InstitutionResponse> {
