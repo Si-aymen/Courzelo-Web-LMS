@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {InstitutionRequest} from '../../models/institution/InstitutionRequest';
 import {StatusMessageResponse} from '../../models/user/StatusMessageResponse';
 import {InstitutionResponse} from '../../models/institution/InstitutionResponse';
+import {PaginatedInstitutionUsersResponse} from "../../models/institution/PaginatedInstitutionUsersResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +56,7 @@ export class InstitutionService {
     return this.http.get<InstitutionResponse>(`${this.baseUrl}/${institutionID}`);
   }
   getInstitutionUsers(institutionID: string, keyword?: string, role?: string, page: number = 0, sizePerPage: number = 10):
-      Observable<PaginatedInstitutionsResponse> {
+      Observable<PaginatedInstitutionUsersResponse> {
     let params = new HttpParams()
         .set('page', page.toString())
         .set('sizePerPage', sizePerPage.toString());
@@ -67,6 +68,6 @@ export class InstitutionService {
       params = params.set('keyword', keyword);
     }
 
-    return this.http.get<PaginatedInstitutionsResponse>(`${this.baseUrl}/${institutionID}/users`, { params });
+    return this.http.get<PaginatedInstitutionUsersResponse>(`${this.baseUrl}/${institutionID}/users`, { params });
   }
 }

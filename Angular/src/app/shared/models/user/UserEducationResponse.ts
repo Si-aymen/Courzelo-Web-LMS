@@ -1,3 +1,3 @@
 export interface UserEducationResponse {
-    institutions?: string[];
+    institution?: string;
 }

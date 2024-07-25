@@ -8,6 +8,7 @@ import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.PaginatedSimplifiedUserResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
+import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
 import org.example.courzelo.security.CustomAuthorization;
 import org.example.courzelo.services.IInstitutionService;
@@ -54,11 +55,11 @@ public class InstitutionController {
     }
     @GetMapping("/{institutionID}/users")
     @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
-    public ResponseEntity<PaginatedSimplifiedUserResponse> getInstitutionUsers(@PathVariable @NotNull String institutionID,
-                                                                               @RequestParam(required = false) String keyword,
-                                                                               @RequestParam(required = false) String role,
-                                                                               @RequestParam(defaultValue = "0") int page,
-                                                                               @RequestParam(defaultValue = "10") int sizePerPage) {
+    public ResponseEntity<PaginatedInstitutionUsersResponse> getInstitutionUsers(@PathVariable @NotNull String institutionID,
+                                                                                 @RequestParam(required = false) String keyword,
+                                                                                 @RequestParam(required = false) String role,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "10") int sizePerPage) {
         return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
     }
     @PutMapping("/{institutionID}/add-user")

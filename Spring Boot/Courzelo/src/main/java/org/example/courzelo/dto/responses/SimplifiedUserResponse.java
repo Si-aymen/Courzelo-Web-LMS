@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.courzelo.models.User;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class SimplifiedUserResponse {
@@ -13,6 +14,7 @@ public class SimplifiedUserResponse {
     private Date birthDate;
     private String gender;
     private String country;
+    private List<String> roles;
 
     public SimplifiedUserResponse(User user){
         this.email = user.getEmail();
@@ -21,5 +23,6 @@ public class SimplifiedUserResponse {
         this.birthDate = user.getProfile().getBirthDate();
         this.country = user.getProfile().getCountry();
         this.gender = user.getProfile().getGender();
+        this.roles = user.getRoles().stream().map(Enum::name).toList();
     }
 }

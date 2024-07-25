@@ -29,7 +29,7 @@
                             class="material fullscreen"
                             [columnMode]="'force'"
                             [columns]="[{ name: 'Name' }, { name: 'Slogan' }, { name: 'Country' }, { name: 'Address' }, { name: 'Description' }, { name: 'Website' },
-                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate }]"
+                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate, width: 250 }]"
                             [headerHeight]="50"
                             [footerHeight]="50"
                             [rowHeight]="80"
@@ -44,6 +44,8 @@
                             <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
                             <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
                             <button class=" btn btn-primary btn-rounded" (click)="addUserModel(addUser,row)">Add User</button>
+                            <button class=" btn btn-primary btn-rounded" (click)="institutionUsersModel(usersList,row)">Users List</button>
+
                         </ng-template>
                     </ngx-datatable>
                 </div>
@@ -299,5 +301,53 @@
             <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="modal.dismiss('cancel')">Cancel</button>
             <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
         </div>
+    </ng-template>
+    <ng-template  #usersList>
+            <div class="row">
+                <div class="col-md-8 ">
+                    <div class="form-group">
+                        <input id="keyword-users" placeholder="Search Users" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex justify-content-center align-items-center" style="height: 4vh;">
+                    <button (click)="addUserModel(addUser,currentInstitution)" class="btn btn-success btn-sm " >Add User</button>
+                </div>
+                <div class="col-md-12">
+                    <div class="card o-hidden">
+
+                        <div *ngIf="loadingUsers" class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+                            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="spinner-glow spinner-glow-primary mr-5" style="font-size: 3rem;"></span>
+                            </div>
+                        </div>
+                        <div *ngIf="!loadingUsers">
+
+                            <ngx-datatable
+                                    style="height: calc(100vh - 270px); box-shadow: none"
+                                    class="material fullscreen"
+                                    [columnMode]="'force'"
+                                    [columns]="[{ name: 'Email' }, { name: 'Name' }, { name: 'Lastname' }, { name: 'Roles' }, { name: 'Country' }, { name: 'Gender' },
+                                    { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate, width: 250 }]"
+                                    [headerHeight]="50"
+                                    [footerHeight]="50"
+                                    [rowHeight]="80"
+                                    [scrollbarV]="true"
+                                    [scrollbarH]="true"
+                                    [externalPaging]="true"
+                                    [count]="totalItemsUsers"
+                                    [offset]="(currentPageUsers - 1) * itemsPerPageUsers"
+                                    [limit]="itemsPerPageUsers"
+                                    [rows]="users | paginate: { itemsPerPage: itemsPerPageUsers, currentPage: currentPageUsers, totalItems: totalItemsUsers }">
+                                <ng-template #deleteBtnTemplate let-row="row" let-value="value">
+                                    <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
+                                    <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
+                                    <button class=" btn btn-primary btn-rounded" (click)="addUserModel(addUser,row)">Add User</button>
+                                </ng-template>
+                            </ngx-datatable>
+                        </div>
+                        <pagination-controls (pageChange)="currentPageUsers = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
     </ng-template>
 </div>

@@ -9,6 +9,7 @@ import {ToastrService} from 'ngx-toastr';
 import {InstitutionRequest} from '../../../shared/models/institution/InstitutionRequest';
 import {UserService} from '../../../shared/services/user/user.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {InstitutionUserResponse} from '../../../shared/models/institution/InstitutionUserResponse';
 
 @Component({
   selector: 'app-institutions',
@@ -16,11 +17,16 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./institutions.component.scss']
 })
 export class InstitutionsComponent implements OnInit {
-
+    get currentPageUsers(): number {
+        return this._currentPageUsers;
+    }
   get currentPage(): number {
     return this._currentPage;
   }
-
+  set currentPageUsers(value: number) {
+    this._currentPageUsers = value;
+    this.getInstitutionUsers();
+  }
   set currentPage(value: number) {
     this._currentPage = value;
     if (this.searchControl.value == null) {
@@ -43,8 +49,14 @@ export class InstitutionsComponent implements OnInit {
   totalPages = 0;
   totalItems = 0;
   itemsPerPage = 10;
+  users: InstitutionUserResponse[] = [];
+    _currentPageUsers = 1;
+    totalPagesUsers = 0;
+    totalItemsUsers = 0;
+    itemsPerPageUsers = 10;
   loading = false;
-  roles = ['Admin', 'Teacher', 'Student'];
+  loadingUsers = false;
+    roles = ['Admin', 'Teacher', 'Student'];
   searchControl: FormControl = new FormControl();
     addInstitutionForm = this.formBuilder.group({
             name: ['', [Validators.required, Validators.maxLength(40), Validators.minLength(3)]],
@@ -193,6 +205,34 @@ export class InstitutionsComponent implements OnInit {
         this.addInstitutionForm.controls.address.setValue(institution.address);
         this.addInstitutionForm.controls.description.setValue(institution.description);
         this.addInstitutionForm.controls.website.setValue(institution.website);
+        this.modalService.open(content, { ariaLabelledBy: 'edit Institution' })
+            .result.then((result) => {
+            console.log(result);
+        }, (reason) => {
+            console.log('Err!', reason);
+        });
+    }
+    getInstitutionUsers() {
+        this.loadingUsers = true;
+        this.institutionService.getInstitutionUsers(this.currentInstitution.id).subscribe(
+            response => {
+                console.log(response);
+                this.users = response.users;
+                this._currentPageUsers = response.currentPage + 1;
+                this.totalPagesUsers = response.totalPages;
+                this.totalItemsUsers = response.totalItems;
+                this.itemsPerPageUsers = response.itemsPerPage;
+                this.loadingUsers = false;
+            }, error => {
+                this.handleResponse.handleError(error);
+                this.loadingUsers = false;
+            }
+        );
+        this.loadingUsers = false;
+    }
+    institutionUsersModel(content, institution: InstitutionResponse) {
+        this.currentInstitution = institution;
+        this.getInstitutionUsers();
         this.modalService.open(content, { ariaLabelledBy: 'edit Institution' })
             .result.then((result) => {
             console.log(result);
