@@ -303,12 +303,15 @@
         </div>
     </ng-template>
     <ng-template [ngIf]="showInstitutionUsersTable" >
-        <div class="breadcrumb">
-            <h1><span class="btn btn-lg btn-rounded btn-primary m-1" (click)="toggleInstitutionUsersTable(null)">{{currentInstitution.name}}</span>'s users</h1>
+        <div class="breadcrumb ">
+            <h1 >{{currentInstitution.name}}'s users</h1>
         </div>
 
         <div class="separator-breadcrumb border-top"></div>
             <div class="row">
+                <div class="col-md-6">
+                    <p class="btn btn-link text-primary" (click)="toggleInstitutionUsersTable(null)">Click me to return to institutions table</p>
+                </div>
                 <div class="col-md-8 ">
                     <div class="form-group">
                         <input id="keyword-users" placeholder="Search Users" [formControl]="searchControlUsers" class="form-control form-control-rounded" type="text">
@@ -326,7 +329,6 @@
                             </div>
                         </div>
                         <div *ngIf="!loadingUsers">
-
                             <ngx-datatable
                                     style="height: calc(100vh - 270px); box-shadow: none"
                                     class="material fullscreen"

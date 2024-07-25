@@ -26,6 +26,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,12 +120,14 @@ public class InstitutionServiceImpl implements IInstitutionService {
         log.info("after role");
         if (keyword != null && !keyword.trim().isEmpty()) {
             users = users.stream()
-                    .filter(user -> user.getProfile().getName().toLowerCase().contains(keyword.toLowerCase()) ||
-                            user.getProfile().getLastname().toLowerCase().contains(keyword.toLowerCase()) ||
-                            user.getProfile().getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                            user.getProfile().getCountry().toLowerCase().contains(keyword.toLowerCase()) ||
-                            user.getProfile().getGender().toLowerCase().contains(keyword.toLowerCase()) ||
-                            user.getEmail().toLowerCase().contains(keyword.toLowerCase()))
+                    .filter(user ->
+                            Optional.ofNullable(user.getProfile().getName()).orElse("").toLowerCase().contains(keyword.toLowerCase()) ||
+                                    Optional.ofNullable(user.getProfile().getLastname()).orElse("").toLowerCase().contains(keyword.toLowerCase()) ||
+                                    Optional.ofNullable(user.getProfile().getTitle()).orElse("").toLowerCase().contains(keyword.toLowerCase()) ||
+                                    Optional.ofNullable(user.getProfile().getCountry()).orElse("").toLowerCase().contains(keyword.toLowerCase()) ||
+                                    user.getRoles().stream().anyMatch(userRole -> userRole.name().toLowerCase().contains(keyword.toLowerCase())) ||
+                                    Optional.ofNullable(user.getProfile().getGender()).orElse("").toLowerCase().contains(keyword.toLowerCase()) ||
+                                    Optional.ofNullable(user.getEmail()).orElse("").toLowerCase().contains(keyword.toLowerCase()))
                     .toList();
         }
         log.info("after keyword");
