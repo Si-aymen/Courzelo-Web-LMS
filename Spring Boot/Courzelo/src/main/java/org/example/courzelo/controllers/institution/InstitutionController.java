@@ -53,7 +53,7 @@ public class InstitutionController {
         return iInstitutionService.getInstitutionByID(institutionID);
     }
     @GetMapping("/{institutionID}/users")
-    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<PaginatedInstitutionUsersResponse> getInstitutionUsers(@PathVariable @NotNull String institutionID,
                                                                                  @RequestParam(required = false) String keyword,
                                                                                  @RequestParam(required = false) String role,
@@ -62,7 +62,7 @@ public class InstitutionController {
         return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
     }
     @PutMapping("/{institutionID}/add-user")
-    @PreAuthorize("hasRole('ADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> addInstitutionUser(@PathVariable @NotNull String institutionID,
                                                          @RequestParam @Email String email,
                                                          @RequestParam @NotNull String role,

@@ -1,3 +1,4 @@
 export interface UserEducationResponse {
-    institution?: string;
+    institutionID?: string;
+    institutionName: string;
 }

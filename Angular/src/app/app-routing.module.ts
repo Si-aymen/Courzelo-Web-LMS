@@ -90,6 +90,11 @@ const userRoutes: Routes = [
         loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule),
         canActivate: [AuthGuard],
         data: { roles: ['SUPERADMIN'] }
+    },
+    {
+        path: 'institution',
+        loadChildren: () => import('./views/institution/institution.module').then(m => m.InstitutionModule),
+        canActivate: [AuthGuard],
     }
 
   ];

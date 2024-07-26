@@ -41,9 +41,9 @@
                             [limit]="itemsPerPage"
                             [rows]="institutions | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
                         <ng-template #deleteBtnTemplate let-row="row" let-value="value">
-                            <button class=" btn btn-danger btn-rounded" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
-                            <button class=" btn btn-primary btn-rounded" (click)="editInstitutionModel(edit,row)">Edit</button>
-                            <button class=" btn btn-primary btn-rounded" (click)="toggleInstitutionUsersTable(row)">Users List</button>
+                            <button class=" btn btn-danger m-1" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
+                            <button class=" btn btn-primary m-1" (click)="editInstitutionModel(edit,row)">Edit</button>
+                            <button class=" btn btn-primary m-1" (click)="toggleInstitutionUsersTable(row)">Users List</button>
 
                         </ng-template>
                     </ngx-datatable>
@@ -337,7 +337,7 @@
                                     { name: 'Actions', prop: 'id', cellTemplate: deleteBtnTemplate, width: 250 },{ name: 'Edit', prop: 'id', cellTemplate: editBtnTemplate, width: 250 }]"
                                     [headerHeight]="50"
                                     [footerHeight]="50"
-                                    [rowHeight]="200"
+                                    [rowHeight]="100"
                                     [scrollbarV]="true"
                                     [scrollbarH]="true"
                                     [externalPaging]="true"
@@ -378,7 +378,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <p><strong>Are you sure you want to remove <span class="text-primary">{{ currentUser.name }}</span>from {{currentInstitution.name}}?</strong></p>
+            <p><strong>Are you sure you want to remove <span class="text-primary">{{ currentUser.name }}</span> from {{currentInstitution.name}}?</strong></p>
             <p>All information associated to this user will be permanently deleted from the institution.
                 <span class="text-danger">This operation cannot be undone.</span>
             </p>

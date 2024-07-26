@@ -6,9 +6,11 @@ import org.example.courzelo.models.UserEducation;
 
 @Data
 public class UserEducationResponse {
-    private String institution;
+    private String institutionID;
+    private String institutionName;
 
     public UserEducationResponse(UserEducation userEducation) {
-        this.institution = userEducation.getInstitution()!= null ? userEducation.getInstitution().getId() : null;
+        this.institutionID = userEducation.getInstitution()!= null ? userEducation.getInstitution().getId() : null;
+        this.institutionName = userEducation.getInstitution()!= null ? userEducation.getInstitution().getName() : null;
     }
 }

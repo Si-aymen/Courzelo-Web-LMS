@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {InstitutionRequest} from '../../models/institution/InstitutionRequest';
 import {StatusMessageResponse} from '../../models/user/StatusMessageResponse';
 import {InstitutionResponse} from '../../models/institution/InstitutionResponse';
-import {PaginatedInstitutionUsersResponse} from "../../models/institution/PaginatedInstitutionUsersResponse";
+import {PaginatedInstitutionUsersResponse} from '../../models/institution/PaginatedInstitutionUsersResponse';
 
 @Injectable({
   providedIn: 'root'
