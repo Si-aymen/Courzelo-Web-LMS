@@ -6,6 +6,4 @@ export interface InstitutionRequest {
     address?: string;
     description?: string;
     website?: string;
-    latitude?: number;
-    longitude?: number;
 }

@@ -5,11 +5,11 @@ import { InstitutionRoutingModule } from './institution-routing.module';
 import { UsersComponent } from './users/users.component';
 import { EditComponent } from './edit/edit.component';
 import { HomeComponent } from './home/home.component';
-import {NgxPaginationModule} from "ngx-pagination";
-import {NgxDatatableModule} from "@swimlane/ngx-datatable";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SharedComponentsModule} from "../../shared/components/shared-components.module";
-import {NgbTabsetModule} from "@ng-bootstrap/ng-bootstrap";
+import {NgxPaginationModule} from 'ngx-pagination';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {SharedComponentsModule} from '../../shared/components/shared-components.module';
+import {NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({

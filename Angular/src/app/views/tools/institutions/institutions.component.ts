@@ -111,8 +111,6 @@ export class InstitutionsComponent implements OnInit {
     addInstitution() {
         if (this.addInstitutionForm.valid) {
             this.institutionRequest = this.addInstitutionForm.value;
-        this.institutionRequest.latitude = 0;
-        this.institutionRequest.longitude = 0;
         this.institutionService.addInstitution(this.institutionRequest).subscribe(
             response => {
                 this.toastr.success('Institution added successfully');

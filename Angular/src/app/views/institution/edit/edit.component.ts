@@ -6,6 +6,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../../shared/services/user/user.service';
+import * as L from 'leaflet';
+import {InstitutionMapRequest} from '../../../shared/models/institution/InstitutionMapRequest';
 
 @Component({
   selector: 'app-edit',
@@ -15,8 +17,13 @@ import {UserService} from '../../../shared/services/user/user.service';
 export class EditComponent implements OnInit {
     institutionID: string;
     currentInstitution;
+    institutionMapRequest: InstitutionMapRequest ={};
     loading = false;
     countries = [];
+    private map: L.Map | undefined;
+    private marker: L.Marker | undefined;
+    latitude = 0;
+    longitude = 0;
     constructor(
       private institutionService: InstitutionService,
       private handleResponse: ResponseHandlerService,
@@ -54,11 +61,12 @@ export class EditComponent implements OnInit {
                         description: this.currentInstitution.description,
                         website: this.currentInstitution.website
                     }
-                );            }, error => {
+                );
+                this.setLocation();
+            }, error => {
                 this.handleResponse.handleError(error);
             }
       );
-
   }
   updateInstitution(id: string) {
     if (this.updateInstitutionForm.valid) {
@@ -77,5 +85,46 @@ export class EditComponent implements OnInit {
     shouldShowError(controlName: string, errorName: string): boolean {
         const control = this.updateInstitutionForm.get(controlName);
         return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
+    }
+    setLocation() {
+        if (this.map) {
+            this.map.remove();
+        }
+        if (this.currentInstitution.latitude === 0 || this.currentInstitution.longitude === 0 ||
+            this.currentInstitution.latitude === undefined || this.currentInstitution.longitude === undefined) {
+            this.toastr.warning('You Don\'t have a location set, setting default location.');
+            this.currentInstitution.latitude = 36.7832;
+            this.currentInstitution.longitude = 10.1843;
+        }
+        this.map = L.map('map').setView([this.currentInstitution.latitude, this.currentInstitution.longitude], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // ...
+        }).addTo(this.map);
+        // Add a marker to the map that the user can drag to set a new location
+        const marker = L.marker([this.currentInstitution.latitude, this.currentInstitution.longitude], {
+            draggable: true
+        }).addTo(this.map);
+        // Update the institution's latitude and longitude when the marker is dragged
+        marker.on('dragend', () => {
+            const position = marker.getLatLng();
+            this.latitude = position.lat;
+            this.longitude = position.lng;
+            console.log('Marker latitude', this.latitude);
+            console.log('Marker longitude', this.longitude);
+        });
+    }
+    saveLocation() {
+        this.institutionMapRequest.latitude = this.latitude;
+        this.institutionMapRequest.longitude = this.longitude;
+        console.log('Institution Map Request', this.institutionMapRequest);
+        this.institutionService.setInstitutionMap(this.institutionID, this.institutionMapRequest).subscribe(
+            response => {
+                console.log('Location saved successfully.', this.institutionMapRequest);
+                this.toastr.success('Location saved successfully.');
+            },
+            error => {
+                this.toastr.error('Error saving location.');
+            }
+        );
     }
 }

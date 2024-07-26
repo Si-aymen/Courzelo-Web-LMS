@@ -2,6 +2,7 @@ package org.example.courzelo.serviceImpls;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.*;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
@@ -268,6 +269,17 @@ public class InstitutionServiceImpl implements IInstitutionService {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @Override
+    public ResponseEntity<HttpStatus> setInstitutionMap(String institutionID, InstitutionMapRequest institutionMapRequest, Principal principal) {
+        log.info("Setting institution map for institution: {}", institutionID);
+        log.info("Latitude: {}, Longitude: {}", institutionMapRequest.getLatitude(), institutionMapRequest.getLongitude());
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+        institution.setLatitude(institutionMapRequest.getLatitude());
+        institution.setLongitude(institutionMapRequest.getLongitude());
+        institutionRepository.save(institution);
+        return ResponseEntity.ok().build();
     }
 
     @Override

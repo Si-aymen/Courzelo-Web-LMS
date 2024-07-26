@@ -6,6 +6,7 @@ import {InstitutionRequest} from '../../models/institution/InstitutionRequest';
 import {StatusMessageResponse} from '../../models/user/StatusMessageResponse';
 import {InstitutionResponse} from '../../models/institution/InstitutionResponse';
 import {PaginatedInstitutionUsersResponse} from '../../models/institution/PaginatedInstitutionUsersResponse';
+import {InstitutionMapRequest} from "../../models/institution/InstitutionMapRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -82,5 +83,8 @@ export class InstitutionService {
     }
 
     return this.http.get<PaginatedInstitutionUsersResponse>(`${this.baseUrl}/${institutionID}/users`, { params });
+  }
+  setInstitutionMap(institutionID: string, institutionMapRequest: InstitutionMapRequest) {
+    return this.http.put(`${this.baseUrl}/${institutionID}/set-map`, institutionMapRequest);
   }
 }

@@ -1,5 +1,6 @@
 package org.example.courzelo.services;
 
+import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
@@ -23,4 +24,6 @@ public interface IInstitutionService {
     ResponseEntity<HttpStatus> removeInstitutionUser(String institutionID, String email,Principal principal);
     ResponseEntity<HttpStatus> addInstitutionUserRole(String institutionID, String email, String role, Principal principal);
     ResponseEntity<HttpStatus> removeInstitutionUserRole(String institutionID, String email, String role, Principal principal);
+
+    ResponseEntity<HttpStatus> setInstitutionMap(String institutionID, InstitutionMapRequest institutionMapRequest, Principal principal);
 }
