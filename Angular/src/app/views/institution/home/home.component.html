@@ -1,3 +1,9 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 <div class="card user-profile o-hidden mb-4">
     <div class="header-cover" style="background-image: url('assets/images/photo-wide-4.jpg')"></div>
     <div class="user-info">
@@ -6,7 +12,7 @@
         <p class="text-muted m-0">{{currentInstitution?.slogan||""}}</p>
     </div>
     <div class="card-body">
-        <ngb-tabset class="nav-center">
+        <ngb-tabset (tabChange)="onTabChange($event)" class="nav-center">
             <ngb-tab title="Timeline">
                 <ng-template ngbTabContent>
                     <ul class="timeline clearfix">
@@ -184,6 +190,19 @@
                         <div class="col-md-2 col-sm-4 col-6 text-center">
                             <i class="i-Shopping-Bag text-32 text-primary"></i>
                             <p class="text-16 mt-1">Shopping</p>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Map" id="mapTab">
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </ng-template>

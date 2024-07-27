@@ -17,7 +17,7 @@ import {InstitutionMapRequest} from '../../../shared/models/institution/Institut
 export class EditComponent implements OnInit {
     institutionID: string;
     currentInstitution;
-    institutionMapRequest: InstitutionMapRequest ={};
+    institutionMapRequest: InstitutionMapRequest = {};
     loading = false;
     countries = [];
     private map: L.Map | undefined;
