@@ -37,4 +37,10 @@ export class StageDetailsComponent implements OnInit, OnDestroy {
   private getMyStage(): void {
     this.stage$ = this.stageService.getStageByID(this.stageId);
   }
+
+  print() {
+    if (window) {
+        window.print();
+    }
+}
 }
