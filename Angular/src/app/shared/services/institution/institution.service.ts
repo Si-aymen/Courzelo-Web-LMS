@@ -6,7 +6,8 @@ import {InstitutionRequest} from '../../models/institution/InstitutionRequest';
 import {StatusMessageResponse} from '../../models/user/StatusMessageResponse';
 import {InstitutionResponse} from '../../models/institution/InstitutionResponse';
 import {PaginatedInstitutionUsersResponse} from '../../models/institution/PaginatedInstitutionUsersResponse';
-import {InstitutionMapRequest} from "../../models/institution/InstitutionMapRequest";
+import {InstitutionMapRequest} from '../../models/institution/InstitutionMapRequest';
+import {CalendarEventRequest} from '../../models/institution/CalendarEventRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -86,5 +87,11 @@ export class InstitutionService {
   }
   setInstitutionMap(institutionID: string, institutionMapRequest: InstitutionMapRequest) {
     return this.http.put(`${this.baseUrl}/${institutionID}/set-map`, institutionMapRequest);
+  }
+  generateExcel(institutionID: string, generation: CalendarEventRequest[]) {
+    return this.http.post(`${this.baseUrl}/${institutionID}/generate-excel`, generation);
+  }
+  downloadExcel(institutionID: string) {
+    return this.http.get(`${this.baseUrl}/${institutionID}/download-excel`, { responseType: 'blob' });
   }
 }

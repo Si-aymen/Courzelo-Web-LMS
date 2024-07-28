@@ -9,7 +9,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedComponentsModule} from '../../shared/components/shared-components.module';
-import {NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDatepickerModule, NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -26,7 +26,8 @@ import {NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
         FormsModule,
         ReactiveFormsModule,
         SharedComponentsModule,
-        NgbTabsetModule
+        NgbTabsetModule,
+        NgbDatepickerModule
     ]
 })
 export class InstitutionModule { }

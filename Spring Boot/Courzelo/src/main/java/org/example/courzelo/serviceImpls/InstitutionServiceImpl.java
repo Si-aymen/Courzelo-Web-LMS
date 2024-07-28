@@ -2,6 +2,9 @@ package org.example.courzelo.serviceImpls;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.example.courzelo.dto.requests.CalendarEventRequest;
 import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.*;
@@ -19,10 +22,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +43,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     private final InstitutionRepository institutionRepository;
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
+    private final CalendarService calendarService;
     @Override
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword) {
         log.info("Fetching institutions for page: {}, sizePerPage: {}", page, sizePerPage);
@@ -280,6 +287,36 @@ public class InstitutionServiceImpl implements IInstitutionService {
         institution.setLongitude(institutionMapRequest.getLongitude());
         institutionRepository.save(institution);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<HttpStatus> generateExcel(String institutionID, List<CalendarEventRequest> events, Principal principal) {
+            Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+            try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                calendarService.createCalendarSheet(workbook, events);
+                workbook.write(outputStream);
+                institution.setExcelFile(outputStream.toByteArray());
+                institutionRepository.save(institution);
+                return ResponseEntity.ok().build();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().build();
+            }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> downloadExcel(String institutionID, Principal principal) {
+            Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+            byte[] excelFile = institution.getExcelFile();
+            if (excelFile != null) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=school-year-calendar.xlsx");
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(excelFile);
+            }
+
+        return ResponseEntity.badRequest().build();
     }
 
     @Override

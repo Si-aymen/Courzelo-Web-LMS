@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.example.courzelo.dto.requests.CalendarEventRequest;
 import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
@@ -12,12 +13,14 @@ import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersR
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
 import org.example.courzelo.security.CustomAuthorization;
 import org.example.courzelo.services.IInstitutionService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/institution")
@@ -99,5 +102,15 @@ public class InstitutionController {
                                                         @RequestBody @Valid InstitutionMapRequest institutionMapRequest,
                                                         Principal principal) {
         return iInstitutionService.setInstitutionMap(institutionID, institutionMapRequest, principal);
+    }
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    @PostMapping("/{institutionID}/generate-excel")
+    public ResponseEntity<HttpStatus> generateExcel(@PathVariable @NotNull String institutionID, @RequestBody List<CalendarEventRequest> events, Principal principal) {
+        return iInstitutionService.generateExcel(institutionID,events,principal);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{institutionID}/download-excel")
+    public ResponseEntity<byte[]> downloadExcel(@PathVariable @NotNull String institutionID,Principal principal) {
+        return iInstitutionService.downloadExcel(institutionID,principal);
     }
 }

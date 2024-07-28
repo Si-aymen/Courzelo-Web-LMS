@@ -5,7 +5,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 <div class="breadcrumb">
-    <h1>Update {{currentInstitution.name}}</h1>
+    <h1>Update {{currentInstitution.name ||"institution"}}</h1>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -102,6 +102,87 @@
         </div>
     </div>
 </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <form (ngSubmit)="generateExcel()" [formGroup]="generateForm">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <div class="input-group">
+                            <input formControlName="startDate" id="picker2"
+                                   class="form-control form-control-rounded"
+                                   placeholder="yyyy-mm-dd" name="dp2"
+                                   ngbDatepicker #dp2="ngbDatepicker"  [maxDate]="maxDate" [minDate]="minDate" [startDate]="bsValue">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" (click)="dp2.toggle()" type="button">
+                                    <i class="icon-regular i-Calendar-4"></i>
+                                </button>
+                            </div>
+                            </div>
+                            <div *ngIf="generateForm.controls['startDate'].touched && generateForm.controls['startDate']?.invalid" class="text-danger">
+                                <div *ngIf="generateForm.get('startDate')?.errors?.['required']">Start Date is required.</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Finish Date</label>
+                            <div class="input-group">
+                            <input formControlName="finishDate" id="picker1"
+                                   class="form-control form-control-rounded"
+                                   placeholder="yyyy-mm-dd" name="dp1"
+                                   ngbDatepicker #dp="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate" >
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" (click)="dp.toggle()" type="button">
+                                    <i class="icon-regular i-Calendar-4"></i>
+                                </button>
+                            </div>
+                            </div>
+                            <div *ngIf="generateForm.controls['finishDate'].touched && generateForm.controls['finishDate']?.invalid" class="text-danger">
+                                <div *ngIf="generateForm.get('finishDate')?.errors?.['required']">Finish Date is required.</div>
+                            </div>
+                            <div *ngIf="generateForm.errors?.['differentMonth']" class="text-danger">
+                                Start and finish dates must be in the same month.
+                            </div>
+                            <div *ngIf="generateForm.errors?.['invalidDateOrder']" class="text-danger">
+                                Finish date cannot be before the start date.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input class="form-control" formControlName="name" placeholder="Name" type="text">
+                            <div *ngIf="generateForm.controls['name'].touched && generateForm.controls['name']?.invalid" class="text-danger">
+                                <div *ngIf="generateForm.get('name')?.errors?.['required']">Name is required.</div>
+                                <div *ngIf="generateForm.get('name')?.errors?.['maxlength']">Name must be less than 15 characters.</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input class="form-control" formControlName="color" type="color">
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" (click)="addEvent()" class="btn btn-success">Add Event</button>
+                        <button type="button" (click)="downloadExcel()" class="btn btn-info">Download Calendar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div  class="col-md-6">
+        <div *ngIf="generationEventList.length > 0" class="card mb-4">
+            <div class="card-body">
+                <ul class="products-list product-list-in-box">
+                    <li *ngFor="let event of generationEventList" class="item">
+                        <div class="product-info">
+                            <a href="javascript:void(0)" class="product-title">{{ event.name }}
+                                <span class="label label-warning pull-right">{{ event.startDate | date: 'mediumDate' }} - {{ event.finishDate | date: 'mediumDate' }}</span></a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
