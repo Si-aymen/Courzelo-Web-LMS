@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {InstitutionRequest} from '../../../shared/models/institution/InstitutionRequest';
 import {InstitutionService} from '../../../shared/services/institution/institution.service';
 import {ResponseHandlerService} from '../../../shared/services/user/response-handler.service';
@@ -15,7 +15,7 @@ import {CalendarEventRequest} from '../../../shared/models/institution/CalendarE
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss']
 })
-export class EditComponent implements OnInit {
+export class EditComponent implements OnInit, AfterViewInit {
     constructor(
       private institutionService: InstitutionService,
       private handleResponse: ResponseHandlerService,
@@ -24,6 +24,8 @@ export class EditComponent implements OnInit {
       private route: ActivatedRoute,
         private userService: UserService
   ) { }
+
+
     generationEvent: CalendarEventRequest = {};
     generationEventList: CalendarEventRequest[] = [];
     year: number = new Date().getFullYear(); // Set current year as default
@@ -36,12 +38,12 @@ export class EditComponent implements OnInit {
     };
     maxDate = {
         year: 2024,
-        month: 11,
+        month: 12,
         day: 31
     };
     minDate = {
         year: 2024,
-        month: 0,
+        month: 1,
         day: 1
     };
     institutionID: string;
@@ -50,6 +52,7 @@ export class EditComponent implements OnInit {
     loading = false;
     countries = [];
     private map: L.Map | undefined;
+    @ViewChild('page', { static: false }) pageTemplate: TemplateRef<any>;
     private marker: L.Marker | undefined;
     latitude = 0;
     longitude = 0;
@@ -97,6 +100,22 @@ export class EditComponent implements OnInit {
             }
       );
   }
+    ngAfterViewInit(): void {
+if (this.pageTemplate)  {
+    this.initializeMap();
+}
+  }
+
+    initializeMap() {
+        if (document.getElementById('map')) {
+            this.setLocation();
+        } else {
+            console.error('Map container not found');
+        }
+    }
+    onInstitutionAvailable(event: any) {
+                this.setLocation();
+        }
     downloadExcel() {
         this.institutionService.downloadExcel(this.institutionID).subscribe(
             response => {
@@ -118,7 +137,8 @@ export class EditComponent implements OnInit {
         return Object.assign(this.generationEvent, form.value, {color: form.controls['color'].value});
     }
     dateOrder(control: FormGroup): {[key: string]: boolean} | null {
-        const startDate = new Date(control.get('startDate').value.year, control.get('startDate').value.month - 1, control.get('startDate').value.day);
+        const startDate = new Date(control.get('startDate').value.year,
+            control.get('startDate').value.month - 1, control.get('startDate').value.day);
         const finishDate = new Date(control.get('finishDate').value.year, control.get('finishDate').value.month - 1, control.get('finishDate').value.day);
         if (startDate && finishDate && startDate.getTime() > finishDate.getTime()) {
             return {'invalidDateOrder': true};
@@ -130,7 +150,8 @@ export class EditComponent implements OnInit {
             new Date(event1.finishDate).getTime() >= new Date(event2.startDate).getTime();
     }
     sameMonth(control: FormGroup): {[key: string]: boolean} | null {
-        const startDate = new Date(control.get('startDate').value.year, control.get('startDate').value.month - 1, control.get('startDate').value.day);
+        const startDate = new Date(control.get('startDate').value.year,
+            control.get('startDate').value.month - 1, control.get('startDate').value.day);
         const finishDate = new Date(control.get('finishDate').value.year, control.get('finishDate').value.month - 1, control.get('finishDate').value.day);
 
         if (startDate && finishDate && startDate.getMonth() !== finishDate.getMonth()) {
@@ -138,9 +159,6 @@ export class EditComponent implements OnInit {
         }
 
         return null;
-    }
-    convertDatePickerToDate(date: any): Date {
-        return new Date(date.year, date.month - 1, date.day);
     }
     addEvent() {
         if (this.generateForm.valid) {

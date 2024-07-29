@@ -168,13 +168,14 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user.education.institutionID, type: 'link'},
+                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user.education.institutionID, type: 'link',
+                    mustBeInInstitutions: true},
                 { icon: 'i-Administrator', name: 'Users', state: 'institution/' + this.user.education.institutionID + '/users',
                     type: 'link',
-                    roles: ['ADMIN']},
+                    roles: ['ADMIN'], mustBeInInstitutions: true},
                 { icon: 'i-Administrator', name: 'Edit', state: 'institution/' + this.user.education.institutionID + '/edit',
                     type: 'link',
-                    roles: ['ADMIN']},
+                    roles: ['ADMIN'], mustBeInInstitutions: true},
             ],
             mustBeInInstitutions: true
         },
@@ -231,7 +232,7 @@ export class NavigationService {
     menuItems$ = this.menuItems.asObservable();
     filterMenuItemsByUser(menuItems: IMenuItem[], user: UserResponse): IMenuItem[] {
         return menuItems.filter(item => {
-            const accessibleByRole = !item.roles || item.roles.some(role => user.roles.includes(role)) &&
+            const accessibleByRole = (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
                 (!item.mustBeInInstitutions || (user.education.institutionName && user.education.institutionID));
             if (accessibleByRole && item.sub) {
                 item.sub = this.filterChildItemsByRole(item.sub, user);
@@ -242,8 +243,8 @@ export class NavigationService {
 
     filterChildItemsByRole(childItems: IChildItem[], user: UserResponse): IChildItem[] {
         return childItems.filter(item => {
-            return !item.roles || item.roles.some(role => user.roles.includes(role)) &&
-                (!item.mustBeInInstitutions || (user.education.institutionName && user.education.institutionID));
+            return (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
+                (!item.mustBeInInstitutions || (user.education.institutionName  && user.education.institutionID ));
         });
     }
 

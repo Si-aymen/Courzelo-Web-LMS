@@ -1,6 +1,10 @@
-<div *ngIf="currentInstitution | async as institution" class="">
+<div *ngIf="!currentInstitution" class="loadscreen">
+    <img src="assets/images/logo.png" class="logo mb-3" style="display: none" alt="">
+    <div class="loader-bubble loader-bubble-primary d-block"></div>
+</div>
+<div *ngIf="currentInstitution" class="">
 <div  class="breadcrumb ">
-    <h1 >{{institution.name}}'s users</h1>
+    <h1 >{{currentInstitution.name}}'s users</h1>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -70,7 +74,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <p><strong>Are you sure you want to remove <span class="text-primary">{{ currentUser.name }}</span> from {{institution.name}}?</strong></p>
+            <p><strong>Are you sure you want to remove <span class="text-primary">{{ currentUser.name }}</span> from {{currentInstitution.name}}?</strong></p>
             <p>All information associated to this user will be permanently deleted from the institution.
                 <span class="text-danger">This operation cannot be undone.</span>
             </p>

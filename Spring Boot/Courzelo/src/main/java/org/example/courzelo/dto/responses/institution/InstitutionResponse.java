@@ -15,6 +15,7 @@ public class InstitutionResponse {
     private String website;
     private double latitude;
     private double longitude;
+    private boolean hasCalendar;
     public InstitutionResponse(Institution institution)
     {
         this.id = institution.getId();
@@ -27,5 +28,6 @@ public class InstitutionResponse {
         this.website = institution.getWebsite();
         this.latitude = institution.getLatitude();
         this.longitude = institution.getLongitude();
+        this.hasCalendar = institution.getExcelFile() != null;
     }
 }

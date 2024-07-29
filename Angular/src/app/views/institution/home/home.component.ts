@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
     this.institutionService.getInstitutionByID(this.institutionID).subscribe(
         response => {
           this.currentInstitution = response;
+          console.log('currentInstitution', this.currentInstitution);
         }
     );
 
@@ -36,6 +37,23 @@ export class HomeComponent implements OnInit {
         this.initializeMap();
       }, 0);
     }
+  }
+  downloadExcel() {
+    this.institutionService.downloadExcel(this.institutionID).subscribe(
+        response => {
+          const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'file.xlsx';
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error => {
+          console.log('error downloading');
+          this.toastr.error('Error downloading Excel.');
+        }
+    );
   }
   initializeMap() {
     if (this.currentInstitution.latitude === 0 || this.currentInstitution.longitude === 0 ||

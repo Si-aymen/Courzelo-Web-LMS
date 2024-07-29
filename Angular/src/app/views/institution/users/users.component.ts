@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit {
   ) { }
   currentUser: InstitutionUserResponse;
     institutionID;
-    currentInstitution: Observable<InstitutionResponse>;
+    currentInstitution: InstitutionResponse;
   searchControlUsers: FormControl = new FormControl();
   users: InstitutionUserResponse[] = [];
   _currentPageUsers = 1;
@@ -56,7 +56,11 @@ export class UsersComponent implements OnInit {
   availableRoles: string[] = ['ADMIN', 'STUDENT', 'TEACHER'];
   ngOnInit() {
     this.institutionID = this.route.snapshot.paramMap.get('institutionID');
-    this.currentInstitution = this.institutionService.getInstitutionByID(this.institutionID);
+    this.institutionService.getInstitutionByID(this.institutionID).subscribe(
+        response => {
+          this.currentInstitution = response;
+        }
+    );
     this.getInstitutionUsers(this.currentPageUsers, this.itemsPerPageUsers, null, null);
     this.searchControlUsers.valueChanges
         .pipe(debounceTime(200))
