@@ -9,6 +9,7 @@ import {UserService} from '../../../shared/services/user/user.service';
 import * as L from 'leaflet';
 import {InstitutionMapRequest} from '../../../shared/models/institution/InstitutionMapRequest';
 import {CalendarEventRequest} from '../../../shared/models/institution/CalendarEventRequest';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit',
@@ -25,7 +26,9 @@ export class EditComponent implements OnInit, AfterViewInit {
         private userService: UserService
   ) { }
 
-
+    selectedFileName: string;
+    selectedFileUrl: string | ArrayBuffer;
+    file: any;
     generationEvent: CalendarEventRequest = {};
     generationEventList: CalendarEventRequest[] = [];
     year: number = new Date().getFullYear(); // Set current year as default
@@ -113,9 +116,6 @@ if (this.pageTemplate)  {
             console.error('Map container not found');
         }
     }
-    onInstitutionAvailable(event: any) {
-                this.setLocation();
-        }
     downloadExcel() {
         this.institutionService.downloadExcel(this.institutionID).subscribe(
             response => {
@@ -253,6 +253,37 @@ if (this.pageTemplate)  {
             },
             error => {
                 this.toastr.error('Error saving location.');
+            }
+        );
+    }
+    onFileSelected(event) {
+        if (event.target.files.length > 0) {
+            this.file = event.target.files[0];
+            if (!environment.allowedFileTypes.includes(this.file.type)) {
+                this.toastr.error('Only JPG and PNG files are allowed.');
+                return;
+            }
+            const reader = new FileReader();
+            this.selectedFileName = this.file.name;
+            reader.onload = (e) => this.selectedFileUrl = reader.result;
+            reader.readAsDataURL(this.file);
+        }
+    }
+    uploadLogo() {
+        this.loading = true;
+        if (!this.file) {
+            this.toastr.error('No file selected', 'Error!', {progressBar: true});
+            this.loading = false;
+            return;
+        }
+        this.institutionService.uploadImage(this.institutionID, this.file).subscribe(
+            res => {
+                this.loading = false;
+                this.toastr.success('Image uploaded', 'Success!', {progressBar: true});
+            },
+            error => {
+                this.loading = false;
+                this.toastr.error('Error uploading image', 'Error!', {progressBar: true});
             }
         );
     }

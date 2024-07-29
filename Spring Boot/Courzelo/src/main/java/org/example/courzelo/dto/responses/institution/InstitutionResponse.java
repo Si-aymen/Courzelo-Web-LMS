@@ -8,7 +8,6 @@ public class InstitutionResponse {
     private String id;
     private String name;
     private String slogan;
-    private String logo;
     private String country;
     private String address;
     private String description;
@@ -21,7 +20,6 @@ public class InstitutionResponse {
         this.id = institution.getId();
         this.name = institution.getName();
         this.slogan = institution.getSlogan();
-        this.logo = institution.getLogo();
         this.country = institution.getCountry();
         this.address = institution.getAddress();
         this.description = institution.getDescription();

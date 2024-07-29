@@ -1,9 +1,11 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {InstitutionService} from '../../../shared/services/institution/institution.service';
 import {InstitutionResponse} from '../../../shared/models/institution/InstitutionResponse';
 import * as L from 'leaflet';
 import {ToastrService} from 'ngx-toastr';
+import {DomSanitizer} from '@angular/platform-browser';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -15,6 +17,7 @@ export class HomeComponent implements OnInit {
       private institutionService: InstitutionService,
       private route: ActivatedRoute,
       private toastr: ToastrService,
+      private sanitizer: DomSanitizer
   ) { }
   imageSrc: any;
   currentInstitution: InstitutionResponse;
@@ -28,6 +31,10 @@ export class HomeComponent implements OnInit {
           console.log('currentInstitution', this.currentInstitution);
         }
     );
+      this.institutionService.getImageBlobUrl(this.institutionID).subscribe((blob: Blob) => {
+          const objectURL = URL.createObjectURL(blob);
+          this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+      });
 
   }
 
@@ -38,6 +45,7 @@ export class HomeComponent implements OnInit {
       }, 0);
     }
   }
+
   downloadExcel() {
     this.institutionService.downloadExcel(this.institutionID).subscribe(
         response => {

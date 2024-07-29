@@ -104,9 +104,31 @@
             </div>
         </div>
     </div>
+    <div *ngIf="currentInstitution" class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">Institution Logo</div>
+                <div *ngIf="selectedFileUrl">
+                    <img [src]="selectedFileUrl" alt="Selected Image" style="width: 200px; height: 200px; object-fit: cover;margin-bottom: 20px;">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile02" (change)="onFileSelected($event)" accept=".jpg,.jpeg,.png">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">{{ selectedFileName || "No file chosen" }}</label>
+                    </div>
+                    <div class="input-group-append">
+                        <button class="input-group-text" id="inputGroupFileAddon02" (click)="uploadLogo()" >Upload</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
     <div *ngIf="currentInstitution" class="col-md-6">
         <div class="card mb-4">
             <div class="card-body">
+                <div class="card-title">Generate annual calendar</div>
                 <form (ngSubmit)="generateExcel()" [formGroup]="generateForm">
                     <div class="box-body">
                         <div class="form-group">

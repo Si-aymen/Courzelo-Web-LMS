@@ -1,5 +1,5 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {PaginatedInstitutionsResponse} from '../../models/institution/PaginatedInstitutionsResponse';
 import {Observable} from 'rxjs';
 import {InstitutionRequest} from '../../models/institution/InstitutionRequest';
@@ -8,6 +8,7 @@ import {InstitutionResponse} from '../../models/institution/InstitutionResponse'
 import {PaginatedInstitutionUsersResponse} from '../../models/institution/PaginatedInstitutionUsersResponse';
 import {InstitutionMapRequest} from '../../models/institution/InstitutionMapRequest';
 import {CalendarEventRequest} from '../../models/institution/CalendarEventRequest';
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -93,5 +94,20 @@ export class InstitutionService {
   }
   downloadExcel(institutionID: string) {
     return this.http.get(`${this.baseUrl}/${institutionID}/download-excel`, { responseType: 'blob' });
+  }
+  uploadImage(institutionID: string, image: File) {
+    const formData = new FormData();
+    formData.append('file', image);
+    return this.http.post(`${this.baseUrl}/${institutionID}/image`, formData);
+  }
+  getImageBlobUrl(institutionID: string): Observable<Blob> {
+    return this.getImage(institutionID).pipe(
+        map((arrayBuffer: ArrayBuffer) => {
+          return new Blob([arrayBuffer], {type: 'image/jpeg'});
+        })
+    );
+  }
+  getImage(institutionID: string): Observable<ArrayBuffer> {
+    return this.http.get(`${this.baseUrl}/${institutionID}/image`, { responseType: 'arraybuffer'});
   }
 }

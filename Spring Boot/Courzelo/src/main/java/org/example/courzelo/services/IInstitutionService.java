@@ -10,6 +10,7 @@ import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsRespo
 import org.example.courzelo.models.Institution;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -32,4 +33,8 @@ public interface IInstitutionService {
     ResponseEntity<HttpStatus> generateExcel(String institutionID, List<CalendarEventRequest> events, Principal principal);
 
     ResponseEntity<byte[]> downloadExcel(String institutionID, Principal principal);
+
+    ResponseEntity<HttpStatus> uploadInstitutionImage(String institutionID, MultipartFile file, Principal principal);
+
+    ResponseEntity<byte[]> getInstitutionImage(String institutionID, Principal principal);
 }

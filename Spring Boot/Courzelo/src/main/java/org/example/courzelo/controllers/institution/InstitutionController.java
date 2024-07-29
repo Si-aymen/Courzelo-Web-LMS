@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -112,5 +113,16 @@ public class InstitutionController {
     @GetMapping("/{institutionID}/download-excel")
     public ResponseEntity<byte[]> downloadExcel(@PathVariable @NotNull String institutionID,Principal principal) {
         return iInstitutionService.downloadExcel(institutionID,principal);
+    }
+    @PostMapping("/{institutionID}/image")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<HttpStatus> uploadInstitutionImage(@PathVariable @NotNull String institutionID,
+                                                             @RequestParam("file") MultipartFile file, Principal principal) {
+        return iInstitutionService.uploadInstitutionImage(institutionID,file, principal);
+    }
+    @GetMapping("/{institutionID}/image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable @NotNull String institutionID,Principal principal) {
+        return iInstitutionService.getInstitutionImage(institutionID,principal);
     }
 }

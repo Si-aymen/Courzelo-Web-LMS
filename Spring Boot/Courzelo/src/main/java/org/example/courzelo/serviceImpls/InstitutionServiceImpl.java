@@ -26,14 +26,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -317,6 +317,71 @@ public class InstitutionServiceImpl implements IInstitutionService {
             }
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @Override
+    public ResponseEntity<HttpStatus> uploadInstitutionImage(String institutionID, MultipartFile file, Principal principal) {
+        try {
+            Institution institution= institutionRepository.findById(institutionID).orElseThrow();
+            // Define the path where you want to save the image
+            String baseDir = "upload" + File.separator + institution.getName() + File.separator + "logo" + File.separator;
+
+            // Create the directory if it doesn't exist
+            File dir = new File(baseDir);
+            if (!dir.exists()) {
+                boolean dirsCreated = dir.mkdirs();
+                if (!dirsCreated) {
+                    throw new IOException("Failed to create directories");
+                }
+            }
+            // Get the original file name
+            String originalFileName = file.getOriginalFilename();
+            String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            // Generate a random filename
+            String newFileName = UUID.randomUUID() + extension;
+            // Define the path to the new file
+            String filePath = baseDir + newFileName;
+            log.info("File path: " + filePath);
+            Files.copy(file.getInputStream(), new File(filePath).toPath());
+            // Save the file to the server
+            //file.transferTo(new File(filePath));
+            //delete old image
+            if(institution.getLogo() != null)
+            {
+                File oldImage = new File(institution.getLogo());
+                if(oldImage.exists())
+                {
+                    oldImage.delete();
+                }
+            }
+            // Save the file path and name in the user's profile
+            institution.setLogo(filePath);
+            // Save the user
+            institutionRepository.save(institution);
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error uploading image: " + e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getInstitutionImage(String institutionID, Principal principal) {
+        try {
+            // Get the user
+            Institution instituion = institutionRepository.findById(institutionID).orElseThrow();
+            if(instituion.getLogo() == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            String filePath = instituion.getLogo();
+            // Read the file
+            byte[] image = Files.readAllBytes(new File(filePath).toPath());
+            return ResponseEntity.ok(image);
+        } catch (Exception e) {
+            log.error("Error getting image: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @Override

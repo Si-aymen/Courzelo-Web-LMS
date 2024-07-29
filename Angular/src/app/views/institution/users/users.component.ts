@@ -9,7 +9,6 @@ import {ResponseHandlerService} from '../../../shared/services/user/response-han
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-users',

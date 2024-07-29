@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {UsersComponent} from './users/users.component';
 import {EditComponent} from './edit/edit.component';
 import {HomeComponent} from './home/home.component';
