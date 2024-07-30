@@ -1,8 +1,8 @@
-package org.example.courzelo.models;
+package org.example.courzelo.models.institution;
 
 import lombok.Data;
 import org.example.courzelo.dto.requests.InstitutionRequest;
-import org.example.courzelo.dto.responses.institution.InstitutionResponse;
+import org.example.courzelo.models.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;

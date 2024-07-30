@@ -12,12 +12,16 @@ import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionUserResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
-import org.example.courzelo.models.Institution;
+import org.example.courzelo.models.CodeType;
+import org.example.courzelo.models.CodeVerification;
+import org.example.courzelo.models.institution.Institution;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
+import org.example.courzelo.services.ICodeVerificationService;
 import org.example.courzelo.services.IInstitutionService;
+import org.example.courzelo.services.IMailService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -33,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +49,8 @@ public class InstitutionServiceImpl implements IInstitutionService {
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
     private final CalendarService calendarService;
+    private final ICodeVerificationService codeVerificationService;
+    private final IMailService mailService;
     @Override
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword) {
         log.info("Fetching institutions for page: {}, sizePerPage: {}", page, sizePerPage);
@@ -385,6 +392,62 @@ public class InstitutionServiceImpl implements IInstitutionService {
     }
 
     @Override
+    public ResponseEntity<HttpStatus> inviteUser(String institutionID, String email, String role, Principal principal) {
+        log.info("Inviting user to institution {} with email: {} and role : {} ", institutionID, email , role);
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+        User user = userRepository.findUserByEmail(email);
+        if(user == null){
+            log.info("User not found");
+            return ResponseEntity.notFound().build();
+        }
+        CodeVerification codeVerification = codeVerificationService.saveCode(
+                CodeType.INSTITUTION_INVITATION,
+                codeVerificationService.generateCode(),
+                email,
+                Role.valueOf(role),
+                institutionID,
+                Instant.now().plusSeconds(3600)
+        );
+        mailService.sendInstituionInvitationEmail(user, institution,codeVerification);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<HttpStatus> acceptInvite(String code) {
+        log.info("Accepting invite with code: {}", code);
+        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        log.info("Code verification: {}", codeVerification);
+        if(codeVerification == null){
+            log.info("Code not found");
+            return ResponseEntity.notFound().build();
+        }
+        log.info("Code found");
+        if(codeVerification.getCodeType() != CodeType.INSTITUTION_INVITATION){
+            log.info("Code type is not institution invitation");
+            return ResponseEntity.badRequest().build();
+        }
+        log.info("Code type is institution invitation");
+        Institution institution = institutionRepository.findById(codeVerification.getInstitutionID()).orElseThrow();
+        User user = userRepository.findUserByEmail(codeVerification.getEmail());
+        if(user == null){
+            log.info("User not found");
+            return ResponseEntity.notFound().build();
+        }
+        //TODO Leave old institution
+        log.info("Removing user from old institution");
+        removeInstitutionUser(codeVerification.getInstitutionID(), codeVerification.getEmail(), null);
+        if(isUserInInstitution(user, institution) && getUserRoleInInstitution(user, institution).contains(codeVerification.getRole())){
+            log.info("User already in institution");
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        addInstitutionToUser(user, institution, codeVerification.getRole());
+        addUserToInstitution(user, institution, codeVerification.getRole());
+        log.info("Deleting code");
+        codeVerificationService.deleteCode(codeVerification.getEmail(), CodeType.INSTITUTION_INVITATION);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
     public ResponseEntity<HttpStatus> addInstitutionUser(String institutionID, String email, String role,Principal principal) {
         log.info("Adding user to institution {} with email: {} and role : {} ", institutionID, email , role);
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
@@ -397,24 +460,11 @@ public class InstitutionServiceImpl implements IInstitutionService {
             log.info("User already in institution");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        switch (role) {
-            case "ADMIN" -> {
-                institution.getAdmins().add(user);
-                addUserToInstitution(user, institution, Role.ADMIN);
-            }
-            case "TEACHER" -> {
-                institution.getTeachers().add(user);
-                addUserToInstitution(user, institution, Role.TEACHER);
-            }
-            case "STUDENT" -> {
-                institution.getStudents().add(user);
-                addUserToInstitution(user, institution, Role.STUDENT);
-            }
-        }
-        institutionRepository.save(institution);
+        addUserToInstitution(user, institution, Role.valueOf(role));
+        addInstitutionToUser(user, institution, Role.valueOf(role));
         return ResponseEntity.ok().build();
     }
-    public void addUserToInstitution(User user, Institution institution, Role role){
+    public void addInstitutionToUser(User user, Institution institution, Role role){
         if(user.getEducation().getInstitution()==null) {
             log.info("Setting user institution");
             user.getEducation().setInstitution(institution);
@@ -425,6 +475,15 @@ public class InstitutionServiceImpl implements IInstitutionService {
             userRepository.save(user);
         }
     }
+    public void addUserToInstitution(User user, Institution institution, Role role){
+        switch (role) {
+            case ADMIN -> institution.getAdmins().add(user);
+            case TEACHER -> institution.getTeachers().add(user);
+            case STUDENT -> institution.getStudents().add(user);
+        }
+        institutionRepository.save(institution);
+    }
+
     public boolean isUserInInstitution(User user, Institution institution){
         log.info("Checking if user {} is in institution {}",user.getId(),institution.getId());
         log.info("User is in insitution : {}", user.getEducation().getInstitution() != null && user.getEducation().getInstitution().getId().equals(institution.getId()));

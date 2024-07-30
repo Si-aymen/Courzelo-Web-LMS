@@ -128,7 +128,7 @@ export class InstitutionsComponent implements OnInit {
     addInstitutionUser() {
         this.loadingUsers = true;
         if (this.addUserForm.valid) {
-            this.institutionService.addInstitutionUser(this.currentInstitution.id,
+            this.institutionService.inviteUser(this.currentInstitution.id,
                 this.addUserForm.controls.email.value,
                 this.addUserForm.controls.role.value.toUpperCase()).subscribe(
                 response => {

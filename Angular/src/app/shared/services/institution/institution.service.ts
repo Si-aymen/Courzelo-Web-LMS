@@ -8,7 +8,7 @@ import {InstitutionResponse} from '../../models/institution/InstitutionResponse'
 import {PaginatedInstitutionUsersResponse} from '../../models/institution/PaginatedInstitutionUsersResponse';
 import {InstitutionMapRequest} from '../../models/institution/InstitutionMapRequest';
 import {CalendarEventRequest} from '../../models/institution/CalendarEventRequest';
-import {map} from "rxjs/operators";
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -42,11 +42,11 @@ export class InstitutionService {
   deleteInstitution(institutionID: string): Observable<StatusMessageResponse> {
     return this.http.delete<StatusMessageResponse>(`${this.baseUrl}/delete/${institutionID}`);
   }
-  addInstitutionUser(institutionID: string, email: string, role: string) {
+  inviteUser(institutionID: string, email: string, role: string) {
     const params = new HttpParams()
         .set('email', email)
         .set('role', role);
-    return this.http.put(`${this.baseUrl}/${institutionID}/add-user`, null, { params });
+    return this.http.put(`${this.baseUrl}/${institutionID}/invite_user`, null, { params });
   }
   removeInstitutionUserRole(institutionID: string, email: string, role: string) {
     console.log(email, role, institutionID);
@@ -110,4 +110,8 @@ export class InstitutionService {
   getImage(institutionID: string): Observable<ArrayBuffer> {
     return this.http.get(`${this.baseUrl}/${institutionID}/image`, { responseType: 'arraybuffer'});
   }
+
+    acceptInvite(code: string) {
+        return this.http.put(`${this.baseUrl}/accept_invite/${code}`, null);
+    }
 }

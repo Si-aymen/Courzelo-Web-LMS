@@ -1,7 +1,7 @@
 package org.example.courzelo.dto.responses.institution;
 
 import lombok.Data;
-import org.example.courzelo.models.Institution;
+import org.example.courzelo.models.institution.Institution;
 
 @Data
 public class InstitutionResponse {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.example.courzelo.configurations.RabbitProducerConfig;
 import org.example.courzelo.dto.requests.EmailRequest;
 import org.example.courzelo.models.CodeVerification;
+import org.example.courzelo.models.institution.Institution;
 import org.example.courzelo.models.User;
 import org.example.courzelo.services.IMailService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -49,5 +50,23 @@ public class MailServiceImpl implements IMailService {
                     .text(htmlMsg)
                     .build();
         rabbitTemplate.convertAndSend(RabbitProducerConfig.EXCHANGE, RabbitProducerConfig.ROUTING_KEY, emailRequest);
+    }
+
+    @Override
+    public void sendInstituionInvitationEmail(User user, Institution instituion, CodeVerification codeVerification) {
+
+            String htmlMsg = "<h3>Hello, " + user.getEmail() + "</h3>"
+                    + "<p>You have been invited to join " + instituion.getName() + " on Courzelo. Please click the below link to proceed:</p>"
+                    + "<a href='http://localhost:4200/institution/"+instituion.getId()+"?code=" + codeVerification.getCode() + "'>Join " + instituion.getName() + "</a>"
+                    + "<p>If you did not make this request, please ignore this email.</p>"
+                    + "<p>Best regards,</p>"
+                    + "<p>Courzelo Team</p>";
+
+            EmailRequest emailRequest = EmailRequest.builder()
+                    .to(user.getEmail())
+                    .subject(instituion.getName()+" Invitation")
+                    .text(htmlMsg)
+                    .build();
+            rabbitTemplate.convertAndSend(RabbitProducerConfig.EXCHANGE, RabbitProducerConfig.ROUTING_KEY, emailRequest);
     }
 }

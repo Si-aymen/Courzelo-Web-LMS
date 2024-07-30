@@ -20,14 +20,36 @@ export class HomeComponent implements OnInit {
       private sanitizer: DomSanitizer
   ) { }
   imageSrc: any;
+    code: string;
   currentInstitution: InstitutionResponse;
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
   ngOnInit() {
     this.institutionID = this.route.snapshot.paramMap.get('institutionID');
+      this.route.queryParams.subscribe(params => {
+          this.code = params['code'];
+      });
     this.institutionService.getInstitutionByID(this.institutionID).subscribe(
         response => {
           this.currentInstitution = response;
+            if (this.code && this.currentInstitution) {
+                this.institutionService.acceptInvite(this.code).subscribe(
+                    res => {
+                        this.toastr.success('You have successfully joined ' + this.currentInstitution.name);
+                    },
+                    error => {
+                        console.error(error);
+                        this.toastr.error('Error accepting invitation');
+                    }
+                );
+            } else {
+                if (!this.code) {
+                    console.log('No code');
+                }
+                if (!this.currentInstitution) {
+                    console.log('No currentInstitution');
+                }
+            }
           console.log('currentInstitution', this.currentInstitution);
         }
     );

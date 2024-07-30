@@ -1,7 +1,7 @@
 package org.example.courzelo.security;
 
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.Institution;
+import org.example.courzelo.models.institution.Institution;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.InstitutionRepository;

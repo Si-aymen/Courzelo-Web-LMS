@@ -7,7 +7,7 @@ import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
-import org.example.courzelo.models.Institution;
+import org.example.courzelo.models.institution.Institution;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,4 +37,8 @@ public interface IInstitutionService {
     ResponseEntity<HttpStatus> uploadInstitutionImage(String institutionID, MultipartFile file, Principal principal);
 
     ResponseEntity<byte[]> getInstitutionImage(String institutionID, Principal principal);
+
+    ResponseEntity<HttpStatus> inviteUser(String institutionID, String email, String role, Principal principal);
+
+    ResponseEntity<HttpStatus> acceptInvite(String code);
 }

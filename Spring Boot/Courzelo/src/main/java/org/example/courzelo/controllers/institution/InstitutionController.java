@@ -66,6 +66,19 @@ public class InstitutionController {
                                                                                  @RequestParam(defaultValue = "10") int sizePerPage) {
         return iInstitutionService.getInstitutionUsers(institutionID,keyword, role, page, sizePerPage);
     }
+    @PutMapping("/{institutionID}/invite_user")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<HttpStatus> inviteUser(@PathVariable @NotNull String institutionID,
+                                                         @RequestParam @Email String email,
+                                                         @RequestParam @NotNull String role,
+                                                         Principal principal) {
+        return iInstitutionService.inviteUser(institutionID, email, role, principal);
+    }
+    @PutMapping("/accept_invite/{code}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<HttpStatus> acceptInvite(@PathVariable @NotNull String code) {
+        return iInstitutionService.acceptInvite(code);
+    }
     @PutMapping("/{institutionID}/add-user")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
     public ResponseEntity<HttpStatus> addInstitutionUser(@PathVariable @NotNull String institutionID,

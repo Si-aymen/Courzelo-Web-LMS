@@ -3,6 +3,7 @@ package org.example.courzelo.serviceImpls;
 import lombok.AllArgsConstructor;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
+import org.example.courzelo.models.Role;
 import org.example.courzelo.repositories.CodeVerificationRepository;
 import org.example.courzelo.services.ICodeVerificationService;
 import org.slf4j.Logger;
@@ -23,11 +24,14 @@ public class CodeVerificationService implements ICodeVerificationService {
     }
 
     @Override
-    public String verifyCode(String codeToVerify) {
+    public CodeVerification verifyCode(String codeToVerify) {
+        log.info("Verifying code: {}", codeToVerify);
         CodeVerification codeVerification = codeVerificationRepository.findByCode(codeToVerify);
-        if(codeVerification != null && !isCodeExpired(codeVerification) && codeVerification.getCode().equals(codeToVerify)){
-            return codeVerification.getEmail();
+        if(codeVerification != null && !isCodeExpired(codeVerification)){
+            log.info("found with repository: {}", codeVerification);
+            return codeVerification;
         }
+        log.info("Code not found or expired");
         return null;
     }
     private boolean isCodeExpired(CodeVerification codeVerification){
@@ -37,6 +41,11 @@ public class CodeVerificationService implements ICodeVerificationService {
     @Override
     public CodeVerification saveCode(CodeType codeType, String email, String code, Instant expiryDate) {
         return codeVerificationRepository.save(new CodeVerification(codeType, code,email, expiryDate));
+    }
+
+    @Override
+    public CodeVerification saveCode(CodeType codeType, String code, String email, Role role,String institutionID, Instant expiryDate) {
+        return codeVerificationRepository.save(new CodeVerification(codeType, code,email, role,institutionID, expiryDate));
     }
 
     @Override
