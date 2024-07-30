@@ -40,5 +40,5 @@ public interface IInstitutionService {
 
     ResponseEntity<HttpStatus> inviteUser(String institutionID, String email, String role, Principal principal);
 
-    ResponseEntity<HttpStatus> acceptInvite(String code);
+    ResponseEntity<HttpStatus> acceptInvite(String code,Principal principal);
 }

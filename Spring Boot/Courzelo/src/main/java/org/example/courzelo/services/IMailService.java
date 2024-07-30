@@ -8,5 +8,7 @@ public interface IMailService {
     void sendConfirmationEmail(User user, CodeVerification codeVerification);
     void sendPasswordResetEmail(User user, CodeVerification codeVerification);
     void sendInstituionInvitationEmail(User user, Institution instituion, CodeVerification codeVerification);
+    void sendInstituionInvitationEmail(String email, Institution instituion, CodeVerification codeVerification);
+
 
 }

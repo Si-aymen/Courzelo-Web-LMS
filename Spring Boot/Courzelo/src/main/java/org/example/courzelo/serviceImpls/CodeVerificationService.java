@@ -24,6 +24,11 @@ public class CodeVerificationService implements ICodeVerificationService {
     }
 
     @Override
+    public CodeVerification getCodeByCode(String code) {
+        return codeVerificationRepository.findByCode(code);
+    }
+
+    @Override
     public CodeVerification verifyCode(String codeToVerify) {
         log.info("Verifying code: {}", codeToVerify);
         CodeVerification codeVerification = codeVerificationRepository.findByCode(codeToVerify);

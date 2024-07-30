@@ -8,6 +8,7 @@ import java.time.Instant;
 
 public interface ICodeVerificationService {
     String generateCode();
+    CodeVerification getCodeByCode(String code);
     CodeVerification verifyCode(String codeToVerify);
     CodeVerification saveCode(CodeType codeType, String email, String code, Instant expiryDate);
     CodeVerification saveCode(CodeType codeType,String code, String email, Role role, String institutionID, Instant expiryDate);

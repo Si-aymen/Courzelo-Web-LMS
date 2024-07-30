@@ -69,4 +69,20 @@ public class MailServiceImpl implements IMailService {
                     .build();
             rabbitTemplate.convertAndSend(RabbitProducerConfig.EXCHANGE, RabbitProducerConfig.ROUTING_KEY, emailRequest);
     }
+
+    @Override
+    public void sendInstituionInvitationEmail(String email, Institution instituion, CodeVerification codeVerification) {
+        String htmlMsg = "<h3>Hello, " + email + "</h3>"
+                + "<p>You have been invited to join " + instituion.getName() + " on Courzelo. Please click the below link to proceed:</p>"
+                + "<a href='http://localhost:4200/institution/"+instituion.getId()+"?code=" + codeVerification.getCode() + "'>Join " + instituion.getName() + "</a>"
+                + "<p>If you did not make this request, please ignore this email.</p>"
+                + "<p>Best regards,</p>"
+                + "<p>Courzelo Team</p>";
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(email)
+                .subject(instituion.getName()+" Invitation")
+                .text(htmlMsg)
+                .build();
+        rabbitTemplate.convertAndSend(RabbitProducerConfig.EXCHANGE, RabbitProducerConfig.ROUTING_KEY, emailRequest);
+    }
 }

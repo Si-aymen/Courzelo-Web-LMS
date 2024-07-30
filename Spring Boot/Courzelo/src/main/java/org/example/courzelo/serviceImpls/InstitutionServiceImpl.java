@@ -396,10 +396,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
         log.info("Inviting user to institution {} with email: {} and role : {} ", institutionID, email , role);
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
         User user = userRepository.findUserByEmail(email);
-        if(user == null){
-            log.info("User not found");
-            return ResponseEntity.notFound().build();
-        }
+
         CodeVerification codeVerification = codeVerificationService.saveCode(
                 CodeType.INSTITUTION_INVITATION,
                 codeVerificationService.generateCode(),
@@ -408,37 +405,30 @@ public class InstitutionServiceImpl implements IInstitutionService {
                 institutionID,
                 Instant.now().plusSeconds(3600)
         );
-        mailService.sendInstituionInvitationEmail(user, institution,codeVerification);
+        if(user == null){
+            log.info("User not found");
+            mailService.sendInstituionInvitationEmail(email, institution,codeVerification);
+        }else {
+            mailService.sendInstituionInvitationEmail(user, institution, codeVerification);
+        }
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<HttpStatus> acceptInvite(String code) {
+    public ResponseEntity<HttpStatus> acceptInvite(String code,Principal principal) {
         log.info("Accepting invite with code: {}", code);
-        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        CodeVerification codeVerification = codeVerificationService.getCodeByCode(code);
         log.info("Code verification: {}", codeVerification);
-        if(codeVerification == null){
-            log.info("Code not found");
-            return ResponseEntity.notFound().build();
-        }
-        log.info("Code found");
-        if(codeVerification.getCodeType() != CodeType.INSTITUTION_INVITATION){
-            log.info("Code type is not institution invitation");
-            return ResponseEntity.badRequest().build();
-        }
         log.info("Code type is institution invitation");
         Institution institution = institutionRepository.findById(codeVerification.getInstitutionID()).orElseThrow();
         User user = userRepository.findUserByEmail(codeVerification.getEmail());
-        if(user == null){
-            log.info("User not found");
-            return ResponseEntity.notFound().build();
-        }
-        //TODO Leave old institution
         log.info("Removing user from old institution");
-        removeInstitutionUser(codeVerification.getInstitutionID(), codeVerification.getEmail(), null);
         if(isUserInInstitution(user, institution) && getUserRoleInInstitution(user, institution).contains(codeVerification.getRole())){
             log.info("User already in institution");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        if(user.getEducation().getInstitution()!=null && !isUserInInstitution(user, institution)){
+            removeInstitutionUser(codeVerification.getInstitutionID(), codeVerification.getEmail(), null);
         }
         addInstitutionToUser(user, institution, codeVerification.getRole());
         addUserToInstitution(user, institution, codeVerification.getRole());
