@@ -18,8 +18,8 @@ public class AttendanceController {
     private AttendanceService attendanceService;
 
     @PostMapping("/mark")
-    public ResponseEntity<AttendanceDTO> markAttendance(@RequestParam String studentId,@RequestParam AttendanceStatus status) {
-        AttendanceDTO attendance = attendanceService.markAttendance(studentId, status);
+    public ResponseEntity<AttendanceDTO> markAttendance(@RequestParam String studentId, @RequestParam AttendanceStatus status, @RequestParam(required = false, defaultValue = "0") int minutesLate) {
+        AttendanceDTO attendance = attendanceService.markAttendance(studentId, status, minutesLate);
         return ResponseEntity.ok(attendance);
     }
     @GetMapping("/student/{studentId}/date/{date}")

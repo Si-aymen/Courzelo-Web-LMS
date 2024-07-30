@@ -3,6 +3,7 @@ export interface AttendanceDTO {
     studentName: string;
     date: string;
     status: AttendanceStatus;
+    minutesLate?: number;
 }
 
 export enum AttendanceStatus {

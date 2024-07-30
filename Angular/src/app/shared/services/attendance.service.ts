@@ -13,7 +13,7 @@ export class AttendanceService {
 
   constructor(private http: HttpClient) { }
 
-  markAttendance(studentId: string, status: AttendanceStatus): Observable<AttendanceDTO> {
+  markAttendance(studentId: string, status: string, minutesLate: any): Observable<AttendanceDTO> {
     const params = new HttpParams()
         .set('studentId', studentId)
         .set('status', status);

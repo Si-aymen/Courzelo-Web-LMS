@@ -20,7 +20,7 @@
             <tr *ngFor="let student of filteredStudents">
                 <td>{{ student.name }}</td>
                 <td>
-                    <select class="form-control" #status (change)="markAttendance(student.id, status.value)">
+                    <select class="form-control" #status>
                         <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
                     </select>
                 </td>
@@ -30,5 +30,8 @@
             </tr>
             </tbody>
         </table>
+        <button class="btn btn-success mt-3" (click)="markAllAttendance('PRESENT')">Mark All Present</button>
     </div>
+
+    <button class="btn btn-info mt-3" (click)="exportToExcel()">Export to Excel</button>
 </div>

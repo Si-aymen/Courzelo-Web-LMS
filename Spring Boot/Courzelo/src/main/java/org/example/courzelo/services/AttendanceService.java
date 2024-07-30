@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,11 +21,25 @@ import java.util.stream.Collectors;
 public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
-    public AttendanceDTO markAttendance(String studentId, AttendanceStatus status) {
+    private static final Map<String, String> studentData = new HashMap<>();
+
+    static {
+        studentData.put("student1", "John Doe");
+        studentData.put("student2", "Jane Smith");
+        studentData.put("student3", "Alice Johnson");
+
+    }
+    public AttendanceDTO markAttendance(String studentId, AttendanceStatus status, int minutesLate) {
+        String studentName = studentData.getOrDefault(studentId, "Unknown");
+        if ("LATE".equals(status) && minutesLate > 15) {
+            throw new RuntimeException("Attendance cannot be marked. The student is more than 15 minutes late.");
+        }
         Attendance attendance = new Attendance();
         attendance.setStudentId(studentId);
         attendance.setDate(LocalDate.now());
+        attendance.setStudentName(studentName);
         attendance.setStatus(status);
+        attendance.setMinutesLate(minutesLate);
         attendance = attendanceRepository.save(attendance);
 
         return mapToDTO(attendance);
@@ -40,6 +56,7 @@ public class AttendanceService {
         //Student student = studentRepository.findById(attendance.getStudentId()).orElse(null);
         AttendanceDTO dto = new AttendanceDTO();
         dto.setStudentId(attendance.getStudentId());
+        dto.setStudentName(attendance.getStudentName());
         //dto.setStudentName(student != null ? student.getName() : "Unknown");
         dto.setDate(attendance.getDate());
         dto.setStatus(attendance.getStatus());
@@ -48,6 +65,7 @@ public class AttendanceService {
     private Attendance mapToEntity(AttendanceDTO dto) {
         Attendance attendance = new Attendance();
         attendance.setStudentId(dto.getStudentId());
+        attendance.setStudentName(dto.getStudentName());
         attendance.setDate(dto.getDate());
         attendance.setStatus(dto.getStatus());
         return attendance;

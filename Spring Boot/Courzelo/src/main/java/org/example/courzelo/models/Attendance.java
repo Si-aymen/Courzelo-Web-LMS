@@ -12,5 +12,6 @@ public class Attendance {
     private String courseId;
     private String className;
     private LocalDate date;
+    private int minutesLate;
     private AttendanceStatus status;
 }
