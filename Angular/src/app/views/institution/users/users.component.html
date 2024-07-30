@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="col-md-2 btn-group-sm " style="height: 4vh;">
-        <button (click)="addUserModel(addUser)" class="btn btn-success btn-sm m-1 " >Add User</button>
+        <button (click)="addUserModel(addUser)" class="btn btn-success btn-sm m-1 " >Invite User</button>
     </div>
     <div class="col-md-12">
         <div class="card o-hidden">
@@ -92,7 +92,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form [formGroup]="addUserForm" (ngSubmit)="addInstitutionUser()">
+            <form [formGroup]="addUserForm" (ngSubmit)="inviteUser()">
                 <div class="row">
                     <div class="col-md-6 form-group mb-3">
                         <label for="email">Email</label>
@@ -115,7 +115,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <btn-loading btnClass="btn-primary btn-rounded" [loading]="loadingUsers">Add</btn-loading>
+                        <btn-loading btnClass="btn-primary btn-rounded" [loading]="loadingUsers">Invite</btn-loading>
                     </div>
                 </div>
             </form>

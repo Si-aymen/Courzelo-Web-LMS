@@ -125,14 +125,14 @@ export class InstitutionsComponent implements OnInit {
 
         }
     }
-    addInstitutionUser() {
+    inviteUser() {
         this.loadingUsers = true;
         if (this.addUserForm.valid) {
             this.institutionService.inviteUser(this.currentInstitution.id,
                 this.addUserForm.controls.email.value,
                 this.addUserForm.controls.role.value.toUpperCase()).subscribe(
                 response => {
-                    this.toastr.success('User added successfully');
+                    this.toastr.success('User invited successfully');
                     this.addUserForm.reset();
                     this.getInstitutionUsers(this.currentPageUsers, this.itemsPerPageUsers, null, null);
                     this.loadingUsers = false;
@@ -209,7 +209,7 @@ export class InstitutionsComponent implements OnInit {
     }
     addUserModel(content, institution: InstitutionResponse) {
         this.currentInstitution = institution;
-        this.modalService.open(content, { ariaLabelledBy: 'add User' })
+        this.modalService.open(content, { ariaLabelledBy: 'invite User' })
             .result.then((result) => {
             console.log(result);
         }, (reason) => {

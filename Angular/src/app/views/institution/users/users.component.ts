@@ -71,14 +71,14 @@ export class UsersComponent implements OnInit {
     const control = this.addUserForm.get(controlName);
     return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
   }
-  addInstitutionUser() {
+  inviteUser() {
     this.loadingUsers = true;
     if (this.addUserForm.valid) {
       this.institutionService.inviteUser(this.institutionID,
           this.addUserForm.controls.email.value,
           this.addUserForm.controls.role.value.toUpperCase()).subscribe(
           response => {
-            this.toastr.success('User added successfully');
+            this.toastr.success('User invited successfully');
             this.addUserForm.reset();
             this.getInstitutionUsers(this.currentPageUsers, this.itemsPerPageUsers, null, null);
             this.loadingUsers = false;
@@ -93,7 +93,7 @@ export class UsersComponent implements OnInit {
     }
   }
   addUserModel(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'add User' })
+    this.modalService.open(content, { ariaLabelledBy: 'Invite user' })
         .result.then((result) => {
       console.log(result);
     }, (reason) => {
