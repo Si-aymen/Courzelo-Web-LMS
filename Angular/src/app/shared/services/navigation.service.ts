@@ -115,6 +115,7 @@ export class NavigationService {
                 { icon: 'i-Tag-2', name: 'Tag Input', state: '/forms/tag-input', type: 'link' },
                 { icon: 'i-Width-Window', name: 'Wizard', state: '/forms/wizard', type: 'link' },
                 { icon: 'i-Crop-2', name: 'Image Cropper', state: '/forms/img-cropper', type: 'link' },
+                { icon: 'i-Crop-2', name: 'Attendance', state: '/forms/Attendance', type: 'link' },
             ]
         },
         {

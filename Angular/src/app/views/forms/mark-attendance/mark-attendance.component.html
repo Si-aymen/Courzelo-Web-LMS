@@ -1,0 +1,34 @@
+<div class="container-fluid">
+    <h2 class="page-title">Mark Attendance</h2>
+    <form [formGroup]="attendanceForm" class="form-inline">
+        <div class="form-group">
+            <label for="className" class="mr-2">Class:</label>
+            <input id="className" class="form-control mr-3" formControlName="className" placeholder="Enter class name" />
+        </div>
+    </form>
+
+    <div class="table-responsive mt-4" *ngIf="filteredStudents.length">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let student of filteredStudents">
+                <td>{{ student.name }}</td>
+                <td>
+                    <select class="form-control" #status (change)="markAttendance(student.id, status.value)">
+                        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-primary" (click)="markAttendance(student.id, status.value)">Mark</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

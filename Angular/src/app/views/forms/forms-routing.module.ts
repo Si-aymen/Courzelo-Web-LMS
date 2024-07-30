@@ -7,6 +7,7 @@ import { WizardComponent } from './wizard/wizard.component';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
+import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: 'img-cropper',
     component: AppImgCropperComponent
+  },
+  {
+    path: 'Attendance',
+    component: MarkAttendanceComponent
   }
 ];
 
