@@ -29,24 +29,24 @@ export class SessionStorageService {
   getUserEmail(): string {
     return this.getUser().email;
   }
-/*  getUser(): Observable<UserResponse> {
-    const userInSession = sessionStorage.getItem('user');
-    if (userInSession) {
-      return of(JSON.parse(userInSession));
-    } else {
-      return this.userService.getUserProfile().pipe(
-          tap(loginResponse => {
-            this.setUser(loginResponse.user);
-            this.setAuthenticated(true);
-          }),
-          catchError(error => {
-            this.handleResponse.handleError(error);
-            return of(null);
-          }),
-          map(loginResponse => loginResponse.user)
-      );
-    }
-  }*/
+  /*  getUser(): Observable<UserResponse> {
+      const userInSession = sessionStorage.getItem('user');
+      if (userInSession) {
+        return of(JSON.parse(userInSession));
+      } else {
+        return this.userService.getUserProfile().pipe(
+            tap(loginResponse => {
+              this.setUser(loginResponse.user);
+              this.setAuthenticated(true);
+            }),
+            catchError(error => {
+              this.handleResponse.handleError(error);
+              return of(null);
+            }),
+            map(loginResponse => loginResponse.user)
+        );
+      }
+    }*/
   clearUser(): void {
     sessionStorage.removeItem('user');
   }

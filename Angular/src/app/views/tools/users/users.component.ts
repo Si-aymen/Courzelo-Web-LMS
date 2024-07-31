@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {ProductService} from '../../../shared/services/product.service';
 import {SuperAdminService} from '../../../shared/services/user/super-admin.service';
 import {PaginatedUsersResponse} from '../../../shared/models/user/PaginatedUsersResponse';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
@@ -9,10 +8,10 @@ import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-super-admin',
-  templateUrl: './super-admin.component.html',
-  styleUrls: ['./super-admin.component.scss']
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss']
 })
-export class SuperAdminComponent implements OnInit {
+export class Users implements OnInit {
   users: UserResponse[] = [];
   _currentPage = 1;
   totalPages = 0;

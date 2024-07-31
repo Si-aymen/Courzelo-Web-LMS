@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
+import {UserResponse} from '../models/user/UserResponse';
 
 export interface IMenuItem {
     id?: string;
@@ -16,6 +17,7 @@ export interface IMenuItem {
     badges?: IBadge[];
     active?: boolean;
     roles?: string[];
+    mustBeInInstitutions?: boolean;
 }
 export interface IChildItem {
     id?: string;
@@ -27,6 +29,7 @@ export interface IChildItem {
     sub?: IChildItem[];
     active?: boolean;
     roles?: string[];
+    mustBeInInstitutions?: boolean;
 }
 
 interface IBadge {
@@ -43,7 +46,6 @@ interface ISidebarState {
     providedIn: 'root'
 })
 export class NavigationService {
-
     constructor(private storageService: SessionStorageService) {
     }
     public sidebarState: ISidebarState = {
@@ -51,7 +53,7 @@ export class NavigationService {
         childnavOpen: false
     };
     selectedItem: IMenuItem;
-
+    user: UserResponse = this.storageService.getUser();
     defaultMenu: IMenuItem[] = [
         {
             name: 'Dashboard',
@@ -154,9 +156,28 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' , roles: ['SUPERADMIN']}
+                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/users', type: 'link'},
+                { icon: 'i-Administrator', name: 'Institutions', state: '/tools/institutions', type: 'link' },
+
             ],
             roles: ['SUPERADMIN']
+        },
+        {
+            name: this.user?.education?.institutionName,
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-Administrator',
+            sub: [
+                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user?.education?.institutionID, type: 'link',
+                    mustBeInInstitutions: true},
+                { icon: 'i-Administrator', name: 'Users', state: 'institution/' + this.user?.education?.institutionID + '/users',
+                    type: 'link',
+                    roles: ['ADMIN'], mustBeInInstitutions: true},
+                { icon: 'i-Administrator', name: 'Edit', state: 'institution/' + this.user?.education?.institutionID + '/edit',
+                    type: 'link',
+                    roles: ['ADMIN'], mustBeInInstitutions: true},
+            ],
+            mustBeInInstitutions: true
         },
         {
             name: 'Pages',
@@ -164,7 +185,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Windows-2',
             sub: [
-                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.storageService.getUserEmail(), type: 'link' }
+                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.user?.email, type: 'link' }
             ]
         },
         {
@@ -209,23 +230,25 @@ export class NavigationService {
     menuItems = new BehaviorSubject<IMenuItem[]>(this.defaultMenu);
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
-    filterMenuItemsByRole(menuItems: IMenuItem[], userRoles: string[]): IMenuItem[] {
+    filterMenuItemsByUser(menuItems: IMenuItem[], user: UserResponse): IMenuItem[] {
         return menuItems.filter(item => {
-            // Check if the item is accessible by any of the user's roles
-            const accessibleByRole = !item.roles || item.roles.some(role => userRoles.includes(role));
+            const accessibleByRole = (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
+                (!item.mustBeInInstitutions || (user.education.institutionName && user.education.institutionID));
             if (accessibleByRole && item.sub) {
-                // Recursively filter sub-items
-                item.sub = this.filterChildItemsByRole(item.sub, userRoles);
+                item.sub = this.filterChildItemsByRole(item.sub, user);
             }
             return accessibleByRole;
         });
     }
-
-    filterChildItemsByRole(childItems: IChildItem[], userRoles: string[]): IChildItem[] {
+    filterChildItemsByRole(childItems: IChildItem[], user: UserResponse): IChildItem[] {
         return childItems.filter(item => {
-            // Check if the item is accessible by any of the user's roles
-            return !item.roles || item.roles.some(role => userRoles.includes(role));
+            return (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
+                (!item.mustBeInInstitutions || (user.education.institutionName  && user.education.institutionID ));
         });
+    }
+    updateMenuItems(): void {
+        const filteredMenu = this.filterMenuItemsByUser(this.defaultMenu, this.user);
+        this.menuItems.next(filteredMenu);
     }
 
     // You can customize this method to supply different menu for
