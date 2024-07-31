@@ -1,11 +1,5 @@
 <div class="container-fluid">
     <h2 class="page-title">Mark Attendance</h2>
-    <form [formGroup]="attendanceForm" class="form-inline">
-        <div class="form-group">
-            <label for="className" class="mr-2">Class:</label>
-            <input id="className" class="form-control mr-3" formControlName="className" placeholder="Enter class name" />
-        </div>
-    </form>
 
     <div class="table-responsive mt-4" *ngIf="filteredStudents.length">
         <table class="table table-striped table-hover">
@@ -13,6 +7,7 @@
             <tr>
                 <th>Student Name</th>
                 <th>Status</th>
+                <th>Minutes Late</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -20,17 +15,20 @@
             <tr *ngFor="let student of filteredStudents">
                 <td>{{ student.name }}</td>
                 <td>
-                    <select class="form-control" #status>
+                    <select class="form-control" [(ngModel)]="student.status">
                         <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
                     </select>
                 </td>
+                <td *ngIf="student.status === 'LATE'">
+                    <input type="number" class="form-control" [(ngModel)]="student.minutesLate" placeholder="Enter minutes late" />
+                </td>
                 <td>
-                    <button class="btn btn-primary" (click)="markAttendance(student.id, status.value)">Mark</button>
+                    <button class="btn btn-primary" (click)="markAttendance(student.id, student.status, student.minutesLate)">Mark</button>
                 </td>
             </tr>
             </tbody>
         </table>
-        <button class="btn btn-success mt-3" (click)="markAllAttendance('PRESENT')">Mark All Present</button>
+        <button class="btn btn-success mt-3" (click)="markAllAttendance()">Mark All Present</button>
     </div>
 
     <button class="btn btn-info mt-3" (click)="exportToExcel()">Export to Excel</button>

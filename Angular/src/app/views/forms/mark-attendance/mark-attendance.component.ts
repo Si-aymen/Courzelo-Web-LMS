@@ -14,9 +14,9 @@ import * as XLSX from 'xlsx';
 export class MarkAttendanceComponent implements OnInit {
   attendanceForm: FormGroup;
   students = [
-    { id: 'student1', name: 'John Doe' },
-    { id: 'student2', name: 'Jane Smith' },
-    { id: 'student3', name: 'Alice Johnson' }
+    {id: 'student1', name: 'John Doe', minutesLate: 0},
+    {id: 'student2', name: 'Jane Smith', minutesLate: 0},
+    {id: 'student3', name: 'Alice Johnson', minutesLate: 0}
   ];
   statuses = Object.values(AttendanceStatus);
   filteredStudents = this.students;
@@ -30,7 +30,7 @@ export class MarkAttendanceComponent implements OnInit {
     this.attendanceForm = this.fb.group({
       className: [''],
       status: [''],
-      minutesLate: [''] // Add minutes late field
+      minutesLate: ['']
     });
   }
 
@@ -42,7 +42,6 @@ export class MarkAttendanceComponent implements OnInit {
     this.attendanceForm.get('className')?.valueChanges.subscribe(className => {
       if (className) {
         this.filterStudentsByClassName(className);
-        this.filterStudentsByClassName(className);
       }
     });
   }
@@ -51,30 +50,52 @@ export class MarkAttendanceComponent implements OnInit {
     this.filteredStudents = this.students.filter(student => student.name.toLowerCase().includes(className.toLowerCase()));
   }
 
-  markAttendance(studentId: string, status: AttendanceStatus) {
-    this.attendanceService.markAttendance(studentId, status).subscribe(response => {
+  markAttendance(studentId: string, status: string, minutesLate: string) {
+    const student = this.students.find(s => s.id === studentId);
+    if (!student) {
+      this.toastr.error('Invalid student ID', 'Error');
+      return;
+    }
+
+    if (status === 'LATE') {
+      if (!minutesLate || Number(minutesLate) > 15) {
+        this.toastr.error('Attendance cannot be marked. The student is more than 15 minutes late.', 'Error');
+        return;
+      }
+      student.minutesLate = Number(minutesLate);
+    } else {
+      student.minutesLate = 0;
+    }
+    const attendanceStatus = this.attendanceService.statusMap[status];
+    if (!attendanceStatus) {
+      this.toastr.error('Invalid attendance status', 'Error');
+      return;
+    }
+
+    this.attendanceService.markAttendance(studentId, attendanceStatus, student.minutesLate).subscribe(response => {
       if (response) {
         this.toastr.success(`Attendance marked for ${response.studentName}`, 'Success');
-        this.attendances.push({ studentId: response.studentId, studentName: response.studentName, status: response.status });
-        console.log(this.attendances); // Log the attendances array to verify
+        this.attendances.push({
+          studentId: response.studentId,
+          studentName: response.studentName,
+          status: response.status,
+          minutesLate: student.minutesLate // Use student.minutesLate instead of response.minutesLate
+        });
       } else {
         this.toastr.error('Failed to mark attendance', 'Error');
       }
     });
   }
-
-  markAllAttendance(status: AttendanceStatus) {
+  markAllAttendance() {
     this.filteredStudents.forEach((student, index) => {
       setTimeout(() => {
-        this.markAttendance(student.id, status);
-      }, index * 1000); // 1 second interval between each marking
+        this.markAttendance(student.id, 'PRESENT', '0');
+      }, index * 1000);
     });
   }
-
   exportToExcel() {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.attendances);
     const workbook: XLSX.WorkBook = { Sheets: { 'attendance': worksheet }, SheetNames: ['attendance'] };
     XLSX.writeFile(workbook, 'attendance.xlsx');
   }
 }
-
