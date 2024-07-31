@@ -10,7 +10,8 @@ import {ToastrService} from 'ngx-toastr';
 import {SessionStorageService} from './session-storage.service';
 import {ResponseHandlerService} from './response-handler.service';
 import {map, tap} from 'rxjs/operators';
-import {UserService} from "./user.service";
+import {UserService} from './user.service';
+import {NavigationService} from '../navigation.service';
 
 
 @Injectable({
@@ -23,7 +24,8 @@ export class AuthenticationService {
               private toastr: ToastrService,
               private sessionStorageService: SessionStorageService,
               private responseHandlerService: ResponseHandlerService,
-              private userService: UserService) {
+              private userService: UserService,
+              private navigation: NavigationService) {
   }
 
   register(signupRequest: SignupRequest) {
@@ -67,16 +69,17 @@ export class AuthenticationService {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/forgot-password`, {params: {email}});
   }
     checkAuthState(): Observable<boolean> {
-      if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUser()) {
+        if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUser()) {
             console.log('CheckAUTH Authenticated');
             return new BehaviorSubject<boolean>(true);
-      }
+        }
         return this.http.get<LoginResponse>(`${this.baseUrl}/check-auth`).pipe(
             tap((response: LoginResponse) => {
                 if (response.user) {
                     console.log('CheckAUTH Authenticated');
                     this.sessionStorageService.setUser(response.user);
                     this.sessionStorageService.setAuthenticated(true);
+                    this.navigation.updateMenuItems();
                 } else {
                     console.log('CheckAUTH Not Authenticated');
                     this.sessionStorageService.setAuthenticated(false);

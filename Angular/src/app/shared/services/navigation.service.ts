@@ -163,17 +163,17 @@ export class NavigationService {
             roles: ['SUPERADMIN']
         },
         {
-            name: this.user.education.institutionName,
+            name: this.user?.education?.institutionName,
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user.education.institutionID, type: 'link',
+                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user?.education?.institutionID, type: 'link',
                     mustBeInInstitutions: true},
-                { icon: 'i-Administrator', name: 'Users', state: 'institution/' + this.user.education.institutionID + '/users',
+                { icon: 'i-Administrator', name: 'Users', state: 'institution/' + this.user?.education?.institutionID + '/users',
                     type: 'link',
                     roles: ['ADMIN'], mustBeInInstitutions: true},
-                { icon: 'i-Administrator', name: 'Edit', state: 'institution/' + this.user.education.institutionID + '/edit',
+                { icon: 'i-Administrator', name: 'Edit', state: 'institution/' + this.user?.education?.institutionID + '/edit',
                     type: 'link',
                     roles: ['ADMIN'], mustBeInInstitutions: true},
             ],
@@ -185,7 +185,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Windows-2',
             sub: [
-                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.user.email, type: 'link' }
+                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.user?.email, type: 'link' }
             ]
         },
         {
@@ -240,12 +240,15 @@ export class NavigationService {
             return accessibleByRole;
         });
     }
-
     filterChildItemsByRole(childItems: IChildItem[], user: UserResponse): IChildItem[] {
         return childItems.filter(item => {
             return (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
                 (!item.mustBeInInstitutions || (user.education.institutionName  && user.education.institutionID ));
         });
+    }
+    updateMenuItems(): void {
+        const filteredMenu = this.filterMenuItemsByUser(this.defaultMenu, this.user);
+        this.menuItems.next(filteredMenu);
     }
 
     // You can customize this method to supply different menu for

@@ -74,7 +74,7 @@ export class HeaderSidebarCompactComponent implements OnInit {
   imageSrc: any;
   user: UserResponse;
   ngOnInit() {
-   this.user = this.sessionStorageService.getUser();
+    this.user = this.sessionStorageService.getUser();
     this.userService.getProfileImageBlobUrl(this.user.email).subscribe((blob: Blob) => {
       const objectURL = URL.createObjectURL(blob);
       this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);

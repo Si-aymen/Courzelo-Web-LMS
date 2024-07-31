@@ -25,13 +25,13 @@ export class SidebarCompactComponent implements OnInit {
     this.updateSidebar();
     // CLOSE SIDENAV ON ROUTE CHANGE
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(routeChange => {
-        this.closeChildNav();
-        if (Utils.isMobile()) {
-          this.navService.sidebarState.sidenavOpen = false;
-        }
-      });
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(routeChange => {
+          this.closeChildNav();
+          if (Utils.isMobile()) {
+            this.navService.sidebarState.sidenavOpen = false;
+          }
+        });
 
     const currentUser = this.sessionService.getUser(); // Implement this method as needed
 
