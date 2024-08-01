@@ -10,6 +10,8 @@ import java.util.List;
 public interface AttendanceRepository extends MongoRepository<Attendance, String> {
     List<Attendance> findByStudentIdAndDate(String studentId, LocalDate date);
     List<Attendance> findByDate(LocalDate date);
+
+    List<Attendance> findByStudentId(String studentId);
   /*  @Query("{ 'studentId': ?0, 'date': { $gte: ?1, $lte: ?2 } }")
     List<Attendance> findByStudentIdAndDateRange(String studentId, LocalDate startDate, LocalDate endDate);*/
 }

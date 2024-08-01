@@ -32,5 +32,10 @@ public class AttendanceController {
         List<AttendanceDTO> attendance = attendanceService.getAttendanceByDate(LocalDate.parse(date));
         return ResponseEntity.ok(attendance);
     }
+    @GetMapping("/history")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceHistory(@RequestParam String studentId) {
+        List<AttendanceDTO> attendanceHistory = attendanceService.getAttendanceHistory(studentId);
+        return ResponseEntity.ok(attendanceHistory);
+    }
 
 }
