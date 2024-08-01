@@ -5,8 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,4 +29,9 @@ public class Stages {
     private String entName ;
     private StageDomain domain ;
     private long duration;
+    private Date startDate ;
+    private Date lastUpdate ;
+
+    @DBRef
+    private Set<User> userSet = new HashSet<>();
 }
