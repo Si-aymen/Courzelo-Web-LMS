@@ -21,6 +21,7 @@ import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.component';
+import { AttendaneHistoryComponent } from './attendane-history/attendane-history.component';
 
 
 @NgModule({
@@ -37,6 +38,6 @@ import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.compone
     FormWizardModule,
     FormsRoutingModule
   ],
-  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, MarkAttendanceComponent]
+  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, MarkAttendanceComponent, AttendaneHistoryComponent]
 })
 export class AppFormsModule { }

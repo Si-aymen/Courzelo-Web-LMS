@@ -8,6 +8,7 @@ import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.component';
+import {AttendaneHistoryComponent} from './attendane-history/attendane-history.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'Attendance',
     component: MarkAttendanceComponent
+  },
+  {
+    path: 'AttendanceHistory',
+    component: AttendaneHistoryComponent
   }
 ];
 

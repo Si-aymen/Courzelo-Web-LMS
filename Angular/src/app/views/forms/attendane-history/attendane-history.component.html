@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Attendance History</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-responsive-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                    <th>Minutes Late</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let record of paginatedHistory">
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.studentName }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.minutesLate ? record.minutesLate : '-' }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="btn-group">
+                    <button class="btn btn-primary" (click)="onPageChange(pageIndex - 1)" [disabled]="pageIndex === 0">
+                        <i class="i-Arrow-Left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" (click)="onPageChange(pageIndex + 1)"
+                            [disabled]="pageIndex >= Math.ceil(length / pageSize) - 1">
+                        Next <i class="i-Arrow-Right"></i>
+                    </button>
+                </div>
+                <span>Page {{ pageIndex + 1 }} of {{ Math.ceil(length / pageSize) }}</span>
+                <div class="form-inline">
+                    <label for="pageSize" class="mr-2">Items per page:</label>
+                    <select id="pageSize" class="form-control" (change)="onPageSizeChange($event.target['value'])">
+                        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+            <button class="btn btn-success" (click)="exportToExcel()">
+                <i class="i-Download"></i> Export to Excel
+            </button>
+        </div>
+    </div>
+</div>

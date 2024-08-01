@@ -4,6 +4,7 @@ export interface AttendanceDTO {
     date: string;
     status: AttendanceStatus;
     minutesLate?: number;
+
 }
 
 export enum AttendanceStatus {
