@@ -14,7 +14,8 @@ import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdeta
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
 
 import {NoAuthGuard} from './shared/services/no-auth.guard';
-
+import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
+import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
 
 const userRoutes: Routes = [
     {
@@ -62,16 +63,20 @@ const userRoutes: Routes = [
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
 
     } ,
-    { path: 'getallprojects', component: ProjectComponent},
-    { path: 'projectdetails/:id', component: ProjectDetailsComponent},
-    { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},
+    
+    
     { path: 'projects', component: DashboardProjectComponent},
     { path: 'addprojects', component: AddProjectComponent},
     { path: 'project/:id', component: ViewdetailsComponent },
+
     { path: 'pdf', component: PdfComponent },
-
-
-    },
+    { path: 'projectcalendar/:id', component: ProjectCalendarComponent },
+    { path: 'getallprojects', component: ProjectComponent},
+    { path: 'projectdetails/:id', component: ProjectDetailsComponent},
+    { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},
+    { path: 'publication/:id', component: PublicationComponent},
+   
+    
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)

@@ -35,15 +35,18 @@ export class ProjectDetailsComponent implements OnInit {
     }
   }
 
-  chat() {
+  chat()   {
     this.router.navigate(['/chat']);
   }
 
-  calendar() {
-    this.router.navigate(['/calendar']);
+  calendar(projectId: string) {
+    this.router.navigate(['/projectcalendar', projectId]);
   }
 
   ProgressDashboard(projectId: string) {
     this.router.navigate(['/ProgressDashboard', projectId]);
+  }
+  publication(projectId: string)  {
+    this.router.navigate(['/publication', projectId]);
   }
 }

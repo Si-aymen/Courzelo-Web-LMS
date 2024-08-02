@@ -117,6 +117,8 @@ export class DashboardProjectComponent implements OnInit{
 
 
 
+
+
   navigateToView(id: number): void {
     this.router.navigate(['/project', id]);
   }

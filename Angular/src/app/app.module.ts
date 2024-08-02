@@ -8,7 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 
-import { HttpClientModule } from '@angular/common/http';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddProjectComponent } from './shared/components/Project/Admin/add-project/add-project.component';
@@ -22,7 +22,19 @@ import { ProgressDashboardComponent } from './shared/components/Project/User/pro
 
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {Interceptor} from './shared/services/user/Interceptor';
-
+import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { CalendarRoutingModule } from './views/calendar/calendar-routing.module';
+import { CalendarFormProjectComponent } from './shared/components/Project/User/calendar-form-project/calendar-form-project.component';
+import { NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
+import { AddpublicationComponent } from './shared/components/Project/User/addpublication/addpublication.component';
+import { SharedDirectivesModule } from './shared/directives/shared-directives.module';
+import { SharedPipesModule } from './shared/pipes/shared-pipes.module';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { ChatRoutingModule } from './views/chat/chat-routing.module';
 
 @NgModule({
   declarations: [
@@ -34,11 +46,14 @@ import {Interceptor} from './shared/services/user/Interceptor';
     ProjectComponent,
     ProjectDetailsComponent,
     ProgressDashboardComponent,
-    
+   ProjectCalendarComponent ,
+   CalendarFormProjectComponent,
+   PublicationComponent,
+   AddpublicationComponent,
+ 
+
+
    
-
-
-    
   ],
   imports: [
     BrowserModule,
@@ -53,21 +68,34 @@ import {Interceptor} from './shared/services/user/Interceptor';
     BrowserAnimationsModule,
    DragDropModule ,
    RouterModule.forRoot([]),
-   
+   ColorPickerModule,
+   CalendarModule.forRoot({
+     provide: DateAdapter,
+     useFactory: adapterFactory
+   }),
+   CalendarRoutingModule ,
+   ColorPickerModule ,
+   NgbDatepickerModule,
+   NgbModule,
+   SharedDirectivesModule,
+   SharedPipesModule,
+   PerfectScrollbarModule,
+   ChatRoutingModule,
+
   ],
-
-  providers: [DatePipe],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-
   providers: [
-     {
+    DatePipe,
+    {
       provide: HTTP_INTERCEPTORS,
-       useClass: Interceptor,
-       multi: true
-     }
+      useClass: Interceptor,
+      multi: true
+    }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+
+
+
 
 })
 export class AppModule { }

@@ -50,6 +50,13 @@ public class Project {
     private List<Tasks> tasks;
 
     @DBRef
+    private List<Event> events;
+
+    @DBRef
+    private List<Publication> publications;
+
+
+    @DBRef
     private List<GroupProject> groupProjects;
 
 
