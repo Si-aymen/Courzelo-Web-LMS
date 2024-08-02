@@ -10,6 +10,7 @@ import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.component';
 import {AttendaneHistoryComponent} from './attendane-history/attendane-history.component';
 import {AttendanceReportComponent} from './attendance-report/attendance-report.component';
+import {StudentAttendanceComponent} from './student-attendance/student-attendance.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,10 @@ const routes: Routes = [
   {
     path: 'AttendanceReport',
     component: AttendanceReportComponent
+  },
+  {
+    path: 'StudentAttendance',
+    component: StudentAttendanceComponent
   }
 
 ];

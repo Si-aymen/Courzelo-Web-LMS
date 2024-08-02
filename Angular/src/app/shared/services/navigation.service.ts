@@ -117,7 +117,20 @@ export class NavigationService {
                 { icon: 'i-Crop-2', name: 'Image Cropper', state: '/forms/img-cropper', type: 'link' },
                 { icon: 'i-Crop-2', name: 'Attendance', state: '/forms/Attendance', type: 'link' },
                 { icon: 'i-Crop-2', name: 'AttendanceHistory', state: '/forms/AttendanceHistory', type: 'link' },
-                { icon: 'i-Crop-2', name: 'AttendanceReport', state: '/forms/AttendanceReport', type: 'link' }
+                { icon: 'i-Crop-2', name: 'AttendanceReport', state: '/forms/AttendanceReport', type: 'link' },
+                { icon: 'i-Crop-2', name: 'StuedentAttendance', state: '/forms/StudentAttendance', type: 'link' }
+            ]
+        },
+        {
+            name: 'Attendance',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-File-Clipboard-File--Text',
+            sub: [
+                { icon: 'i-Crop-2', name: 'Attendance', state: '/forms/Attendance', type: 'link' },
+                { icon: 'i-Crop-2', name: 'AttendanceHistory', state: '/forms/AttendanceHistory', type: 'link' },
+                { icon: 'i-Crop-2', name: 'AttendanceReport', state: '/forms/AttendanceReport', type: 'link' },
+                { icon: 'i-Crop-2', name: 'StuedentAttendance', state: '/forms/StudentAttendance', type: 'link' }
             ]
         },
         {

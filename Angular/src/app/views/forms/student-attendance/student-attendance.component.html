@@ -1,0 +1,44 @@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">My Attendance Records</h2>
+            <div class="form-group">
+                <label for="searchDate">Search by Date:</label>
+                <input type="date" id="searchDate" class="form-control" [(ngModel)]="searchDate" (change)="onSearchDateChange()">
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-responsive-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Minutes Late</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let record of filteredRecords">
+                    <td>{{ record.date | date: 'shortDate' }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.minutesLate ? record.minutesLate : '-' }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+                    </li>
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index"
+                        [class.active]="i + 1 === currentPage"
+                        class="page-item">
+                        <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

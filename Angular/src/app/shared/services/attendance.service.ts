@@ -43,6 +43,9 @@ export class AttendanceService {
         })
     );
   }
+  getAttendanceByStudentId(studentId: string): Observable<AttendanceDTO[]> {
+    return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/student/${studentId}`);
+  }
 
   getAttendanceByDate(date: string): Observable<AttendanceDTO[]> {
     return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/date/${date}`);
