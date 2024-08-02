@@ -56,12 +56,12 @@ public class AttendanceService {
         List<Attendance> attendances = attendanceRepository.findByStudentNameAndDateBetween(studentName, startDate, endDate);
         return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
-    public List<AttendanceDTO> getAttendanceByDate(LocalDate date) {
-        List<Attendance> attendances = attendanceRepository.findByDate(date);
-        return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
     public List<AttendanceDTO> getAttendanceByStudentId(String studentId) {
         List<Attendance> attendances = attendanceRepository.findByStudentId(studentId);
+        return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+    public List<AttendanceDTO> getAttendanceByDate(LocalDate date) {
+        List<Attendance> attendances = attendanceRepository.findByDate(date);
         return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
     private AttendanceDTO mapToDTO(Attendance attendance) {

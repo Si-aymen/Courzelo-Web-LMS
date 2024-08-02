@@ -43,13 +43,13 @@ export class AttendanceService {
         })
     );
   }
+  getAttendanceByDate(date: string): Observable<AttendanceDTO[]> {
+    return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/date/${date}`);
+  }
   getAttendanceByStudentId(studentId: string): Observable<AttendanceDTO[]> {
     return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/student/${studentId}`);
   }
 
-  getAttendanceByDate(date: string): Observable<AttendanceDTO[]> {
-    return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/date/${date}`);
-  }
   getAttendanceHistory(studentId: string): Observable<AttendanceDTO[]> {
     const params = new HttpParams().set('studentId', studentId);
     return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/history`, { params });

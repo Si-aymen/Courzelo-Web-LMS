@@ -30,9 +30,11 @@ export class AttendanceReportComponent implements OnInit {
 
   generateReport() {
     const { studentName, startDate, endDate } = this.reportForm.value;
+    console.log('Form values:', { studentName, startDate, endDate }); // Debugging statement
 
     this.attendanceService.getAttendanceReport(studentName, startDate, endDate).subscribe(
         data => {
+          console.log('Report data:', data); // Debugging statement
           this.reportData = data;
           this.reportGenerated = true;
           this.toastr.success('Report generated successfully', 'Success');

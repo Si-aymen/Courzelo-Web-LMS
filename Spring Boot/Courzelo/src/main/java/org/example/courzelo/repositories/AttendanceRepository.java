@@ -1,5 +1,6 @@
 package org.example.courzelo.repositories;
 
+import org.example.courzelo.dto.AttendanceDTO;
 import org.example.courzelo.models.Attendance;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
