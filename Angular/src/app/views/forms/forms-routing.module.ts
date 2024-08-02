@@ -9,6 +9,7 @@ import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.component';
 import {AttendaneHistoryComponent} from './attendane-history/attendane-history.component';
+import {AttendanceReportComponent} from './attendance-report/attendance-report.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,12 @@ const routes: Routes = [
   {
     path: 'AttendanceHistory',
     component: AttendaneHistoryComponent
+  },
+  {
+    path: 'AttendanceReport',
+    component: AttendanceReportComponent
   }
+
 ];
 
 @NgModule({

@@ -51,4 +51,12 @@ export class AttendanceService {
     const params = new HttpParams().set('studentId', studentId);
     return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/history`, { params });
   }
+  getAttendanceReport(studentName: string, startDate: string, endDate: string): Observable<AttendanceDTO[]> {
+    const params = new HttpParams()
+        .set('studentName', studentName)
+        .set('startDate', startDate)
+        .set('endDate', endDate);
+
+    return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/report`, { params });
+  }
 }

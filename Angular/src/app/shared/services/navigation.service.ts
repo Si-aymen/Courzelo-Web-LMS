@@ -116,7 +116,8 @@ export class NavigationService {
                 { icon: 'i-Width-Window', name: 'Wizard', state: '/forms/wizard', type: 'link' },
                 { icon: 'i-Crop-2', name: 'Image Cropper', state: '/forms/img-cropper', type: 'link' },
                 { icon: 'i-Crop-2', name: 'Attendance', state: '/forms/Attendance', type: 'link' },
-                { icon: 'i-Crop-2', name: 'AttendanceHistory', state: '/forms/AttendanceHistory', type: 'link' }
+                { icon: 'i-Crop-2', name: 'AttendanceHistory', state: '/forms/AttendanceHistory', type: 'link' },
+                { icon: 'i-Crop-2', name: 'AttendanceReport', state: '/forms/AttendanceReport', type: 'link' }
             ]
         },
         {

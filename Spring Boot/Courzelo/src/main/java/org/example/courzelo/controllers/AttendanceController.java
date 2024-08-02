@@ -4,6 +4,7 @@ import org.example.courzelo.dto.AttendanceDTO;
 import org.example.courzelo.models.AttendanceStatus;
 import org.example.courzelo.services.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +33,24 @@ public class AttendanceController {
         List<AttendanceDTO> attendance = attendanceService.getAttendanceByDate(LocalDate.parse(date));
         return ResponseEntity.ok(attendance);
     }
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceByStudentId(@PathVariable String studentId) {
+        List<AttendanceDTO> attendanceRecords = attendanceService.getAttendanceByStudentId(studentId);
+        return ResponseEntity.ok(attendanceRecords);
+    }
     @GetMapping("/history")
     public ResponseEntity<List<AttendanceDTO>> getAttendanceHistory(@RequestParam String studentId) {
         List<AttendanceDTO> attendanceHistory = attendanceService.getAttendanceHistory(studentId);
         return ResponseEntity.ok(attendanceHistory);
+    }
+    @GetMapping("/report")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceReport(
+            @RequestParam String studentName,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        List<AttendanceDTO> attendanceReport = attendanceService.getAttendanceReport(studentName, startDate, endDate);
+        return ResponseEntity.ok(attendanceReport);
     }
 
 }
