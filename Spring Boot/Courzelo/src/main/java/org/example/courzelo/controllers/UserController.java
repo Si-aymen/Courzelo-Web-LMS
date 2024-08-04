@@ -9,6 +9,8 @@ import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.models.User;
+import org.example.courzelo.models.UserInterest;
 import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -65,6 +68,18 @@ public class UserController {
     @DeleteMapping("/disableTwoFactorAuth")
     public ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(Principal principal) {
      return   userService.disableTwoFactorAuth(principal.getName());
+    }
+
+
+
+    @PostMapping("/addInt")
+    public ResponseEntity<StatusMessageResponse> addUserInterest(@RequestParam String email, @RequestParam String newInterest) {
+        return userService.addUserInterest(email,newInterest);
+    }
+
+    @GetMapping("/getInt")
+    public List<UserInterest> getUserInterest(@RequestParam String email) {
+        return userService.getUserInterest(email);
     }
 
 }

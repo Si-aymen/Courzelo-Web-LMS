@@ -1,8 +1,6 @@
 package org.example.courzelo.models;
 
 import lombok.Data;
-import org.springframework.data.mongodb.core.index.TextIndexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,4 +16,5 @@ public class UserProfile {
     private String country;
     private String title;
     private String bio;
+    private List<UserInterest> intersets = new ArrayList<>();
 }

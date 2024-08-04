@@ -18,6 +18,7 @@ import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.User;
+import org.example.courzelo.models.UserInterest;
 import org.example.courzelo.models.UserProfile;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICodeVerificationService;
@@ -285,6 +286,45 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
         }
         return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
+    }
+
+    @Override
+
+
+    public ResponseEntity<StatusMessageResponse> addUserInterest(String email, String newInterest) {
+
+        // Find user by email
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "User not found"));
+        }
+
+        // Convert the string to a UserInterest enum constant
+        UserInterest interestEnum;
+        try {
+            interestEnum = UserInterest.valueOf(newInterest.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "Invalid interest"));
+        }
+
+        // Check if the interest is already in the user's list
+        if (user.getProfile().getIntersets().contains(interestEnum)) {
+            return ResponseEntity.ok(new StatusMessageResponse("ok", "Interest already in the list"));
+        }
+
+        // Add the new interest to the user's interests list
+        user.getProfile().getIntersets().add(interestEnum);
+
+        // Save user (if necessary, depending on your persistence setup)
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new StatusMessageResponse("ok", "Interest added"));
+    }
+
+    @Override
+    public List<UserInterest>  getUserInterest(String email) {
+        User user = userRepository.findUserByEmail(email);
+        return  user.getProfile().getIntersets();
     }
 
 

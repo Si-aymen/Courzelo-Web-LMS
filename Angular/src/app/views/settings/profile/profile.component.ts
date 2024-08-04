@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
 import {ProfileInformationRequest} from '../../../shared/models/user/requests/ProfileInformationRequest';
 import {UserService} from '../../../shared/services/user/user.service';
@@ -13,6 +13,10 @@ import {ResponseHandlerService} from '../../../shared/services/user/response-han
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  items = ['Javascript', 'Typescript'];
+  tagsCtrl1 = new FormControl(this.items);
+  userInterests: string[] = [];
+
 
   constructor(
       private formBuilder: FormBuilder,
@@ -148,4 +152,19 @@ export class ProfileComponent implements OnInit {
         }
     );
   }
+
+
+  onAddItem(item: string): void {
+    if (!this.userInterests.includes(item)) {
+     // this.userInterests.push(item);
+    }
+    console.log('Current interests:', this.userInterests);
+  }
+
+  onRemoveItem(item: string): void {
+    console.log('Removed item:', item);
+    this.userInterests = this.userInterests.filter(interest => interest !== item);
+    console.log('Current interests:', this.userInterests);
+  }
+
 }
