@@ -218,6 +218,65 @@
                     </div>
                 </ng-template>
             </ngb-tab>
+            <ngb-tab *ngIf="currentUser.roles.includes('TEACHER'||'ADMIN'||'SUPERADMIN')" title="Tools" >
+                <ng-template ngbTabContent>
+                    <div *ngIf="currentUser.roles.includes('TEACHER')"  class="d-flex justify-content-center">
+                        <button type="button" (click)="addCourseModel(createCourse)" class="btn btn-info">Create Course</button>
+                    </div>
+                </ng-template>
+            </ngb-tab>
         </ngb-tabset>
     </div>
+
 </div>
+<ng-template #createCourse let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title-user">Create Course</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="createCourseForm" (ngSubmit)="addCourse()">
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="name">Name</label>
+                    <input type="text" formControlName="name" class="form-control" id="name" placeholder="Course name">
+                    <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
+                        Name is required.
+                    </div>
+                    <div *ngIf="shouldShowError('name', 'maxlength')" class="text-danger">
+                        Name must be less than 50 characters.
+                    </div>
+                    <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
+                        Name must be more than 3 characters.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="description">description</label>
+                    <textarea type="text" formControlName="description" class="form-control" id="description" placeholder="Course description"></textarea>
+                    <div *ngIf="shouldShowError('description', 'required')" class="text-danger">
+                        Description is required.
+                    </div>
+                    <div *ngIf="shouldShowError('description', 'maxlength')" class="text-danger">
+                        Description must be less than 100 characters.
+                    </div>
+                    <div *ngIf="shouldShowError('description', 'minlength')" class="text-danger">
+                        Description must be more than 3 characters.
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="credit">credit</label>
+                    <input type="number" formControlName="credit" class="form-control" id="credit" placeholder="Course credit">
+                    <div *ngIf="shouldShowError('credit', 'required')" class="text-danger">
+                        Credit is required.
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Create</btn-loading>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

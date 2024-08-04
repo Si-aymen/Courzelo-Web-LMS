@@ -20,10 +20,10 @@ public class Course {
     private String description;
     private int credit;
     @DBRef
-    private List<User> teachers=new ArrayList<>();
+    private List<User> teachers;
     @DBRef
-    private List<User> students = new ArrayList<>();
-    private List<CoursePost> posts=new ArrayList<>();
+    private List<User> students;
+    private List<CoursePost> posts;
     @DBRef
     private Institution institution;
 }

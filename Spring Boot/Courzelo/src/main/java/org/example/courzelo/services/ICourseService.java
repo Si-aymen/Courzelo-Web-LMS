@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.security.Principal;
 
 public interface ICourseService {
-    ResponseEntity<HttpStatus> createCourse(String institutionID,CourseRequest courseRequest);
+    ResponseEntity<HttpStatus> createCourse(String institutionID,CourseRequest courseRequest,Principal principal);
     ResponseEntity<HttpStatus> updateCourse(String courseID,CourseRequest courseRequest);
     ResponseEntity<HttpStatus> deleteCourse(String courseID);
     ResponseEntity<CourseResponse> getCourse(String courseID);

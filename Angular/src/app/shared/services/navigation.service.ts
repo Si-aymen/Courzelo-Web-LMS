@@ -168,14 +168,19 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Administrator', name: 'Home', state: 'institution/' + this.user?.education?.institutionID, type: 'link',
-                    mustBeInInstitutions: true},
-                { icon: 'i-Administrator', name: 'Users', state: 'institution/' + this.user?.education?.institutionID + '/users',
+                { icon: 'i-Administrator', name: 'Home', state: 'institution/' +
+                        this.user?.education?.institutionID, type: 'link', mustBeInInstitutions: true },
+                { icon: 'i-Administrator', name: 'Users', state: 'institution/' +
+                        this.user?.education?.institutionID + '/users', type: 'link', roles: ['ADMIN'], mustBeInInstitutions: true },
+                { icon: 'i-Administrator', name: 'Edit', state: 'institution/' +
+                        this.user?.education?.institutionID + '/edit', type: 'link', roles: ['ADMIN'], mustBeInInstitutions: true },
+                ...(this.user?.education?.courses ? this.user.education.courses.map(course => ({
+                    icon: 'i-Book',
+                    name: course.courseName,
+                    state: 'institution/course/' + course.courseID,
                     type: 'link',
-                    roles: ['ADMIN'], mustBeInInstitutions: true},
-                { icon: 'i-Administrator', name: 'Edit', state: 'institution/' + this.user?.education?.institutionID + '/edit',
-                    type: 'link',
-                    roles: ['ADMIN'], mustBeInInstitutions: true},
+                    mustBeInInstitutions: true
+                })) : [])
             ],
             mustBeInInstitutions: true
         },

@@ -22,8 +22,8 @@ public class CourseController {
     private final CustomAuthorization customAuthorization;
     @PostMapping("/{institutionID}/add")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canCreateCourse(#institutionID)")
-    public ResponseEntity<HttpStatus> addCourse(@PathVariable String institutionID,@RequestBody CourseRequest courseRequest) {
-        return iCourseService.createCourse(institutionID,courseRequest);
+    public ResponseEntity<HttpStatus> addCourse(@PathVariable String institutionID,@RequestBody CourseRequest courseRequest,Principal principal) {
+        return iCourseService.createCourse(institutionID,courseRequest,principal);
     }
     @PutMapping("/{courseID}/update")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")

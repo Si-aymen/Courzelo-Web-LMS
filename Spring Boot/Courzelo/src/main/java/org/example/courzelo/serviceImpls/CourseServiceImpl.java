@@ -35,15 +35,19 @@ public class CourseServiceImpl implements ICourseService {
     private final InstitutionRepository institutionRepository;
     private final UserRepository userRepository;
     @Override
-    public ResponseEntity<HttpStatus> createCourse(String institutionID, CourseRequest courseRequest) {
+    public ResponseEntity<HttpStatus> createCourse(String institutionID, CourseRequest courseRequest,Principal principal) {
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
+        User user = userRepository.findUserByEmail(principal.getName());
         Course course = Course.builder()
                 .name(courseRequest.getName())
                 .description(courseRequest.getDescription())
                 .credit(courseRequest.getCredit())
                 .institution(institution)
+                .teachers(List.of(user))
                 .build();
         courseRepository.save(course);
+        user.getEducation().getCourses().add(course);
+        userRepository.save(user);
         institution.getCourses().add(course);
         institutionRepository.save(institution);
         return ResponseEntity.ok(HttpStatus.OK);

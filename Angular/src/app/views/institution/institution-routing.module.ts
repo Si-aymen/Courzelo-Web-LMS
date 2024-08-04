@@ -4,6 +4,7 @@ import {UsersComponent} from './users/users.component';
 import {EditComponent} from './edit/edit.component';
 import {HomeComponent} from './home/home.component';
 import {AuthGuard} from '../../shared/services/auth-guard.service';
+import {CourseComponent} from './course/course.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: ':institutionID',
     component: HomeComponent
+  },
+  {
+    path: 'course/:courseID',
+    component: CourseComponent
   }
 ];
 

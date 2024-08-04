@@ -5,6 +5,11 @@ import {InstitutionResponse} from '../../../shared/models/institution/Institutio
 import * as L from 'leaflet';
 import {ToastrService} from 'ngx-toastr';
 import {DomSanitizer} from '@angular/platform-browser';
+import {SessionStorageService} from '../../../shared/services/user/session-storage.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormBuilder, Validators} from '@angular/forms';
+import {CourseService} from '../../../shared/services/institution/course.service';
+import {CourseRequest} from '../../../shared/models/institution/CourseRequest';
 
 @Component({
   selector: 'app-home',
@@ -12,18 +17,31 @@ import {DomSanitizer} from '@angular/platform-browser';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  institutionID: string;
   constructor(
       private institutionService: InstitutionService,
       private route: ActivatedRoute,
       private toastr: ToastrService,
-      private sanitizer: DomSanitizer
+      private sanitizer: DomSanitizer,
+      private sessionstorage: SessionStorageService,
+      private modalService: NgbModal,
+      private formBuilder: FormBuilder,
+      private courseService: CourseService
   ) { }
+  institutionID: string;
   imageSrc: any;
+  loading = false;
     code: string;
   currentInstitution: InstitutionResponse;
+  course: CourseRequest = {} as CourseRequest;
+  currentUser = this.sessionstorage.getUser();
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
+    createCourseForm = this.formBuilder.group({
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+            description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+            credit: [0, [Validators.required]],
+        }
+    );
   ngOnInit() {
     this.institutionID = this.route.snapshot.paramMap.get('institutionID');
       this.route.queryParams.subscribe(params => {
@@ -59,7 +77,6 @@ export class HomeComponent implements OnInit {
       });
 
   }
-
   onTabChange(event: any) {
     if (event.nextId === 'mapTab') {
       setTimeout(() => {
@@ -67,7 +84,40 @@ export class HomeComponent implements OnInit {
       }, 0);
     }
   }
-
+    addCourse() {
+        this.loading = true;
+        if (this.createCourseForm.valid) {
+            this.course = this.createCourseForm.getRawValue();
+            this.courseService.addCourse(this.institutionID, this.course).subscribe(
+                response => {
+                    this.toastr.success('Course added successfully');
+                    this.createCourseForm.reset();
+                    this.loading = false;
+                },
+                error => {
+                    console.error(error);
+                    this.toastr.error('Error adding course');
+                    this.loading = false;
+                }
+            );
+        } else {
+            console.log(this.createCourseForm.errors);
+            this.toastr.error('Please fill all fields correctly');
+            this.loading = false;
+        }
+    }
+    shouldShowError(controlName: string, errorName: string): boolean {
+        const control = this.createCourseForm.get(controlName);
+        return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
+    }
+    addCourseModel(content) {
+        this.modalService.open( content, { ariaLabelledBy: 'Create Course' })
+            .result.then((result) => {
+            console.log(result);
+        }, (reason) => {
+            console.log('Err!', reason);
+        });
+    }
   downloadExcel() {
     this.institutionService.downloadExcel(this.institutionID).subscribe(
         response => {
