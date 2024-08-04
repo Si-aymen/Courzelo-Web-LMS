@@ -31,8 +31,6 @@ public class Institution {
     private byte[] excelFile;
     private double latitude;
     private double longitude;
-    @DBRef
-    private List<Course> courses = new ArrayList<>();
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
