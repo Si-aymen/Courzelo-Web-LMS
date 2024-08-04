@@ -37,7 +37,7 @@ export class SidebarCompactComponent implements OnInit {
 
     this.navService.menuItems$.subscribe(items => {
       // Filter items based on the current user's role before setting them to this.nav
-      this.nav = this.navService.filterMenuItemsByUser(items, currentUser);
+        this.nav = this.navService.filterMenuItemsByUser(items, currentUser);
       console.log(this.nav);
       this.setActiveFlag();
     });

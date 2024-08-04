@@ -31,6 +31,8 @@ public class Institution {
     private byte[] excelFile;
     private double latitude;
     private double longitude;
+    @DBRef
+    private List<Course> courses = new ArrayList<>();
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -63,6 +65,16 @@ public class Institution {
         this.description = institutionRequest.getDescription();
         this.website = institutionRequest.getWebsite();
     }
+
+    public Institution(String name, String slogan, String country, String address, String description, String website) {
+        this.name = name;
+        this.slogan = slogan;
+        this.country = country;
+        this.address = address;
+        this.description = description;
+        this.website = website;
+    }
+
     public void updateInstitution(InstitutionRequest institutionRequest){
         this.name = institutionRequest.getName();
         this.slogan = institutionRequest.getSlogan();
