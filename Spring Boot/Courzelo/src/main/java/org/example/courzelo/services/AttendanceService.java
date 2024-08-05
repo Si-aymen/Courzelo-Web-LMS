@@ -3,9 +3,12 @@ package org.example.courzelo.services;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.courzelo.dto.AttendanceDTO;
+import org.example.courzelo.dto.AttendanceSettingsDTO;
 import org.example.courzelo.models.Attendance;
+import org.example.courzelo.models.AttendanceSettings;
 import org.example.courzelo.models.AttendanceStatus;
 import org.example.courzelo.repositories.AttendanceRepository;
+import org.example.courzelo.repositories.AttendanceSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
+    private AttendanceSettingsRepository repository;
     private static final Map<String, String> studentData = new HashMap<>();
 
     static {
@@ -64,6 +68,18 @@ public class AttendanceService {
         List<Attendance> attendances = attendanceRepository.findByDate(date);
         return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
+    public AttendanceSettingsDTO getSettings() {
+        AttendanceSettings settings = repository.findById("1").orElse(new AttendanceSettings());
+        return mapToDTO(settings);
+    }
+
+    public AttendanceSettingsDTO saveSettings(AttendanceSettingsDTO settingsDTO) {
+        AttendanceSettings settings = mapToEntity(settingsDTO);
+        settings.setId("1");
+        settings = repository.save(settings);
+        return mapToDTO(settings);
+    }
+
     private AttendanceDTO mapToDTO(Attendance attendance) {
         //Student student = studentRepository.findById(attendance.getStudentId()).orElse(null);
         AttendanceDTO dto = new AttendanceDTO();
@@ -81,5 +97,20 @@ public class AttendanceService {
         attendance.setDate(dto.getDate());
         attendance.setStatus(dto.getStatus());
         return attendance;
+    }
+    private AttendanceSettingsDTO mapToDTO(AttendanceSettings settings) {
+        AttendanceSettingsDTO dto = new AttendanceSettingsDTO();
+        dto.setId(settings.getId());
+        dto.setLateThreshold(settings.getLateThreshold());
+        dto.setAbsenceThreshold(settings.getAbsenceThreshold());
+        return dto;
+    }
+
+    private AttendanceSettings mapToEntity(AttendanceSettingsDTO dto) {
+        AttendanceSettings settings = new AttendanceSettings();
+        settings.setId(dto.getId());
+        settings.setLateThreshold(dto.getLateThreshold());
+        settings.setAbsenceThreshold(dto.getAbsenceThreshold());
+        return settings;
     }
 }

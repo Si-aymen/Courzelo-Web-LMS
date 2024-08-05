@@ -1,10 +1,12 @@
 package org.example.courzelo.controllers;
 
 import org.example.courzelo.dto.AttendanceDTO;
+import org.example.courzelo.dto.AttendanceSettingsDTO;
 import org.example.courzelo.models.AttendanceStatus;
 import org.example.courzelo.services.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +53,24 @@ public class AttendanceController {
 
         List<AttendanceDTO> attendanceReport = attendanceService.getAttendanceReport(studentName, startDate, endDate);
         return ResponseEntity.ok(attendanceReport);
+    }
+    @GetMapping
+    public ResponseEntity<AttendanceSettingsDTO> getSettings() {
+        AttendanceSettingsDTO settings = attendanceService.getSettings();
+        if (settings == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(settings, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<AttendanceSettingsDTO> saveSettings(@RequestBody AttendanceSettingsDTO settingsDTO) {
+        try {
+            AttendanceSettingsDTO savedSettings = attendanceService.saveSettings(settingsDTO);
+            return new ResponseEntity<>(savedSettings, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
