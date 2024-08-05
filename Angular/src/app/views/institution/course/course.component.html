@@ -1,1 +1,91 @@
-<p>course works!</p>
+<div class="container-fluid rounded bg-primary text-white p-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <h1 class="display-4">Spring Boot</h1>
+            <p class="lead"> JAVA framework.</p>
+            <p>Credits: 3</p>
+        </div>
+        <div class="col">
+            <div class="row mt-5">
+                <div class="col-lg-8 user-profile mb-4">
+                    <div class="user-info">
+                    <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg' " alt="">
+                        <h1 class="m-0" >Oussema Ouakad</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row mt-5">
+                <div class="col-lg-8 user-profile mb-4">
+                    <div class="user-info">
+                        <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg' " alt="">
+                        <h1 class="m-0" >Oussema Ouakad</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row mt-5">
+                <div class="col-lg-8 user-profile mb-4">
+                    <div class="user-info">
+                        <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg' " alt="">
+                        <h1 class="m-0" >Oussema Ouakad</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Buttons Section -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-success mr-2">Add Post</button>
+        <button class="btn btn-warning mr-2">Edit Course</button>
+        <button class="btn btn-danger mr-2">Delete Course</button>
+        <button class="btn btn-secondary">Leave Course</button>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="container mt-3">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-md-2">
+            <!-- Placeholder for future content -->
+        </div>
+
+        <!-- Posts Section -->
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Post Title 1</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Post Description: This is a brief description of the first post.</p>
+                    <a href="#" class="btn btn-link">Download File 1</a>
+                    <a href="#" class="btn btn-link">Download File 2</a>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-info mr-2">Edit Post</button>
+                    <button class="btn btn-danger">Delete Post</button>
+                </div>
+            </div>
+            <div class="post card mb-3">
+                <div class="card-body">
+                    <h2 class="card-title">Post Title: Week 1 - Introduction</h2>
+                    <p class="card-text">Description: Overview of the course and introduction to programming concepts.</p>
+                    <p class="card-text">Files: <a href="#">intro.pdf</a>, <a href="#">syllabus.pdf</a></p>
+                    <button class="btn btn-primary">Edit Post</button>
+                    <button class="btn btn-danger">Delete Post</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="col-md-2">
+            <!-- Placeholder for future content -->
+        </div>
+    </div>
+</div>
