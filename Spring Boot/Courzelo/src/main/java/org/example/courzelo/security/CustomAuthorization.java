@@ -39,7 +39,7 @@ public class CustomAuthorization {
             return false;
         }
 
-        return institution.getAdmins().stream().anyMatch(admin -> admin.getEmail().equals(userEmail));
+        return institution.getAdmins().stream().anyMatch(admin -> admin.equals(userEmail));
     }
     public boolean canAcceptInstitutionInvite(String code) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,7 +62,7 @@ public class CustomAuthorization {
         if (institution == null) {
             return false;
         }
-        return institution.getTeachers().stream().anyMatch(teacher -> teacher.getEmail().equals(userEmail));
+        return institution.getTeachers().stream().anyMatch(teacher -> teacher.equals(userEmail));
     }
     public boolean canAccessCourse(String courseID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,6 +75,6 @@ public class CustomAuthorization {
         if(course == null){
             return false;
         }
-        return course.getTeachers().stream().anyMatch(teacher -> teacher.getEmail().equals(userEmail)) || course.getStudents().stream().anyMatch(student -> student.getEmail().equals(userEmail));
+        return course.getTeachers().stream().anyMatch(teacher -> teacher.equals(userEmail)) || course.getStudents().stream().anyMatch(student -> student.equals(userEmail));
     }
 }

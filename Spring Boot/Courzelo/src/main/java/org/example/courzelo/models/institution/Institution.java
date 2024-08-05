@@ -4,7 +4,6 @@ import lombok.Data;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.models.User;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -22,32 +21,28 @@ public class Institution {
     private String address;
     private String description;
     private String website;
-    @DBRef
-    private List<User> admins = new ArrayList<>();
-    @DBRef
-    private List<User> teachers = new ArrayList<>();
-    @DBRef
-    private List<User> students = new ArrayList<>();
+    private List<String> admins = new ArrayList<>();
+    private List<String> teachers = new ArrayList<>();
+    private List<String> students = new ArrayList<>();
     private byte[] excelFile;
     private double latitude;
     private double longitude;
-    @DBRef
-    private List<Course> courses = new ArrayList<>();
+    private List<String> coursesID = new ArrayList<>();
 
-    public List<User> getUsers() {
-        List<User> users = new ArrayList<>();
+    public List<String> getUsers() {
+        List<String> users = new ArrayList<>();
         // only one instance of each user
-        for (User user : admins) {
+        for (String user : admins) {
             if (!users.contains(user)) {
                 users.add(user);
             }
         }
-        for (User user : teachers) {
+        for (String user: teachers) {
             if (!users.contains(user)) {
                 users.add(user);
             }
         }
-        for (User user : students) {
+        for (String user : students) {
             if (!users.contains(user)) {
                 users.add(user);
             }

@@ -7,13 +7,16 @@ import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
 import org.example.courzelo.dto.requests.SignupRequest;
-import org.example.courzelo.dto.responses.LoginResponse;
-import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.dto.responses.*;
+import org.example.courzelo.dto.responses.institution.SimplifiedCourseResponse;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
+import org.example.courzelo.models.institution.Course;
+import org.example.courzelo.models.institution.Institution;
+import org.example.courzelo.repositories.CourseRepository;
+import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.JWTUtils;
 import org.example.courzelo.services.*;
@@ -51,6 +54,8 @@ public class AuthServiceImpl implements IAuthService {
     private final IUserService userService;
     private final IMailService mailService;
     private final ICodeVerificationService codeVerificationService;
+    private final InstitutionRepository institutionRepository;
+    private final CourseRepository courseRepository;
     @Value("${Security.app.jwtExpirationMs}")
     private long jwtExpirationMs;
     @Value("${Security.app.refreshExpirationMs}")
@@ -58,7 +63,7 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${Security.app.refreshRememberMeExpirationMs}")
     private long refreshRememberMeExpirationMs;
 
-    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService) {
+    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService, InstitutionRepository institutionRepository, CourseRepository courseRepository) {
         this.userRepository = userRepository;
         this.iRefreshTokenService = iRefreshTokenService;
         this.jwtUtils = jwtUtils;
@@ -68,6 +73,8 @@ public class AuthServiceImpl implements IAuthService {
         this.userService = userService;
         this.mailService = mailService;
         this.codeVerificationService = codeVerificationService;
+        this.institutionRepository = institutionRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -140,8 +147,28 @@ public class AuthServiceImpl implements IAuthService {
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
+            Institution institution = null;
+            if (userDetails.getEducation() != null && userDetails.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(userDetails.getEducation().getInstitutionID()).orElse(null);
+            }
             log.info("User authenticated successfully");
-            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
+            return ResponseEntity.ok(new LoginResponse("success","Login successful",
+                    UserResponse.builder()
+                            .email(userDetails.getEmail())
+                            .profile(new UserProfileResponse(userDetails.getProfile()))
+                            .roles(userDetails.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(userDetails.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(userDetails.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .courses(userDetails.getEducation().getCoursesID() != null ? userDetails.getEducation().getCoursesID().stream().map(
+                                            courseID -> {
+                                                Course course = courseRepository.findById(courseID).orElseThrow();
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         } catch (DisabledException e) {
             log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
@@ -203,8 +230,28 @@ public class AuthServiceImpl implements IAuthService {
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
+            Institution institution = null;
+            if (userDetails.getEducation() != null && userDetails.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(userDetails.getEducation().getInstitutionID()).orElse(null);
+            }
             log.info("User authenticated successfully");
-            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
+            return ResponseEntity.ok(new LoginResponse("success","Login successful",
+                    UserResponse.builder()
+                            .email(userDetails.getEmail())
+                            .profile(new UserProfileResponse(userDetails.getProfile()))
+                            .roles(userDetails.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(userDetails.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(userDetails.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .courses(userDetails.getEducation().getCoursesID() != null ? userDetails.getEducation().getCoursesID().stream().map(
+                                            courseID -> {
+                                                Course course = courseRepository.findById(courseID).orElseThrow();
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         } catch (DisabledException e) {
             log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
@@ -268,7 +315,30 @@ public class AuthServiceImpl implements IAuthService {
     public ResponseEntity<LoginResponse> checkAuth(Principal principal) {
         if(isUserAuthenticated()){
             User user = userRepository.findUserByEmail(principal.getName());
-            return ResponseEntity.ok(new LoginResponse("success","User authenticated", new UserResponse(user)));
+            Institution institution = null;
+            if (user.getEducation() != null && user.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(user.getEducation().getInstitutionID()).orElse(null);
+            }
+            return ResponseEntity.ok(new LoginResponse("success","User authenticated",
+                    UserResponse.builder()
+                            .email(user.getEmail())
+                            .profile(new UserProfileResponse(user.getProfile()))
+                            .roles(user.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(user.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(user.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .courses(user.getEducation().getCoursesID() != null ? user.getEducation().getCoursesID().stream().map(
+                                            courseID -> {
+                                                Course course = courseRepository.findById(courseID).orElse(null);
+                                                if(course == null){
+                                                    return null;
+                                                }
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("error","User not authenticated"));
     }

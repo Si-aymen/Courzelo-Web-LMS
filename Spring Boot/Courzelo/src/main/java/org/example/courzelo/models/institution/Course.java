@@ -4,10 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.example.courzelo.models.User;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,11 +17,8 @@ public class Course {
     private String name;
     private String description;
     private int credit;
-    @DBRef
-    private List<User> teachers;
-    @DBRef
-    private List<User> students;
+    private List<String> teachers;
+    private List<String> students;
     private List<CoursePost> posts;
-    @DBRef
-    private Institution institution;
+    private String institutionID;
 }

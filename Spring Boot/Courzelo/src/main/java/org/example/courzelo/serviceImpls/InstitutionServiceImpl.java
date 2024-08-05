@@ -122,16 +122,42 @@ public class InstitutionServiceImpl implements IInstitutionService {
         List<User> users;
         if (role == null) {
             log.info("role is null");
-            users = institution.getUsers();
+            users = institution.getUsers().stream()
+                    .map(userRepository::findUserByEmail)
+                    .filter(Objects::nonNull) // Filter out null users
+                    .toList();
         } else {
             log.info("role is not null");
             users = switch (role) {
-                case "ADMIN" -> institution.getAdmins();
-                case "TEACHER" -> institution.getTeachers();
-                case "STUDENT" -> institution.getStudents();
-                default -> institution.getUsers();
+                case "ADMIN" -> institution.getAdmins().stream()
+                        .map(userRepository::findUserByEmail)
+                        .filter(Objects::nonNull) // Filter out null users
+                        .toList();
+                case "TEACHER" -> institution.getTeachers().stream()
+                        .map(userRepository::findUserByEmail)
+                        .filter(Objects::nonNull) // Filter out null users
+                        .toList();
+                case "STUDENT" -> institution.getStudents().stream()
+                        .map(userRepository::findUserByEmail)
+                        .filter(Objects::nonNull) // Filter out null users
+                        .toList();
+                default -> institution.getUsers().stream()
+                        .map(userRepository::findUserByEmail)
+                        .filter(Objects::nonNull) // Filter out null users
+                        .toList();
             };
         }
+        if (users.isEmpty()) {
+            return ResponseEntity.ok(PaginatedInstitutionUsersResponse.builder()
+                    .users(new ArrayList<>())
+                    .currentPage(page)
+                    .totalPages(0)
+                    .totalItems(0)
+                    .itemsPerPage(sizePerPage)
+                    .build()
+            );
+        }
+        log.info("users {}", users);
         log.info("after role");
         if (keyword != null && !keyword.trim().isEmpty()) {
             users = users.stream()
@@ -174,8 +200,9 @@ public class InstitutionServiceImpl implements IInstitutionService {
     @Override
     public void removeAllInstitutionUsers(Institution institution) {
         institution.getUsers().forEach(user -> {
-            user.getEducation().setInstitution(null);
-            userRepository.save(user);
+            User user1 = userRepository.findUserByEmail(user);
+            user1.getEducation().setInstitutionID(null);
+            userRepository.save(user1);
         });
     }
 
@@ -193,22 +220,22 @@ public class InstitutionServiceImpl implements IInstitutionService {
         log.info("User found");
         if(isUserInInstitution(user, institution)){
             log.info("User in institution");
-            if(institution.getAdmins().contains(user)){
+            if(institution.getAdmins().contains(user.getEmail())){
                 user.getRoles().remove(Role.ADMIN);
-                institution.getAdmins().remove(user);
+                institution.getAdmins().remove(user.getEmail());
                 log.info("User removed from admins");
             }
-            if (institution.getTeachers().contains(user)){
-                institution.getTeachers().remove(user);
+            if (institution.getTeachers().contains(user.getEmail())){
+                institution.getTeachers().remove(user.getEmail());
                 user.getRoles().remove(Role.TEACHER);
                 log.info("User removed from teachers");
             }
-            if (institution.getStudents().contains(user)){
+            if (institution.getStudents().contains(user.getEmail())){
                 user.getRoles().remove(Role.STUDENT);
-                institution.getStudents().remove(user);
+                institution.getStudents().remove(user.getEmail());
                 log.info("User removed from students");
             }
-            user.getEducation().setInstitution(null);
+            user.getEducation().setInstitutionID(null);
             log.info("User removed from institution");
             userRepository.save(user);
             institutionRepository.save(institution);
@@ -226,22 +253,22 @@ public class InstitutionServiceImpl implements IInstitutionService {
         }
         if(isUserInInstitution(user, institution)){
             if(role.equals("ADMIN")){
-                if(institution.getAdmins().contains(user)){
+                if(institution.getAdmins().contains(user.getEmail())){
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-                institution.getAdmins().add(user);
+                institution.getAdmins().add(user.getEmail());
                 user.getRoles().add(Role.ADMIN);
             }else if(role.equals("TEACHER")) {
-                if (institution.getTeachers().contains(user)) {
+                if (institution.getTeachers().contains(user.getEmail())) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-                institution.getTeachers().add(user);
+                institution.getTeachers().add(user.getEmail());
                 user.getRoles().add(Role.TEACHER);
             }else{
-                if (institution.getStudents().contains(user)) {
+                if (institution.getStudents().contains(user.getEmail())) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-                institution.getStudents().add(user);
+                institution.getStudents().add(user.getEmail());
                 user.getRoles().add(Role.STUDENT);
             }
             userRepository.save(user);
@@ -260,23 +287,23 @@ public class InstitutionServiceImpl implements IInstitutionService {
         }
         if(isUserInInstitution(user, institution)){
             if(role.equals("ADMIN")){
-                if(institution.getAdmins().contains(user)){
-                    institution.getAdmins().remove(user);
+                if(institution.getAdmins().contains(user.getEmail())){
+                    institution.getAdmins().remove(user.getEmail());
                     user.getRoles().remove(Role.ADMIN);
                 }
             }else if(role.equals("TEACHER")) {
-                if (institution.getTeachers().contains(user)) {
-                    institution.getTeachers().remove(user);
+                if (institution.getTeachers().contains(user.getEmail())) {
+                    institution.getTeachers().remove(user.getEmail());
                     user.getRoles().remove(Role.TEACHER);
                 }
             }else{
-                if (institution.getStudents().contains(user)) {
-                    institution.getStudents().remove(user);
+                if (institution.getStudents().contains(user.getEmail())) {
+                    institution.getStudents().remove(user.getEmail());
                     user.getRoles().remove(Role.STUDENT);
                 }
             }
             if(getUserRoleInInstitution(user, institution).isEmpty()){
-                user.getEducation().setInstitution(null);
+                user.getEducation().setInstitutionID(null);
             }
             userRepository.save(user);
             institutionRepository.save(institution);
@@ -427,7 +454,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
             log.info("User already in institution");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        if(user.getEducation().getInstitution()!=null && !isUserInInstitution(user, institution)){
+        if(user.getEducation().getInstitutionID()!=null && !isUserInInstitution(user, institution)){
             removeInstitutionUser(codeVerification.getInstitutionID(), codeVerification.getEmail(), null);
         }
         addInstitutionToUser(user, institution, codeVerification.getRole());
@@ -455,9 +482,9 @@ public class InstitutionServiceImpl implements IInstitutionService {
         return ResponseEntity.ok().build();
     }
     public void addInstitutionToUser(User user, Institution institution, Role role){
-        if(user.getEducation().getInstitution()==null) {
+        if(user.getEducation().getInstitutionID()==null) {
             log.info("Setting user institution");
-            user.getEducation().setInstitution(institution);
+            user.getEducation().setInstitutionID(institution.getId());
 
             if (!user.getRoles().contains(role)) {
                 user.getRoles().add(role);
@@ -467,27 +494,27 @@ public class InstitutionServiceImpl implements IInstitutionService {
     }
     public void addUserToInstitution(User user, Institution institution, Role role){
         switch (role) {
-            case ADMIN -> institution.getAdmins().add(user);
-            case TEACHER -> institution.getTeachers().add(user);
-            case STUDENT -> institution.getStudents().add(user);
+            case ADMIN -> institution.getAdmins().add(user.getEmail());
+            case TEACHER -> institution.getTeachers().add(user.getEmail());
+            case STUDENT -> institution.getStudents().add(user.getEmail());
         }
         institutionRepository.save(institution);
     }
 
     public boolean isUserInInstitution(User user, Institution institution){
         log.info("Checking if user {} is in institution {}",user.getId(),institution.getId());
-        log.info("User is in insitution : {}", user.getEducation().getInstitution() != null && user.getEducation().getInstitution().getId().equals(institution.getId()));
-        return user.getEducation().getInstitution() != null && user.getEducation().getInstitution().getId().equals(institution.getId());
+        log.info("User is in insitution : {}", user.getEducation().getInstitutionID() != null && user.getEducation().getInstitutionID().equals(institution.getId()));
+        return user.getEducation().getInstitutionID() != null && user.getEducation().getInstitutionID().equals(institution.getId());
     }
     public List<Role> getUserRoleInInstitution(User user, Institution institution){
         List<Role> roles= new ArrayList<>();
-        if(institution.getAdmins().contains(user)){
-            roles.add( Role.ADMIN);
+        if(institution.getAdmins().contains(user.getEmail())){
+            roles.add(Role.ADMIN);
         }
-        if(institution.getTeachers().contains(user)){
+        if(institution.getTeachers().contains(user.getEmail())){
             roles.add(Role.TEACHER);
         }
-        if(institution.getStudents().contains(user)){
+        if(institution.getStudents().contains(user.getEmail())){
             roles.add(Role.STUDENT);
         }
         return roles;
