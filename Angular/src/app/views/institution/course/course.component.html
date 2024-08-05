@@ -1,9 +1,9 @@
 <div class="container-fluid rounded bg-primary text-white p-4">
     <div class="row">
-        <div class="col-lg-6">
-            <h1 class="display-4">Spring Boot</h1>
-            <p class="lead"> JAVA framework.</p>
-            <p>Credits: 3</p>
+        <div *ngIf="course" class="col-lg-6">
+            <h1 class="display-4">{{this.course.name || "Course name" }}</h1>
+            <p class="lead">{{this.course.description || "Course description" }}</p>
+            <p>Credits: {{this.course.credit || 0}}</p>
         </div>
         <div class="col">
             <div class="row mt-5">
@@ -43,7 +43,7 @@
     <div class="d-flex justify-content-end mb-3">
         <button class="btn btn-success mr-2">Add Post</button>
         <button class="btn btn-warning mr-2">Edit Course</button>
-        <button class="btn btn-danger mr-2">Delete Course</button>
+        <button class="btn btn-danger mr-2" (click)="deleteCourse(modalConfirmCourse)">Delete Course</button>
         <button class="btn btn-secondary">Leave Course</button>
     </div>
 </div>
@@ -89,3 +89,21 @@
         </div>
     </div>
 </div>
+<ng-template #modalConfirmCourse let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title-course">Course Deletion</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>Are you sure you want to delete the course <span class="text-primary">{{ course.name }}</span>?</strong></p>
+        <p>All information associated with this course will be permanently deleted.
+            <span class="text-danger">This operation cannot be undone.</span>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="modal.dismiss('cancel')">Cancel</button>
+        <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
+    </div>
+</ng-template>

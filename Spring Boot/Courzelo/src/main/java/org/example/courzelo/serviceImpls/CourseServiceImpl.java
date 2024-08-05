@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -66,16 +67,20 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ResponseEntity<HttpStatus> deleteCourse(String courseID) {
         Course course = courseRepository.findById(courseID).orElseThrow();
-        course.getStudents().forEach(student -> {
-            User user = userRepository.findUserByEmail(student);
-            user.getEducation().getCoursesID().remove(course.getId());
-            userRepository.save(user);
-        });
-        course.getTeachers().forEach(teacher -> {
-            User user = userRepository.findUserByEmail(teacher);
-            user.getEducation().getCoursesID().remove(course.getId());
-            userRepository.save(user);
-        });
+        if(course.getStudents()!= null) {
+            course.getStudents().forEach(student -> {
+                User user = userRepository.findUserByEmail(student);
+                user.getEducation().getCoursesID().remove(course.getId());
+                userRepository.save(user);
+            });
+        }
+        if(course.getTeachers()!= null) {
+            course.getTeachers().forEach(teacher -> {
+                User user = userRepository.findUserByEmail(teacher);
+                user.getEducation().getCoursesID().remove(course.getId());
+                userRepository.save(user);
+            });
+        }
         Institution institution = institutionRepository.findById(course.getInstitutionID()).orElseThrow();
         institution.getCoursesID().remove(course.getId());
         institutionRepository.save(institution);
@@ -85,7 +90,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public ResponseEntity<CourseResponse> getCourse(String courseID) {
-        Course course = courseRepository.findById(courseID).orElseThrow();
+        Course course = courseRepository.findById(courseID).orElseThrow(() -> new NoSuchElementException("Course not found"));
         return ResponseEntity.ok(CourseResponse.builder()
                 .id(course.getId())
                 .name(course.getName())
@@ -93,13 +98,13 @@ public class CourseServiceImpl implements ICourseService {
                 .credit(course.getCredit())
                 .teachers(course.getTeachers())
                 .students(course.getStudents())
-                .posts(course.getPosts().stream().map(coursePost -> CoursePostResponse.builder()
+                .posts(course.getPosts() != null ? course.getPosts().stream().map(coursePost -> CoursePostResponse.builder()
                         .id(coursePost.getId())
                         .title(coursePost.getTitle())
                         .author(coursePost.getAuthor())
                         .created(coursePost.getCreated())
                         .files(getBytesFromFiles(coursePost.getFiles()))
-                        .build()).toList())
+                        .build()).toList() : List.of())
                 .build());
     }
 

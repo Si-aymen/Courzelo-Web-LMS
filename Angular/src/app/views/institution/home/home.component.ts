@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {InstitutionService} from '../../../shared/services/institution/institution.service';
 import {InstitutionResponse} from '../../../shared/models/institution/InstitutionResponse';
 import * as L from 'leaflet';
@@ -10,6 +10,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormBuilder, Validators} from '@angular/forms';
 import {CourseService} from '../../../shared/services/institution/course.service';
 import {CourseRequest} from '../../../shared/models/institution/CourseRequest';
+import {AuthenticationService} from "../../../shared/services/user/authentication.service";
 
 @Component({
   selector: 'app-home',
@@ -20,12 +21,14 @@ export class HomeComponent implements OnInit {
   constructor(
       private institutionService: InstitutionService,
       private route: ActivatedRoute,
+        private router: Router,
       private toastr: ToastrService,
       private sanitizer: DomSanitizer,
       private sessionstorage: SessionStorageService,
       private modalService: NgbModal,
       private formBuilder: FormBuilder,
-      private courseService: CourseService
+      private courseService: CourseService,
+      private authenticationService: AuthenticationService
   ) { }
   institutionID: string;
   imageSrc: any;
@@ -66,9 +69,15 @@ export class HomeComponent implements OnInit {
                 }
                 if (!this.currentInstitution) {
                     console.log('No currentInstitution');
+                    this.toastr.error('Institution not found');
+                    this.router.navigateByUrl('dashboard/v1');
                 }
             }
           console.log('currentInstitution', this.currentInstitution);
+        }, error => {
+          console.error(error);
+          this.toastr.error(error.error);
+            this.router.navigateByUrl('dashboard/v1');
         }
     );
       this.institutionService.getImageBlobUrl(this.institutionID).subscribe((blob: Blob) => {
@@ -93,6 +102,7 @@ export class HomeComponent implements OnInit {
                     this.toastr.success('Course added successfully');
                     this.createCourseForm.reset();
                     this.loading = false;
+                    this.authenticationService.refreshPageInfo();
                 },
                 error => {
                     console.error(error);

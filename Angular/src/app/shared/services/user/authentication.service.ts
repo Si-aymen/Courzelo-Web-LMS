@@ -88,4 +88,22 @@ export class AuthenticationService {
             map((response: any) => this.sessionStorageService.getAuthenticated())
         );
     }
+    refreshMyInfo(): void {
+         this.http.get<LoginResponse>(`${this.baseUrl}/check-auth`).subscribe(
+                response => {
+                    this.sessionStorageService.setUser(response.user);
+                    this.sessionStorageService.setAuthenticated(true);
+                },
+                error => {
+                    this.responseHandlerService.handleError(error);
+                    this.sessionStorageService.setAuthenticated(false);
+                    this.sessionStorageService.clearUser();
+                    this.router.navigateByUrl('/sessions/signin');
+                }
+            );
+    }
+    refreshPageInfo(): void {
+      this.refreshMyInfo();
+      this.navigation.setDefaultMenu();
+    }
 }
