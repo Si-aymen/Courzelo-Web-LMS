@@ -69,7 +69,7 @@ export class AuthenticationService {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/forgot-password`, {params: {email}});
   }
     checkAuthState(): Observable<boolean> {
-        if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUser()) {
+        if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUserFromSession()) {
             console.log('CheckAUTH Authenticated');
             return new BehaviorSubject<boolean>(true);
         }
@@ -79,7 +79,6 @@ export class AuthenticationService {
                     console.log('CheckAUTH Authenticated');
                     this.sessionStorageService.setUser(response.user);
                     this.sessionStorageService.setAuthenticated(true);
-                    this.navigation.updateMenuItems();
                 } else {
                     console.log('CheckAUTH Not Authenticated');
                     this.sessionStorageService.setAuthenticated(false);

@@ -43,7 +43,7 @@ export class ComposeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.connectedUser = this.sessionStorageService.getUser();
+    this.connectedUser = this.sessionStorageService.getUserFromSession();
     this.mailForm.patchValue({ sender: this.connectedUser.email });
 
     console.log('Form Data Before Submit:', this.mailForm.value);

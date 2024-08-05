@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable, OnInit} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {SessionStorageService} from './user/session-storage.service';
 import {UserResponse} from '../models/user/UserResponse';
 
@@ -45,7 +45,7 @@ interface ISidebarState {
 @Injectable({
     providedIn: 'root'
 })
-export class NavigationService {
+export class NavigationService implements OnInit {
     constructor(private storageService: SessionStorageService) {
     }
     public sidebarState: ISidebarState = {
@@ -53,7 +53,8 @@ export class NavigationService {
         childnavOpen: false
     };
     selectedItem: IMenuItem;
-    user: UserResponse = this.storageService.getUser();
+    user: UserResponse = this.storageService.getUserFromSession();
+    user$: Observable<UserResponse | null>;
     defaultMenu: IMenuItem[] = [
         {
             name: 'Dashboard',
@@ -235,7 +236,19 @@ export class NavigationService {
     menuItems = new BehaviorSubject<IMenuItem[]>(this.defaultMenu);
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
+
+    ngOnInit(): void {
+        this.user$ = this.storageService.getUser();
+        this.user$.subscribe(user1 => {
+            this.user = user1;
+            if (this.user) {
+                console.log('User is not null:', this.user);
+                this.menuItems.next(this.filterMenuItemsByUser(this.defaultMenu, this.user));
+            }
+        });
+    }
     filterMenuItemsByUser(menuItems: IMenuItem[], user: UserResponse): IMenuItem[] {
+        console.log('Filtering menu items by user:', user);
         return menuItems.filter(item => {
             const accessibleByRole = (!item.roles || item.roles.some(role => user.roles.includes(role))) &&
                 (!item.mustBeInInstitutions || (user.education.institutionName && user.education.institutionID));

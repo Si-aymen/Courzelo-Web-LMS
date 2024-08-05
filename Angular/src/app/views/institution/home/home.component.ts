@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
     code: string;
   currentInstitution: InstitutionResponse;
   course: CourseRequest = {} as CourseRequest;
-  currentUser = this.sessionstorage.getUser();
+  currentUser = this.sessionstorage.getUserFromSession();
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
     createCourseForm = this.formBuilder.group({
