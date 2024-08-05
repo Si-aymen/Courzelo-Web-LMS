@@ -35,6 +35,10 @@ import { SharedDirectivesModule } from './shared/directives/shared-directives.mo
 import { SharedPipesModule } from './shared/pipes/shared-pipes.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ChatRoutingModule } from './views/chat/chat-routing.module';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { DataTablesRoutingModule } from './views/data-tables/data-tables-routing.module';
+import { RevisionComponent } from './shared/components/Revision/revision/revision.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +54,7 @@ import { ChatRoutingModule } from './views/chat/chat-routing.module';
    CalendarFormProjectComponent,
    PublicationComponent,
    AddpublicationComponent,
+ RevisionComponent,
  
 
 
@@ -81,6 +86,9 @@ import { ChatRoutingModule } from './views/chat/chat-routing.module';
    SharedPipesModule,
    PerfectScrollbarModule,
    ChatRoutingModule,
+   NgxPaginationModule,
+   NgxDatatableModule,
+   DataTablesRoutingModule,
 
   ],
   providers: [

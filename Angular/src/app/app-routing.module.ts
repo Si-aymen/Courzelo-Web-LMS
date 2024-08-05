@@ -16,6 +16,7 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
 import {NoAuthGuard} from './shared/services/no-auth.guard';
 import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
 import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
+import { RevisionComponent } from './shared/components/Revision/revision/revision.component';
 
 const userRoutes: Routes = [
     {
@@ -75,8 +76,8 @@ const userRoutes: Routes = [
     { path: 'projectdetails/:id', component: ProjectDetailsComponent},
     { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},
     { path: 'publication/:id', component: PublicationComponent},
-   
-    
+   /////////////////////////////////////////////////////////////////é
+   { path: 'revision', component: RevisionComponent },
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
