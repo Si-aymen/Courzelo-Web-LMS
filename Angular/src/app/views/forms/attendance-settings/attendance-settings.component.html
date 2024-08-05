@@ -1,0 +1,21 @@
+<!-- attendance-settings.component.html -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Attendance Settings</h2>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label for="lateThreshold">Late Threshold (minutes):</label>
+                    <input type="number" id="lateThreshold" class="form-control" formControlName="lateThreshold">
+                </div>
+                <div class="form-group">
+                    <label for="absenceThreshold">Absence Threshold (minutes):</label>
+                    <input type="number" id="absenceThreshold" class="form-control" formControlName="absenceThreshold">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </form>
+        </div>
+    </div>
+</div>

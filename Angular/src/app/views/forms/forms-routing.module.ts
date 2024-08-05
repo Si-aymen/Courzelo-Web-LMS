@@ -11,6 +11,7 @@ import {MarkAttendanceComponent} from './mark-attendance/mark-attendance.compone
 import {AttendaneHistoryComponent} from './attendane-history/attendane-history.component';
 import {AttendanceReportComponent} from './attendance-report/attendance-report.component';
 import {StudentAttendanceComponent} from './student-attendance/student-attendance.component';
+import {AttendanceSettingsComponent} from './attendance-settings/attendance-settings.component';
 
 const routes: Routes = [
   {
@@ -56,7 +57,12 @@ const routes: Routes = [
   {
     path: 'StudentAttendance',
     component: StudentAttendanceComponent
+  },
+  {
+    path: 'AttendanceSettings',
+    component: AttendanceSettingsComponent
   }
+
 
 ];
 

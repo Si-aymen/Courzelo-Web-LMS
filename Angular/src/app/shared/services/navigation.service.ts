@@ -130,7 +130,8 @@ export class NavigationService {
                 { icon: 'i-Crop-2', name: 'Attendance', state: '/forms/Attendance', type: 'link' },
                 { icon: 'i-Crop-2', name: 'AttendanceHistory', state: '/forms/AttendanceHistory', type: 'link' },
                 { icon: 'i-Crop-2', name: 'AttendanceReport', state: '/forms/AttendanceReport', type: 'link' },
-                { icon: 'i-Crop-2', name: 'StuedentAttendance', state: '/forms/StudentAttendance', type: 'link' }
+                { icon: 'i-Crop-2', name: 'StudentAttendance', state: '/forms/StudentAttendance', type: 'link' },
+                { icon: 'i-Crop-2', name: 'AttendanceSettings', state: '/forms/AttendanceSettings', type: 'link' }
             ]
         },
         {

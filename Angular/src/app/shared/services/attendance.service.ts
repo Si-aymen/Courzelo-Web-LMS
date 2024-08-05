@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {AttendanceDTO, AttendanceStatus} from '../models/AttendanceDTO';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
 
 @Injectable({
@@ -61,5 +61,22 @@ export class AttendanceService {
         .set('endDate', endDate);
 
     return this.http.get<AttendanceDTO[]>(`${this.apiUrl}/report`, { params });
+  }
+  getSettings(): Observable<any> {
+    return this.http.get<any>(this.apiUrl).pipe(
+        catchError(error => {
+          console.error('Error fetching settings:', error);
+          return throwError(error);
+        })
+    );
+  }
+
+  saveSettings(settings: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, settings).pipe(
+        catchError(error => {
+          console.error('Error saving settings:', error);
+          return throwError(error);
+        })
+    );
   }
 }
