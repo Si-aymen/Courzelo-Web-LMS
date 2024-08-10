@@ -1,18 +1,18 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import { Component, OnInit, HostListener } from '@angular/core';
 import {
   NavigationService,
   IMenuItem,
   IChildItem
-} from "../../../../services/navigation.service";
-import { Router, NavigationEnd } from "@angular/router";
-import { filter } from "rxjs/operators";
-import { Utils } from "../../../../utils";
-import {SessionStorageService} from "../../../../services/user/session-storage.service";
+} from '../../../../services/navigation.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Utils } from '../../../../utils';
+import {SessionStorageService} from '../../../../services/user/session-storage.service';
 
 @Component({
-  selector: "app-sidebar-compact",
-  templateUrl: "./sidebar-compact.component.html",
-  styleUrls: ["./sidebar-compact.component.scss"]
+  selector: 'app-sidebar-compact',
+  templateUrl: './sidebar-compact.component.html',
+  styleUrls: ['./sidebar-compact.component.scss']
 })
 export class SidebarCompactComponent implements OnInit {
   selectedItem: IMenuItem;
@@ -25,19 +25,19 @@ export class SidebarCompactComponent implements OnInit {
     this.updateSidebar();
     // CLOSE SIDENAV ON ROUTE CHANGE
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(routeChange => {
-        this.closeChildNav();
-        if (Utils.isMobile()) {
-          this.navService.sidebarState.sidenavOpen = false;
-        }
-      });
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(routeChange => {
+          this.closeChildNav();
+          if (Utils.isMobile()) {
+            this.navService.sidebarState.sidenavOpen = false;
+          }
+        });
 
-    const currentUserRole = this.sessionService.getUser().roles; // Implement this method as needed
+    const currentUser = this.sessionService.getUser(); // Implement this method as needed
 
     this.navService.menuItems$.subscribe(items => {
       // Filter items based on the current user's role before setting them to this.nav
-      this.nav = this.navService.filterMenuItemsByRole(items, currentUserRole);
+        this.nav = this.navService.filterMenuItemsByUser(items, currentUser);
       console.log(this.nav);
       this.setActiveFlag();
     });
@@ -110,7 +110,7 @@ export class SidebarCompactComponent implements OnInit {
     state.childnavOpen = !state.childnavOpen;
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.updateSidebar();
   }

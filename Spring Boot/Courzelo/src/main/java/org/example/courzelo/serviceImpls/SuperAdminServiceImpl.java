@@ -8,7 +8,6 @@ import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ISuperAdminService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

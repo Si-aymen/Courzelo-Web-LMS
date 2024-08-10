@@ -17,6 +17,7 @@ import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.models.CodeType;
+import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.UserProfile;
 import org.example.courzelo.repositories.UserRepository;
@@ -202,13 +203,13 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
 
     @Override
     public ResponseEntity<StatusMessageResponse> resetPassword(UpdatePasswordRequest updatePasswordRequest, String code) {
-        String email = codeVerificationService.verifyCode(code);
-        if (email==null) {
+        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        if (codeVerification.getEmail()==null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error", "Invalid or expired reset code"));
         }
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(codeVerification.getEmail());
         user.setPassword(encoder.encode(updatePasswordRequest.getNewPassword()));
-        codeVerificationService.deleteCode(email, CodeType.PASSWORD_RESET);
+        codeVerificationService.deleteCode(codeVerification.getEmail(), CodeType.PASSWORD_RESET);
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Password reset successfully"));
     }

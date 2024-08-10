@@ -12,6 +12,7 @@ public class UserResponse {
     List<String> roles;
     UserProfileResponse profile;
     UserSecurityResponse security;
+    UserEducationResponse education;
 
 
     public UserResponse(User user) {
@@ -19,6 +20,7 @@ public class UserResponse {
         this.roles = user.getRoles().stream().map(Enum::name).toList();
         this.profile = new UserProfileResponse(user.getProfile() != null ? user.getProfile() : new UserProfile());
         this.security = new UserSecurityResponse(user.getSecurity());
+        this.education = new UserEducationResponse(user.getEducation());
     }
 
 }

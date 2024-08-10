@@ -38,4 +38,8 @@ export class StagesService {
       });
   }
 
+  deleteStage(id: string): Observable<Object> {
+    return this.http.delete(`${this.baseUrl}/remove-Stage/${id}`);
+  }
+
 }

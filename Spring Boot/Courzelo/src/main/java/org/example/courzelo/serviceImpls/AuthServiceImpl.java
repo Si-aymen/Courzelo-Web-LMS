@@ -251,13 +251,13 @@ public class AuthServiceImpl implements IAuthService {
     public ResponseEntity<StatusMessageResponse> verifyEmail(String code) {
         log.info("Verifying email");
         log.info("Code: "+code);
-        String email = codeVerificationService.verifyCode(code);
-        if(email!= null){
+        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        if(codeVerification.getEmail()!= null){
             log.info("Email verified");
-            User user = userRepository.findUserByEmail(email);
+            User user = userRepository.findUserByEmail(codeVerification.getEmail());
             user.getSecurity().setEnabled(true);
             userRepository.save(user);
-            codeVerificationService.deleteCode(email,CodeType.EMAIL_VERIFICATION);
+            codeVerificationService.deleteCode(codeVerification.getEmail(),CodeType.EMAIL_VERIFICATION);
             return ResponseEntity.ok(new StatusMessageResponse("success","Email verified successfully"));
         }
         log.info("Invalid verification code");
