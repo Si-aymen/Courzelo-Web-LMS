@@ -1,0 +1,37 @@
+<div class="col-md-12">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="card-title mb-3">Add Ticket</div>
+            <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="sujet">Name</label>
+                        <input type="text" class="form-control form-control-rounded" id="sujet" formControlName="postName" placeholder="Enter ticket sujet" required>
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="details">Content</label>
+                        <input type="text" class="form-control form-control-rounded" id="details" formControlName="content" placeholder="Enter ticket details" required>
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="details">Description</label>
+                        <input type="text" class="form-control form-control-rounded" id="details" formControlName="description" placeholder="Enter ticket details" required>
+                    </div>
+                        
+                    <div class="row">
+                        <!-- /.col -->
+                       <div class="col-6">
+                          <button type="submit" [disabled]="postForm.invalid"  class="btn btn-primary btn-block">Update</button>
+                        </div>
+                        <div class="col-6">
+                          <button (click)="onClose()" type="reset" class="btn btn-danger btn-block">Cancel</button>
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                </div>
+            </form>
+        </div>
+    </div>
+  
+
+  </div>
+  

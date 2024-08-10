@@ -14,7 +14,6 @@ import { TicketServiceService } from '../../tickets/Services/TicketService/ticke
 import { TicketDataService } from '../../tickets/Services/TicketService/ticketdata.service';
 import { TickettypeService } from '../../tickets/Services/TicketTypeService/tickettype.service';
 import { TrelloserviceService } from '../../tickets/Services/trello/trelloservice.service';
-import { AddTicketComponent } from '../add-ticket/add-ticket.component';
 import { UpdateTicketComponent } from '../update-ticket/update-ticket.component';
 
 @Component({

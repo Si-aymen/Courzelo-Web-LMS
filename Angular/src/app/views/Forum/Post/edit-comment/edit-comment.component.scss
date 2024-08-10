@@ -1,0 +1,36 @@
+/* edit-comment.component.css */
+.dialog-content {
+    padding: 20px;
+  }
+  
+  /* Styles for the card title */
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Styles for labels */
+  .custom-label {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  /* Styles for inputs */
+  .custom-input {
+    font-size: 1.5rem;
+    padding: 0.75rem;
+  }
+  
+  /* Styles for buttons */
+  .custom-btn {
+    font-size: 1.1rem;
+    padding: 0.75rem;
+  }
+  
+  /* Ensure the button group is spaced properly */
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.75rem;
+  }
+  

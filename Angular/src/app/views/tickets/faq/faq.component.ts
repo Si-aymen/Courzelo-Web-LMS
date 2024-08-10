@@ -4,6 +4,7 @@ import { FAQService } from '../Services/FaqService/faq.service';
 import { UpdatefaqComponent } from './updatefaq/updatefaq.component';
 import Swal from 'sweetalert2';
 import { MatDialog } from '@angular/material/dialog';
+import { AddfaqComponent } from './addfaq/addfaq.component';
 
 @Component({
   selector: 'app-faq',
@@ -26,6 +27,16 @@ export class FaqComponent implements OnInit {
       this.faqs = data;
     });
   }
+  addFAQ(){
+    const dialogRef = this.dialog.open(AddfaqComponent,{
+      width : "40%",
+      height: "80%",
+    });
+    dialogRef.afterClosed().subscribe(res =>{
+     this.ngOnInit();
+    })   
+  }
+
   editFAQ(id:any){
     const dialogRef = this.dialog.open(UpdatefaqComponent,{
       width : "40%",

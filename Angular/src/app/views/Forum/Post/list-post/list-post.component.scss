@@ -1,0 +1,197 @@
+
+.container {
+    padding: 0 15px;
+  }
+  
+  .post {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .post-header {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 10px;
+  }
+  
+  .subreddit {
+    font-weight: bold;
+  }
+  
+  .subreddit-name {
+    color: #0079d3;
+    text-decoration: none;
+  }
+  
+  .subreddit-name:hover {
+    text-decoration: underline;
+  }
+  
+  .post-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .post-title:hover {
+    text-decoration: underline;
+  }
+  
+  .post-content {
+    margin: 15px 0;
+  }
+  
+  .post-comment {
+    margin-top: 20px;
+  }
+  
+  .form-control {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .btn-primary {
+    background-color: #0079d3;
+    border: none;
+    color: #fff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056a0;
+  }
+  
+  .comment {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    position: relative;
+    margin-bottom: 10px; /* Space between comments */
+  }
+  .icon-container {
+    position: absolute; /* Position the container absolutely */
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    display: flex; /* Align icons horizontally */
+    gap: 10px; /* Space between icons */
+  }
+  .material-icons {
+    font-size: 20px; /* Size of the icons */
+    cursor: pointer; /* Show pointer cursor on hover */
+  }
+  
+  .edit-icon {
+    color: #0079d3; /* Color for edit icon */
+  }
+  
+  .delete-icon {
+    color: #d9534f; /* Color for delete icon */
+  }
+  
+  .edit-icon:hover {
+    color: #0056a0; /* Hover color for edit icon */
+  }
+  
+  .delete-icon:hover {
+    color: #c9302c; /* Hover color for delete icon */
+  }
+  
+  .comment-header {
+    display: flex; /* Use Flexbox for alignment within the header */
+    align-items: flex-start; /* Align items at the start */
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 5px; /* Space below header */
+  }
+  
+  .comment-header img {
+    width: 40px; /* Size of the profile image */
+    height: 40px;
+    border-radius: 50%; /* Circular profile image */
+    margin-right: 10px; /* Space between image and text */
+    /* Ensure the image does not affect the layout */
+    flex-shrink: 0; /* Prevent image from shrinking */
+  }
+  
+  .comment-username {
+    font-weight: bold;
+    color: #0079d3;
+    text-decoration: none;
+    margin-top: 13px;
+    margin-right: 10px; /* Space between username and other elements */
+  }
+  
+  .comment-username:hover {
+    text-decoration: underline;
+  }
+  
+  .comment-date {
+        margin-top: 13px;
+
+    margin-left: 5px;
+  }
+  
+  .comment-text {
+    margin-left: 50px;
+    margin-top: 5px;
+  }
+  
+
+  .comment-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-like, .btn-dislike {
+    background: transparent;  /* Transparent background */
+    border: none;
+    color: #0079d3;  /* Default color */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s, background-color 0.3s; /* Smooth transition */
+  }
+  
+  .btn-like:hover, .btn-dislike:hover {
+    color: #fff; /* Text color on hover */
+    background-color: #0079d3;  /* Background color on hover */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  .btn-like.selected, .btn-dislike.selected {
+    color: #fff; /* White text when selected */
+    background-color: #0079d3; /* Background color when selected */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  .btn-like.selected {
+    background-color: #28a745; /* Green for like button when selected */
+  }
+  
+  .btn-dislike.selected {
+    background-color: #d9534f; /* Red for dislike button when selected */
+  }
+  
+  .btn-like .material-icons, .btn-dislike .material-icons {
+    margin-right: 5px;
+  }
+ 
+  .comment-stats {
+    display: flex; /* Aligns children horizontally */
+    gap: 10px; /* Adjusts space between items */
+  }
+  
+  .like-count,
+  .dislike-count {
+    margin-right: 10px; /* Adds space to the right of the span elements */
+  }
+
+  .post-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }

@@ -1,0 +1,33 @@
+/* Margin Bottom */
+.mb-1 {
+    margin-bottom: 0.25rem; /* Adjusts the margin below the text */
+}
+
+/* Title Text */
+.text-title {
+    font-weight: bold; /* Makes the text bold */
+    color: #0f34da; /* Darker color for the title text */
+    line-height: 1.2; /* Slightly reduces line height for titles */
+}
+
+.sender-text-title {
+    font-weight: bold; /* Makes the text bold */
+    color: #0fdad0; /* Darker color for the title text */
+    line-height: 1.2; /* Slightly reduces line height for titles */
+}
+
+.connected-text-title {
+    font-weight: bold; /* Makes the text bold */
+    color: #7a0785; /* Darker color for the title text */
+    line-height: 1.2; /* Slightly reduces line height for titles */
+}
+/* Font Size 16 */
+.text-16 {
+    font-size: 16px; /* Sets the font size to 16 pixels */
+    line-height: 1.5; /* Ensures good readability */
+}
+
+/* Flex Grow */
+.flex-grow-1 {
+    flex-grow: 1; /* Allows the element to grow and take up available space */
+}

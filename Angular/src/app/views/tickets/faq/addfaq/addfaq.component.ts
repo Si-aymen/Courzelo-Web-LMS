@@ -3,6 +3,7 @@ import { FAQService } from '../../Services/FaqService/faq.service';
 import { FormGroup, FormBuilder, Form, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-addfaq',
@@ -11,13 +12,18 @@ import { Router } from '@angular/router';
 })
 export class AddfaqComponent implements OnInit{
 middle() {
-  this.router.navigate(['tickets/list']); // Navigate to forward component
+  this.router.navigate(['/tickets/faq']); // Navigate to forward component
 }
   data: FormGroup = new FormGroup({});
 
-  constructor(private faqService: FAQService,private formBuilder:FormBuilder,private router:Router) {}
+  constructor(private faqService: FAQService,private formBuilder:FormBuilder,
+    public dialogRef: MatDialogRef<AddfaqComponent>,
+    private router:Router) {}
   ngOnInit(): void {
     this.createForm();
+  }
+  onClose() {
+    this.dialogRef.close();
   }
 
   createForm() {
@@ -46,7 +52,7 @@ middle() {
         }
         console.log(this.data.value)
         console.log('FAQ added successfully', response);
-        this.router.navigate(['tickets/faq']); // Navigate to forward component
+        this.onClose() ;// Navigate to forward component
         // Optionally clear form fields or handle success feedback
       },
       (error) => {

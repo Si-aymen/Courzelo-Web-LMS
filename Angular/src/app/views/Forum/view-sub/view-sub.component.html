@@ -1,0 +1,40 @@
+<div class="container mt-4">
+  <!-- Breadcrumb Navigation -->
+  <div class="breadcrumb mb-4">
+    <h1>Posts</h1>
+    <ul>
+      <!-- Breadcrumb items can be added here if needed -->
+      <!-- Example: -->
+      <!-- <li><a href="#">Home</a></li> -->
+      <!-- <li>Posts</li> -->
+    </ul>
+  </div>
+
+  <div class="row">
+    <!-- Main Content Column -->
+    <div class="col-md-9" *ngIf="posts && posts.length > 0">
+      <ul class="list-group">
+        <li *ngFor="let post of posts" class="list-group-item">
+          <h5 class="post-title">{{ post.postName }}</h5>
+          <p class="post-content">{{ post.content }}</p>
+          <p class="post-description">{{ post.description }}</p>
+          <div class="post-buttons">
+            <button class="btn btn-sm btn-outline-primary" (click)="update(post.id)">Update Post</button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="read2(post.id)">Read Post 2</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sidebar Column -->
+    <div class="col-md-3">
+      <!-- Pass the post ID or any relevant ID to the sidebar component -->
+      <app-side-bar [postId]="selectedPostId"></app-side-bar>
+    </div>
+  </div>
+
+  <!-- No posts message -->
+  <div *ngIf="posts && posts.length === 0" class="no-posts-message">
+    <p>No posts found.</p>
+  </div>
+</div>

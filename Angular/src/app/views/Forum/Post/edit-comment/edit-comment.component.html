@@ -1,0 +1,19 @@
+<!-- edit-comment.component.html -->
+<div class="dialog-content">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="card-title mb-3">Edit Comment</div>
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+          <div class="form-group mb-4">
+            <label for="sujet" class="custom-label">Comment</label>
+            <input type="text" class="form-control custom-input" id="sujet" formControlName="text" placeholder="Enter Comment" required>
+          </div>
+          <div class="button-group">
+            <button type="submit" [disabled]="commentForm.invalid" class="btn btn-primary custom-btn">Update</button>
+            <button (click)="onClose()" type="reset" class="btn btn-danger custom-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

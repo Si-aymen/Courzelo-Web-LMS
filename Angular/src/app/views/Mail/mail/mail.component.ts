@@ -86,6 +86,7 @@ export class MailComponent implements OnInit {
         }).then(() => {
           this.mailForm.reset();
           this.loadToMe();
+          this.ngOnInit();
         });
       },
       error: (err) => {

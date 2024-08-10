@@ -30,6 +30,7 @@ import { UpdatefaqComponent } from './faq/updatefaq/updatefaq.component';
     TicketsRoutingModule // Import the routing module here
   ],
   declarations: [ListTicketComponent,ForwardComponent, FaqComponent,
-     TickettypeComponent, ListComponent, AddfaqComponent, UpdateTypeComponent, UpdatefaqComponent]
+     TickettypeComponent, ListComponent, AddfaqComponent,
+      UpdateTypeComponent, UpdatefaqComponent]
 })
 export class TicketsModule { }

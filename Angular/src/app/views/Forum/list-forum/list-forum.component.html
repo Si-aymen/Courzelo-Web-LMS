@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <hr />
+    <div class="col-md-9">
+      <h2>List of Subforums</h2>
+      <ul class="list-group">
+        <li *ngFor="let subforum of subforums" class="list-group-item">
+          <a [routerLink]="['/forum/view-sub', subforum.id]" class="list-group-item-heading">{{ subforum.name }}</a>
+          <p class="list-group-item-text">{{ subforum.description }}</p>
+          <small class="text-muted">Created on {{ subforum.createdDate }}</small>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-3">
+      <app-side-bar></app-side-bar>
+      <app-sub-side-bar></app-sub-side-bar>
+    </div>
+  </div>
+</div>

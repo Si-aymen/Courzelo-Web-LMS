@@ -1,0 +1,56 @@
+.post-description-wrapper {
+  position: relative;
+}
+
+.post-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-height: 4.8em; /* Adjust this to show a few lines */
+  line-height: 1.6em; /* Adjust this to match the line height */
+}
+
+.post-description.expanded {
+  white-space: normal;
+  max-height: none;
+  line-height: normal;
+}
+
+.read-more {
+  display: block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
+
+.btn-outline-primary {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.no-posts-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #888;
+}

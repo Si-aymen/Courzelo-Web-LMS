@@ -16,7 +16,8 @@ export class UpdatefaqComponent implements OnInit{
   onClose() {
     this.dialogRef.close();
   }
-  constructor(public dialogRef: MatDialogRef<UpdatefaqComponent>,private router : Router,
+  constructor(public dialogRef: MatDialogRef<UpdatefaqComponent>,
+    private router : Router,
     private formBuilder: FormBuilder,
     private faqservice: FAQService,
     @Optional() @Inject(MAT_DIALOG_DATA) public faq: any

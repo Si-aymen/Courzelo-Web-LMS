@@ -1,0 +1,11 @@
+<div *ngIf="newGroupsList.length > 0">
+  <div class="mt-4 pb-2 pl-3 pr-3 font-weight-bold text-muted border-bottom">Recent</div>
+  <div *ngFor="let g of newGroupsList" 
+       class="p-3 d-flex border-bottom align-items-center contact"
+       (click)="onGroupClick(g.id)">
+    <h6>{{ g.name }}</h6>
+  </div>
+</div>
+<div *ngIf="newGroupsList.length === 0" class="text-muted">
+  No groups available.
+</div>

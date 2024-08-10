@@ -23,7 +23,8 @@ export class AddTicketComponent implements OnInit {
   constructor(
     private router:Router,private formBuilder: FormBuilder,
     private sessionStorageService: SessionStorageService,
-    private ticketservice:TicketServiceService,private typeservice:TickettypeService) { }
+    private ticketservice:TicketServiceService,
+    private typeservice:TickettypeService) { }
 
   ngOnInit(): void {
     this.createForm();

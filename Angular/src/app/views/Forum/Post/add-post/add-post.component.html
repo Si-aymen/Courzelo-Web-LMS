@@ -1,0 +1,32 @@
+<div class="col-md-12">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="card-title mb-3">Add Ticket</div>
+            <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="sujet">Name</label>
+                        <input type="text" class="form-control form-control-rounded" id="postName" formControlName="postName" placeholder="Enter ticket sujet" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="sujet">content</label>
+                        <input type="text" class="form-control form-control-rounded" id="content" formControlName="content" placeholder="Enter ticket sujet" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="details">description</label>
+                        <input type="text" class="form-control form-control-rounded" id="description" formControlName="description" placeholder="Enter ticket details" required>
+                    </div>
+  
+                    <div class="col-md-12">
+                        <button class="btn btn-primary btn-rounded" type="submit"[disabled]="createPostForm.invalid">Add Ticket</button>
+                        <button type="reset" class="btn btn-danger btn-rounded" (click)="reclamationtypeValue()">Annuler</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+  
+  </div>
+  

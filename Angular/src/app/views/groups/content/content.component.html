@@ -1,0 +1,59 @@
+<div>
+  <!-- Chat Topbar -->
+  <div class="d-flex pl-3 pr-3 pt-2 pb-2 o-hidden box-shadow-1 chat-topbar">
+    <a appSidebarToggler="chat-sidebar" class="link-icon d-md-none">
+      <i class="icon-regular i-Right ml-0 mr-3"></i>
+    </a>
+    <div class="d-flex align-items-center" *ngIf="activeGroup?.id">
+      <p class="m-0 text-title text-16 flex-grow-1">{{activeGroup?.name}}</p>
+    </div>
+  </div>
+
+  <!-- Chat Content -->
+  <div *ngIf="messages.length > 0" [perfectScrollbar]="{ suppressScrollX: true }" class="chat-content rtl-ps-none">
+    <div *ngFor="let chat of messages" class="mb-4">
+      <!-- Message from other users -->
+      <div *ngIf="chat.sender?.email !== connectedUser?.email" class="d-flex user">
+        <img *ngIf="chat.sender?.profile?.profileImageUrl" [src]="chat.sender.profile.profileImageUrl" alt="Profile Image" class="avatar-sm rounded-circle mr-3"/>
+        <div class="message flex-grow-1">
+          <div class="d-flex">
+            <p class="mb-1 sender-text-title text-16 flex-grow-1">{{ chat.sender?.profile?.name }} {{ chat.sender?.profile?.lastname }}</p>
+            <span class="text-small text-muted">{{ chat.createdDate | date: 'shortTime' }}</span>
+          </div>
+          <p class="m-0">{{ chat.text }}</p>
+        </div>
+      </div>
+
+      <!-- Message from the connected user -->
+      <div *ngIf="chat.sender?.email === connectedUser?.email" class="d-flex justify-content-end">
+        <div class="message flex-grow-1 text-right">
+          <div class="d-flex justify-content-between">
+            <span class="text-small text-muted">{{ chat.createdDate | date: 'shortTime' }}</span>
+            <p class="mb-1 connected-text-title -text-16 flex-grow-1">{{ connectedUser?.profile?.name }} {{ connectedUser?.profile?.lastname }}</p>
+          </div>
+          <p class="m-0">{{ chat.text }}</p>
+        </div>
+        <img *ngIf="connectedUser?.profile?.profileImageUrl" [src]="connectedUser?.profile?.profileImageUrl" alt="Profile Image" class="avatar-sm rounded-circle ml-3"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- No messages available -->
+  <!-- Chat Input Area -->
+  <div *ngIf="activeGroup?.id">   
+    <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+      <div class="form-group">
+        <textarea class="form-control form-control-rounded" formControlName="message" placeholder="Type your message" rows="3"></textarea>
+      </div>
+      <div class="d-flex">
+        <div class="flex-grow-1"></div>
+        <button class="btn btn-icon btn-rounded btn-primary mr-2" type="submit">
+          <i class="i-Paper-Plane"></i>
+        </button>
+        <button class="btn btn-icon btn-rounded btn-outline-primary" type="button">
+          <i class="i-Add-File"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

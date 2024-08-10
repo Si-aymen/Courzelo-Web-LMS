@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
-
+import { MatIconModule } from '@angular/material/icon';
 import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -23,6 +23,8 @@ import { TicketsRoutingModule } from './views/tickets/tickets-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {Interceptor} from './shared/services/user/Interceptor';
+import { ForumRoutingModule } from './views/Forum/forum-routing.module';
+import { DossierComponent } from './views/dossier/dossier.component';
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import {Interceptor} from './shared/services/user/Interceptor';
     AddProjectComponent,
     DashboardProjectComponent,
     ViewdetailsComponent ,
-    PdfComponent
+    PdfComponent,
+    DossierComponent,    
   ],
   imports: [
     NgxPaginationModule,
@@ -48,8 +51,10 @@ import {Interceptor} from './shared/services/user/Interceptor';
     BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
+    ForumRoutingModule,
     TicketsRoutingModule,
     MatDialogModule,
+    MatIconModule
   ],
 
   bootstrap: [AppComponent],

@@ -16,6 +16,7 @@ import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdeta
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
 
 import {NoAuthGuard} from './shared/services/no-auth.guard';
+import { AddForumComponent } from './views/Forum/add-forum/add-forum.component';
 
 
 const userRoutes: Routes = [
@@ -42,6 +43,10 @@ const userRoutes: Routes = [
     {
       path: 'forms',
       loadChildren: () => import('./views/forms/forms.module').then(m => m.AppFormsModule)
+    },
+    {
+      path: 'chatgroups',
+      loadChildren: () => import('./views/groups/groups.module').then(m => m.GroupsModule)
     },
     {
       path: 'invoice',
@@ -83,10 +88,16 @@ const userRoutes: Routes = [
     { path: 'addprojects', component: AddProjectComponent},
     { path: 'project/:id', component: ViewdetailsComponent },
     { path: 'pdf', component: PdfComponent },
+    { path: 'addforum', component: AddForumComponent},
+
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
     },
+    {
+      path: 'forum',
+      loadChildren: () => import('./views/Forum/forum.module').then(m => m.ForumModule)
+  },
     {
         path: 'tools',
         loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule)

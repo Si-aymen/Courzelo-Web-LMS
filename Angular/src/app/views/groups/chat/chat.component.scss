@@ -1,0 +1,52 @@
+.card {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px; /* Sidebar, content, and members */
+  height: 100vh; /* Full height of the viewport */
+  gap: 10px; /* Optional: space between columns */
+}
+
+.chat-sidebar-wrap {
+  padding: 10px; /* Optional: Add padding for spacing */
+  background-color: #f0f0f0; /* Optional: Background color for sidebar */
+}
+
+.chat-content-wrap {
+  overflow: auto; /* Allow content to scroll if it overflows */
+  padding: 10px; /* Optional: Add padding for spacing */
+  background-color: #ffffff; /* Optional: Background color for content */
+}
+
+.members-wrap {
+  padding: 10px; /* Optional: Add padding for spacing */
+  background-color: #f7f7f7; /* Optional: Background color for members */
+}
+
+/* Optional: Add styles for responsiveness if needed */
+@media (max-width: 1024px) {
+  .card {
+    grid-template-columns: 1fr 2fr; /* Adjust to two columns on smaller screens */
+    grid-template-areas:
+      "sidebar content"
+      "sidebar members"; /* Sidebar and content on top, members below */
+  }
+
+  .members-wrap {
+    grid-column: span 2; /* Make members section span both columns */
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    grid-template-columns: 1fr; /* Stack vertically on small screens */
+    grid-template-areas:
+      "sidebar"
+      "content"
+      "members"; /* Sidebar, then content, then members */
+  }
+
+  .chat-sidebar-wrap,
+  .chat-content-wrap,
+  .members-wrap {
+    grid-area: auto; /* Auto-placement according to grid-template-areas */
+  }
+}

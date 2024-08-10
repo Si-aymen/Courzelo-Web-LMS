@@ -1,0 +1,86 @@
+<div class="container" *ngIf="postt">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="post">
+        <div class="post-header">
+          <span class="subreddit">
+            <a class="subreddit-name" href="">{{ postt.subforum?.name }}</a>
+          </span>
+          <span class="post-metadata">
+            . Posted
+            <span class="post-date">{{ postt.createdDate }}</span>
+            by
+            <a class="username" href="">{{ postt.user?.profile?.name }} {{ postt.user?.profile?.lastname }}</a>
+          </span>
+        </div>
+        <hr />
+        <a routerLink="post.url" class="post-title">{{ postt.postName }}</a>
+        <div class="post-content">
+          <p [innerHtml]="postt.description"></p>
+        </div>
+        <div class="post-actions">
+          <button (click)="likePost(postt)" 
+                  [ngClass]="{'selected': post?.isLiked}" 
+                  class="btn btn-like">
+            <span class="material-icons">thumb_up</span> Like
+          </button>
+          <button (click)="dislikePost(postt)" 
+                  [ngClass]="{'selected': post?.isDisliked}" 
+                  class="btn btn-dislike">
+            <span class="material-icons">thumb_down</span> Dislike
+          </button>
+        </div>
+        <div class="comment-stats">
+          <span>Likes: {{ postlike || 0 }}</span> <!-- Display downvote count -->
+        
+          <span>Dislikes: {{ postdislike || 0 }}</span> <!-- Display downvote count -->
+        </div>  
+        <div class="post-comment">
+          <form [formGroup]="commentForm" (ngSubmit)="postComment()">
+            <div class="form-group">
+              <textarea class="form-control" [formControlName]="'text'" placeholder="Your thoughts?" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Comment</button>
+          </form>
+        </div>
+        <div class="comments" style="margin-top: 30px;">
+          <div class="comment" *ngFor="let comment of comments">
+            <div class="comment-header">
+              <div class="icon-container">
+                <span *ngIf="comment.user.email == connectedUser.email" 
+                      (click)="update(comment)" 
+                      class="material-icons edit-icon">edit</span>
+                <span *ngIf="comment.user.email == connectedUser.email" 
+                      (click)="deletecomment(comment)"
+                      class="material-icons delete-icon">delete</span>
+              </div>
+              <img *ngIf="comment.user['profileImageUrl']" [src]="comment.user['profileImageUrl']" alt="Profile Image" />
+              <a routerLink="/user/{{ comment.user?.profile?.lastname }}" class="comment-username">
+                {{ comment.user?.profile?.lastname }} {{ comment.user?.profile?.name }}
+              </a>
+              <span class="comment-date">{{ comment.createdDate }}</span>
+            </div>
+            <p class="comment-text">{{ comment.text }}</p>
+            <div class="comment-actions">
+              <button (click)="likeComment(comment)" 
+                      [ngClass]="{'selected': comment.isLiked}" 
+                      class="btn btn-like">
+                <span class="material-icons">thumb_up</span> Like
+              </button>
+              <button (click)="dislikeComment(comment)" 
+                      [ngClass]="{'selected': comment.isDisliked}" 
+                      class="btn btn-dislike">
+                <span class="material-icons">thumb_down</span> Dislike
+              </button>
+            </div> 
+            <div class="comment-stats">
+              <span>Likes: {{ comment['upvoteCount'] || 0 }}</span> <!-- Display downvote count -->
+            
+              <span>Dislikes: {{ comment['downvoteCount'] || 0 }}</span> <!-- Display downvote count -->
+            </div>           
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
