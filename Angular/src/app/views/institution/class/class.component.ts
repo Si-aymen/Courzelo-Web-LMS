@@ -155,9 +155,13 @@ export class ClassComponent implements OnInit {
         }
     );
   }
-    openModal(type: string, list: string[]): void {
+    openModal(type: string, list: any[]): void {
         this.modalTitle = type === 'students' ? 'Students' : 'Courses';
-        this.modalList = list;
+        if (type === 'courses') {
+            this.modalList = list.map(course => course.courseName);
+        } else {
+            this.modalList = list;
+        }
         this.modalService.open(this.listModal, { size: 'lg' });
     }
   createClassModel(content) {

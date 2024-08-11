@@ -10,7 +10,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormBuilder, Validators} from '@angular/forms';
 import {CourseService} from '../../../shared/services/institution/course.service';
 import {CourseRequest} from '../../../shared/models/institution/CourseRequest';
-import {AuthenticationService} from "../../../shared/services/user/authentication.service";
+import {AuthenticationService} from '../../../shared/services/user/authentication.service';
+import {GroupResponse} from '../../../shared/models/institution/GroupResponse';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +37,8 @@ export class HomeComponent implements OnInit {
     code: string;
   currentInstitution: InstitutionResponse;
   course: CourseRequest = {} as CourseRequest;
+  teachers ;
+  groups: GroupResponse[] = [];
   currentUser = this.sessionstorage.getUserFromSession();
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
@@ -43,6 +46,8 @@ export class HomeComponent implements OnInit {
             name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
             description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
             credit: [0, [Validators.required]],
+            teacher: ['', [Validators.required]],
+            group: ['', [Validators.required]]
         }
     );
   ngOnInit() {
@@ -92,6 +97,33 @@ export class HomeComponent implements OnInit {
         this.initializeMap();
       }, 0);
     }
+      if (event.nextId === 'tools') {
+          setTimeout(() => {
+            this.loadGroupsAndTeachers();
+          }, 0);
+      }
+  }
+  loadGroupsAndTeachers() {
+    this.institutionService.getInstitutionGroups(this.institutionID).subscribe(
+        response => {
+          this.groups = response;
+          console.log('groups', this.groups);
+        },
+        error => {
+          console.error(error);
+          this.toastr.error('Error loading groups');
+        }
+    );
+    this.institutionService.getInstitutionTeachers(this.institutionID).subscribe(
+        response => {
+          this.teachers = response;
+          console.log('teachers', this.teachers);
+        },
+        error => {
+          console.error(error);
+          this.toastr.error('Error loading teachers');
+        }
+    );
   }
     addCourse() {
         this.loading = true;

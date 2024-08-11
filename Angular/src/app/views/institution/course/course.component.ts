@@ -12,6 +12,7 @@ import {CourseResponse} from '../../../shared/models/institution/CourseResponse'
 import {AuthenticationService} from '../../../shared/services/user/authentication.service';
 import {Subscription} from 'rxjs';
 import {CourseRequest} from '../../../shared/models/institution/CourseRequest';
+import {UserService} from '../../../shared/services/user/user.service';
 
 @Component({
   selector: 'app-course',
@@ -27,7 +28,9 @@ export class CourseComponent implements OnInit, OnDestroy {
       private sessionstorage: SessionStorageService,
       private modalService: NgbModal,
       private formBuilder: FormBuilder,
-      private courseService: CourseService
+      private courseService: CourseService,
+      private userService: UserService,
+      private sanitizer: DomSanitizer
   ) { }
   courseID: string;
   user: UserResponse;
@@ -66,6 +69,12 @@ export class CourseComponent implements OnInit, OnDestroy {
         this.courseService.getCourse(this.courseID).subscribe(
             course => {
                 this.course = course;
+                if (this.course.teacher) {
+                    this.userService.getProfileImageBlobUrl(course.teacher).subscribe((blob: Blob) => {
+                        const objectURL = URL.createObjectURL(blob);
+                        this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+                    });
+                }
             }, error => {
                 console.error('Error fetching course:', error);
                 this.toastr.error(error.error);

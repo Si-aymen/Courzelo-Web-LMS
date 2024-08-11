@@ -218,9 +218,9 @@
                     </div>
                 </ng-template>
             </ngb-tab>
-            <ngb-tab *ngIf="currentUser.roles.includes('TEACHER'||'ADMIN'||'SUPERADMIN')" title="Tools" >
+            <ngb-tab *ngIf="currentUser.roles.includes('ADMIN')" title="Tools"  id="tools" >
                 <ng-template ngbTabContent>
-                    <div *ngIf="currentUser.roles.includes('TEACHER')"  class="d-flex justify-content-center">
+                    <div *ngIf="currentUser.roles.includes('ADMIN')"  class="d-flex justify-content-center">
                         <button type="button" (click)="addCourseModel(createCourse)" class="btn btn-info">Create Course</button>
                     </div>
                 </ng-template>
@@ -271,6 +271,24 @@
                     <input type="number" formControlName="credit" class="form-control" id="credit" placeholder="Course credit">
                     <div *ngIf="shouldShowError('credit', 'required')" class="text-danger">
                         Credit is required.
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="groups">Classes</label>
+                    <select formControlName="group" class="form-control" id="groups" data-live-search="true">
+                        <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
+                    </select>
+                    <div *ngIf="shouldShowError('groups', 'required')" class="text-danger">
+                        At least one class is required.
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="teachers">Teachers</label>
+                    <select formControlName="teacher" class="form-control" id="teachers" data-live-search="true">
+                        <option *ngFor="let teacher of teachers" [value]="teacher">{{ teacher }}</option>
+                    </select>
+                    <div *ngIf="shouldShowError('teacher', 'required')" class="text-danger">
+                        At least one teacher is required.
                     </div>
                 </div>
                 <div class="col-md-12">

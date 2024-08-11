@@ -40,18 +40,32 @@ public class CourseServiceImpl implements ICourseService {
     private final GroupRepository groupRepository;
     @Override
     public ResponseEntity<HttpStatus> createCourse(String institutionID, CourseRequest courseRequest,Principal principal) {
+        log.info("Creating course");
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
         Course course = Course.builder()
                 .name(courseRequest.getName())
                 .description(courseRequest.getDescription())
                 .credit(courseRequest.getCredit())
                 .institutionID(institution.getId())
-                .teacher(courseRequest.getTeacherEmail())
-                .group(courseRequest.getGroupID())
+                .teacher(courseRequest.getTeacher())
+                .group(courseRequest.getGroup())
                 .build();
         courseRepository.save(course);
         institution.getCoursesID().add(course.getId());
         institutionRepository.save(institution);
+        if(courseRequest.getTeacher()!=null){
+            log.info("Adding course to teacher");
+            User teacher = userRepository.findUserByEmail(courseRequest.getTeacher());
+            teacher.getEducation().getCoursesID().add(course.getId());
+            userRepository.save(teacher);
+        }
+        if(courseRequest.getGroup()!=null){
+            log.info("Adding course to group");
+            Group group = groupRepository.findById(courseRequest.getGroup()).orElseThrow(() -> new NoSuchElementException("Group not found"));
+            group.getCourses().add(course.getId());
+            groupRepository.save(group);
+            log.info("Course added to group");
+        }
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -67,13 +81,18 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public ResponseEntity<HttpStatus> deleteCourse(String courseID) {
+        log.info("Deleting course with id: " + courseID);
         Course course = courseRepository.findById(courseID).orElseThrow();
         if(course.getGroup()!= null ){
-            Group group = groupRepository.findById(course.getGroup()).orElseThrow();
-            group.getCourses().remove(course.getId());
-            groupRepository.save(group);
+            log.info("Deleting course from group");
+            Group group = groupRepository.findById(course.getGroup()).orElse(null);
+            if (group != null) {
+                group.getCourses().remove(course.getId());
+                groupRepository.save(group);
+            }
         }
         if(course.getTeacher()!= null) {
+            log.info("Deleting course from teacher");
             User teacher = userRepository.findUserByEmail(course.getTeacher());
             teacher.getEducation().getCoursesID().remove(course.getId());
             userRepository.save(teacher);
@@ -82,6 +101,7 @@ public class CourseServiceImpl implements ICourseService {
         institution.getCoursesID().remove(course.getId());
         institutionRepository.save(institution);
         courseRepository.delete(course);
+        log.info("Course deleted");
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

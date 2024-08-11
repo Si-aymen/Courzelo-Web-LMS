@@ -8,15 +8,16 @@ import org.example.courzelo.dto.requests.CalendarEventRequest;
 import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
 import org.example.courzelo.dto.responses.*;
-import org.example.courzelo.dto.responses.institution.InstitutionResponse;
-import org.example.courzelo.dto.responses.institution.InstitutionUserResponse;
-import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
-import org.example.courzelo.dto.responses.institution.PaginatedInstitutionsResponse;
+import org.example.courzelo.dto.responses.institution.*;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
+import org.example.courzelo.models.institution.Course;
+import org.example.courzelo.models.institution.Group;
 import org.example.courzelo.models.institution.Institution;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
+import org.example.courzelo.repositories.CourseRepository;
+import org.example.courzelo.repositories.GroupRepository;
 import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICodeVerificationService;
@@ -53,6 +54,8 @@ public class InstitutionServiceImpl implements IInstitutionService {
     private final ICodeVerificationService codeVerificationService;
     private final IMailService mailService;
     private final IGroupService groupService;
+    private final GroupRepository groupRepository;
+    private final CourseRepository courseRepository;
     @Override
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword) {
         log.info("Fetching institutions for page: {}, sizePerPage: {}", page, sizePerPage);
@@ -472,6 +475,39 @@ public class InstitutionServiceImpl implements IInstitutionService {
         Institution institution = institutionRepository.findById(institutionID).orElseThrow(()-> new NoSuchElementException("Institution not found"));
         log.info("Getting students for institution: {}", institution.getStudents());
         return ResponseEntity.ok(institution.getStudents());
+    }
+
+    @Override
+    public ResponseEntity<List<String>> getInstitutionTeachers(String institutionID) {
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow(()-> new NoSuchElementException("Institution not found"));
+        log.info("Getting teachers for institution: {}", institution.getTeachers());
+        return ResponseEntity.ok(institution.getTeachers());
+    }
+
+    @Override
+    public ResponseEntity<List<GroupResponse>> getInstitutionGroups(String institutionID) {
+        log.info("Getting groups for institution: {}", institutionID);
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow(()-> new NoSuchElementException("Institution not found"));
+        List<Group> groups = institution.getGroupsID().stream().map(
+                groupID -> groupRepository.findById(groupID).orElseThrow(()-> new NoSuchElementException("Group not found"))
+        ).toList();
+        log.info("Groups found: {}", groups);
+        return ResponseEntity.ok(groups.stream().map(
+                group -> GroupResponse.builder()
+                        .id(group.getId())
+                        .name(group.getName())
+                        .students(group.getStudents())
+                        .courses(group.getCourses().stream().map(
+                                        courseID -> {
+                                            Course course = courseRepository.findById(courseID).orElseThrow(() -> new NoSuchElementException("Course not found"));
+                                            return SimplifiedCourseResponse.builder()
+                                                    .courseID(course.getId())
+                                                    .courseName(course.getName())
+                                                    .build();
+                                        }
+                                ).toList()
+                        )
+                        .build()).toList());
     }
 
     @Override

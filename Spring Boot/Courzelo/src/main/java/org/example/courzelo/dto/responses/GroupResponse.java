@@ -2,6 +2,7 @@ package org.example.courzelo.dto.responses;
 
 import lombok.Builder;
 import lombok.Data;
+import org.example.courzelo.dto.responses.institution.SimplifiedCourseResponse;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public class GroupResponse {
     private String name;
     private String institutionID;
     private List<String> students;
-    private List<String> courses;
+    private List<SimplifiedCourseResponse> courses;
 }
