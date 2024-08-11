@@ -27,6 +27,7 @@ public class Institution {
     private byte[] excelFile;
     private double latitude;
     private double longitude;
+    private List<String> groupsID = new ArrayList<>();
     private List<String> coursesID = new ArrayList<>();
 
     public List<String> getUsers() {

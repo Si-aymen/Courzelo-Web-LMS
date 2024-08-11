@@ -40,30 +40,10 @@ public class CourseController {
     public ResponseEntity<CourseResponse> getCourse(@PathVariable String courseID) {
         return iCourseService.getCourse(courseID);
     }
-    @PutMapping("/{courseID}/addTeacher")
+    @PutMapping("/{courseID}/setTeacher")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> addTeacher(@PathVariable String courseID,@RequestParam String email) {
-        return iCourseService.addTeacher(courseID,email);
-    }
-    @PutMapping("/{courseID}/removeTeacher")
-    @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> removeTeacher(@PathVariable String courseID,@RequestParam String email) {
-        return iCourseService.removeTeacher(courseID,email);
-    }
-    @PutMapping("/{courseID}/addStudent")
-    @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> addStudent(@PathVariable String courseID,@RequestParam String email) {
-        return iCourseService.addStudent(courseID,email);
-    }
-    @PutMapping("/{courseID}/removeStudent")
-    @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> removeStudent(@PathVariable String courseID,@RequestParam String email) {
-        return iCourseService.removeStudent(courseID,email);
-    }
-    @PutMapping("/{courseID}/leave")
-    @PreAuthorize("isAuthenticated()&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> leaveCourse(@PathVariable String courseID, Principal principal) {
-        return iCourseService.leaveCourse(courseID,principal);
+    public ResponseEntity<HttpStatus> setTeacher(@PathVariable String courseID,@RequestParam String email) {
+        return iCourseService.setTeacher(courseID,email);
     }
     @PutMapping("/{courseID}/addPost")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")

@@ -37,6 +37,11 @@ public class InstitutionController {
                                                                          @RequestParam(required = false) String keyword) {
         return iInstitutionService.getInstitutions(page, sizePerPage, keyword);
     }
+    @GetMapping("/{institutionID}/students")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<List<String>> getInstitutionStudents(@PathVariable @NotNull String institutionID) {
+        return iInstitutionService.getInstitutionStudents(institutionID);
+    }
     @PostMapping("/add")
     public ResponseEntity<StatusMessageResponse> addInstitution(@RequestBody @Valid InstitutionRequest institutionRequest) {
         return iInstitutionService.addInstitution(institutionRequest);

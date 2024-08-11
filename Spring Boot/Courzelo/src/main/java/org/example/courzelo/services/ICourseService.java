@@ -13,11 +13,7 @@ public interface ICourseService {
     ResponseEntity<HttpStatus> updateCourse(String courseID,CourseRequest courseRequest);
     ResponseEntity<HttpStatus> deleteCourse(String courseID);
     ResponseEntity<CourseResponse> getCourse(String courseID);
-    ResponseEntity<HttpStatus> addTeacher(String courseID,String email);
-    ResponseEntity<HttpStatus> removeTeacher(String courseID,String email);
-    ResponseEntity<HttpStatus> addStudent(String courseID,String email);
-    ResponseEntity<HttpStatus> removeStudent(String courseID,String email);
-    ResponseEntity<HttpStatus> leaveCourse(String courseID, Principal principal);
+    ResponseEntity<HttpStatus> setTeacher(String courseID, String email);
     ResponseEntity<HttpStatus> addPost(String courseID, CoursePostRequest coursePostRequest);
     ResponseEntity<HttpStatus> deletePost(String courseID, String postID);
 

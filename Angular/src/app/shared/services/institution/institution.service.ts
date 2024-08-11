@@ -34,6 +34,9 @@ export class InstitutionService {
   addInstitution(institutionRequest: InstitutionRequest): Observable<StatusMessageResponse> {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/add`, institutionRequest);
   }
+  getInstitutionStudents(institutionID: string) {
+    return this.http.get(`${this.baseUrl}/${institutionID}/students`);
+  }
 
   updateInstitution(institutionID: string, institutionRequest: InstitutionRequest) {
     return this.http.put(`${this.baseUrl}/update/${institutionID}`, institutionRequest);

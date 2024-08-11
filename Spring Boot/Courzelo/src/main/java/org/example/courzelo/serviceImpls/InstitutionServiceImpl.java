@@ -20,6 +20,7 @@ import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICodeVerificationService;
+import org.example.courzelo.services.IGroupService;
 import org.example.courzelo.services.IInstitutionService;
 import org.example.courzelo.services.IMailService;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +52,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     private final CalendarService calendarService;
     private final ICodeVerificationService codeVerificationService;
     private final IMailService mailService;
+    private final IGroupService groupService;
     @Override
     public ResponseEntity<PaginatedInstitutionsResponse> getInstitutions(int page, int sizePerPage, String keyword) {
         log.info("Fetching institutions for page: {}, sizePerPage: {}", page, sizePerPage);
@@ -105,6 +107,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
     @Override
     public ResponseEntity<StatusMessageResponse> deleteInstitution(String institutionID) {
         removeAllInstitutionUsers(institutionRepository.findById(institutionID).orElseThrow(()-> new NoSuchElementException("Institution not found")));
+        groupService.deleteGroupsByInstitution(institutionID);
         institutionRepository.deleteById(institutionID);
         return ResponseEntity.ok(new StatusMessageResponse("Success","Institution deleted successfully"));
     }
@@ -462,6 +465,13 @@ public class InstitutionServiceImpl implements IInstitutionService {
         log.info("Deleting code");
         codeVerificationService.deleteCode(codeVerification.getEmail(), CodeType.INSTITUTION_INVITATION);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<String>> getInstitutionStudents(String institutionID) {
+        Institution institution = institutionRepository.findById(institutionID).orElseThrow(()-> new NoSuchElementException("Institution not found"));
+        log.info("Getting students for institution: {}", institution.getStudents());
+        return ResponseEntity.ok(institution.getStudents());
     }
 
     @Override

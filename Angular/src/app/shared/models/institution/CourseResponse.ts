@@ -5,7 +5,8 @@ export interface CourseResponse {
     name?: string;
     description?: string;
     credit?: number;
-    teachers?: string[];
-    students?: string[];
+    teacher?: string;
+    group?: string;
+    institutionID?: string;
     posts?: CoursePostResponse[];
 }

@@ -5,6 +5,7 @@ import {EditComponent} from './edit/edit.component';
 import {HomeComponent} from './home/home.component';
 import {AuthGuard} from '../../shared/services/auth-guard.service';
 import {CourseComponent} from './course/course.component';
+import {ClassComponent} from './class/class.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
         roles: ['ADMIN']
+    }
+  },
+  {
+    path: ':institutionID/classes',
+    component: ClassComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN']
     }
   },
   {

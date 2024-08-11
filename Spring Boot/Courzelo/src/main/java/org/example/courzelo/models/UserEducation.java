@@ -8,4 +8,5 @@ import java.util.List;
 public class UserEducation {
     private String institutionID;
     private List<String> coursesID = new ArrayList<>();
+    private String groupID;
 }

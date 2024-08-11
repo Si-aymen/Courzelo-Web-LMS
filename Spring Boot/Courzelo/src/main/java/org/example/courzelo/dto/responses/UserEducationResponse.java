@@ -13,5 +13,6 @@ public class UserEducationResponse {
     private String institutionID;
     private String institutionName;
     private List<SimplifiedCourseResponse> courses;
+    private String groupID;
 
 }

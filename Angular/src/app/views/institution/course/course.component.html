@@ -48,7 +48,7 @@
         <button class="btn btn-success mr-2" *ngIf="isUserTeacherInCourse()" >Add Post</button>
         <button class="btn btn-warning mr-2" (click)="updateCourseModel(ModalUpdateCourse)"  *ngIf="isUserTeacherInCourse()" >Edit Course</button>
         <button class="btn btn-danger mr-2" *ngIf="isUserTeacherInCourse()" (click)="deleteCourse(modalConfirmCourse)">Delete Course</button>
-        <button class="btn btn-secondary" *ngIf="user.roles == ['STUDENT'] || (isUserTeacherInCourse() && course.teachers.length > 1)" (click)="leaveCourse(modalConfirmLeaveCourse)">Leave Course</button>
+        <button class="btn btn-secondary" *ngIf="user.roles == ['STUDENT'] || (isUserTeacherInCourse() && course.teacher.length > 1)" (click)="leaveCourse(modalConfirmLeaveCourse)">Leave Course</button>
     </div>
 </div>
 

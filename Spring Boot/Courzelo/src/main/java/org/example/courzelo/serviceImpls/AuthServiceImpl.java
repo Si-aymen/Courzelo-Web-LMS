@@ -167,6 +167,7 @@ public class AuthServiceImpl implements IAuthService {
                                                 return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
                                             }
                                     ).toList() : null)
+                                    .groupID(userDetails.getEducation().getGroupID() != null ? userDetails.getEducation().getGroupID() : null)
                                     .build())
                             .build()));
         } catch (DisabledException e) {
@@ -250,6 +251,7 @@ public class AuthServiceImpl implements IAuthService {
                                                 return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
                                             }
                                     ).toList() : null)
+                                    .groupID(userDetails.getEducation().getGroupID() != null ? userDetails.getEducation().getGroupID() : null)
                                     .build())
                             .build()));
         } catch (DisabledException e) {
@@ -337,6 +339,7 @@ public class AuthServiceImpl implements IAuthService {
                                                 return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
                                             }
                                     ).toList() : null)
+                                    .groupID(user.getEducation().getGroupID() != null ? user.getEducation().getGroupID() : null)
                                     .build())
                             .build()));
         }

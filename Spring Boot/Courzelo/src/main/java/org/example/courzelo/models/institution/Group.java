@@ -9,15 +9,12 @@ import java.util.List;
 
 @Data
 @Builder
-@Document(collection = "courses")
-public class Course {
+@Document(collection = "groups")
+public class Group {
     @Id
     private String id;
     private String name;
-    private String description;
-    private int credit;
-    private String teacher;
-    private String group;
-    private List<CoursePost> posts;
     private String institutionID;
+    private List<String> students;
+    private List<String> courses;
 }

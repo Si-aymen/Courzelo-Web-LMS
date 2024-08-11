@@ -110,7 +110,7 @@ export class CourseComponent implements OnInit, OnDestroy {
         });
     }
     isUserTeacherInCourse(): boolean {
-        return this.course.teachers.some(teacher => teacher === this.user.email);
+        return this.course.teacher === this.user.email;
     }
     shouldShowError(controlName: string, errorName: string): boolean {
         const control = this.updateCourseForm.get(controlName);

@@ -29,12 +29,8 @@ export class CourseService {
     return this.http.get<CourseResponse>(`${this.baseUrl}/${courseID}`);
   }
 
-  addTeacher(courseID: string, email: string): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${courseID}/addTeacher`, null, { params: { email } });
-  }
-
-  removeTeacher(courseID: string, email: string): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${courseID}/removeTeacher`, null, { params: { email } });
+  setTeacher(courseID: string, email: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${courseID}/setTeacher`, null, { params: { email } });
   }
 
   addStudent(courseID: string, email: string): Observable<void> {

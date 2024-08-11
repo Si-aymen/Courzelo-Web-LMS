@@ -54,8 +54,6 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         this.codeVerificationService = codeVerificationService;
         this.institutionRepository = institutionRepository;
     }
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(email);

@@ -9,4 +9,6 @@ public class CourseRequest {
     private String name;
     private String description;
     private int credit;
+    private String groupID;
+    private String teacherEmail;
 }

@@ -190,6 +190,8 @@ export class NavigationService {
                             this.user?.education?.institutionID, type: 'link', mustBeInInstitutions: true },
                     { icon: 'i-Administrator', name: 'Users', state: 'institution/' +
                             this.user?.education?.institutionID + '/users', type: 'link', roles: ['ADMIN'], mustBeInInstitutions: true },
+                    { icon: 'i-Administrator', name: 'Classes', state: 'institution/' +
+                            this.user?.education?.institutionID + '/classes', type: 'link', roles: ['ADMIN'], mustBeInInstitutions: true },
                     { icon: 'i-Administrator', name: 'Edit', state: 'institution/' +
                             this.user?.education?.institutionID + '/edit', type: 'link', roles: ['ADMIN'], mustBeInInstitutions: true },
                     ...(this.user?.education?.courses ? this.user.education.courses.map(course => ({

@@ -9,8 +9,10 @@ import org.example.courzelo.dto.responses.CourseResponse;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.institution.Course;
 import org.example.courzelo.models.institution.CoursePost;
+import org.example.courzelo.models.institution.Group;
 import org.example.courzelo.models.institution.Institution;
 import org.example.courzelo.repositories.CourseRepository;
+import org.example.courzelo.repositories.GroupRepository;
 import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICourseService;
@@ -35,20 +37,19 @@ public class CourseServiceImpl implements ICourseService {
     private final CourseRepository courseRepository;
     private final InstitutionRepository institutionRepository;
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
     @Override
     public ResponseEntity<HttpStatus> createCourse(String institutionID, CourseRequest courseRequest,Principal principal) {
         Institution institution = institutionRepository.findById(institutionID).orElseThrow();
-        User user = userRepository.findUserByEmail(principal.getName());
         Course course = Course.builder()
                 .name(courseRequest.getName())
                 .description(courseRequest.getDescription())
                 .credit(courseRequest.getCredit())
                 .institutionID(institution.getId())
-                .teachers(List.of(user.getEmail()))
+                .teacher(courseRequest.getTeacherEmail())
+                .group(courseRequest.getGroupID())
                 .build();
         courseRepository.save(course);
-        user.getEducation().getCoursesID().add(course.getId());
-        userRepository.save(user);
         institution.getCoursesID().add(course.getId());
         institutionRepository.save(institution);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -67,19 +68,15 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ResponseEntity<HttpStatus> deleteCourse(String courseID) {
         Course course = courseRepository.findById(courseID).orElseThrow();
-        if(course.getStudents()!= null) {
-            course.getStudents().forEach(student -> {
-                User user = userRepository.findUserByEmail(student);
-                user.getEducation().getCoursesID().remove(course.getId());
-                userRepository.save(user);
-            });
+        if(course.getGroup()!= null ){
+            Group group = groupRepository.findById(course.getGroup()).orElseThrow();
+            group.getCourses().remove(course.getId());
+            groupRepository.save(group);
         }
-        if(course.getTeachers()!= null) {
-            course.getTeachers().forEach(teacher -> {
-                User user = userRepository.findUserByEmail(teacher);
-                user.getEducation().getCoursesID().remove(course.getId());
-                userRepository.save(user);
-            });
+        if(course.getTeacher()!= null) {
+            User teacher = userRepository.findUserByEmail(course.getTeacher());
+            teacher.getEducation().getCoursesID().remove(course.getId());
+            userRepository.save(teacher);
         }
         Institution institution = institutionRepository.findById(course.getInstitutionID()).orElseThrow();
         institution.getCoursesID().remove(course.getId());
@@ -96,8 +93,8 @@ public class CourseServiceImpl implements ICourseService {
                 .name(course.getName())
                 .description(course.getDescription())
                 .credit(course.getCredit())
-                .teachers(course.getTeachers())
-                .students(course.getStudents())
+                .teacher(course.getTeacher())
+                .group(course.getGroup())
                 .posts(course.getPosts() != null ? course.getPosts().stream().map(coursePost -> CoursePostResponse.builder()
                         .id(coursePost.getId())
                         .title(coursePost.getTitle())
@@ -105,16 +102,17 @@ public class CourseServiceImpl implements ICourseService {
                         .created(coursePost.getCreated())
                         .files(getBytesFromFiles(coursePost.getFiles()))
                         .build()).toList() : List.of())
+                        .institutionID(course.getInstitutionID())
                 .build());
     }
 
     @Override
-    public ResponseEntity<HttpStatus> addTeacher(String courseID, String email) {
+    public ResponseEntity<HttpStatus> setTeacher(String courseID, String email) {
         Course course = courseRepository.findById(courseID).orElseThrow();
         Institution institution = institutionRepository.findById(course.getInstitutionID()).orElseThrow();
         if(institution.getTeachers().contains(email)){
             User teacher = userRepository.findUserByEmail(email);
-            course.getTeachers().add(teacher.getEmail());
+            course.setTeacher(teacher.getEmail());
             teacher.getEducation().getCoursesID().add(course.getId());
             userRepository.save(teacher);
             courseRepository.save(course);
@@ -123,55 +121,6 @@ public class CourseServiceImpl implements ICourseService {
         return ResponseEntity.badRequest().build();
     }
 
-    @Override
-    public ResponseEntity<HttpStatus> removeTeacher(String courseID, String email) {
-        Course course = courseRepository.findById(courseID).orElseThrow();
-        course.getTeachers().removeIf(user -> user.equals(email));
-        User teacher = userRepository.findUserByEmail(email);
-        teacher.getEducation().getCoursesID().removeIf(course1 -> course1.equals(courseID));
-        userRepository.save(teacher);
-        courseRepository.save(course);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<HttpStatus> addStudent(String courseID, String email) {
-        Course course = courseRepository.findById(courseID).orElseThrow();
-        Institution institution = institutionRepository.findById(course.getInstitutionID()).orElseThrow();
-        if(institution.getStudents().contains(email)){
-            User student = userRepository.findUserByEmail(email);
-            course.getStudents().add(student.getEmail());
-            student.getEducation().getCoursesID().add(course.getId());
-            userRepository.save(student);
-            courseRepository.save(course);
-            return ResponseEntity.ok(HttpStatus.OK);
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    @Override
-    public ResponseEntity<HttpStatus> removeStudent(String courseID, String email) {
-        Course course = courseRepository.findById(courseID).orElseThrow();
-        course.getStudents().removeIf(user -> user.equals(email));
-        User student = userRepository.findUserByEmail(email);
-        student.getEducation().getCoursesID().removeIf(course1 -> course1.equals(courseID));
-        userRepository.save(student);
-        courseRepository.save(course);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<HttpStatus> leaveCourse(String courseID, Principal principal) {
-        User user = userRepository.findUserByEmail(principal.getName());
-        Course course = courseRepository.findById(courseID).orElseThrow();
-        course.getStudents().remove(user.getEmail());
-        course.getTeachers().remove(user.getEmail());
-        user.getEducation().getCoursesID().remove(course.getId());
-        userRepository.save(user);
-        courseRepository.save(course);
-        return ResponseEntity.ok(HttpStatus.OK);
-
-    }
 
     @Override
     public ResponseEntity<HttpStatus> addPost(String courseID, CoursePostRequest coursePostRequest) {

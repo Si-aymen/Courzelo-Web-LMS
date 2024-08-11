@@ -11,6 +11,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedComponentsModule} from '../../shared/components/shared-components.module';
 import {NgbDatepickerModule, NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
 import { CourseComponent } from './course/course.component';
+import { ClassComponent } from './class/class.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { CourseComponent } from './course/course.component';
     UsersComponent,
     EditComponent,
     HomeComponent,
-    CourseComponent
+    CourseComponent,
+    ClassComponent
   ],
     imports: [
         CommonModule,
