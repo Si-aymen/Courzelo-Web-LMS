@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RatingserviceService } from '../../tickets/Services/Rating/ratingservice.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TicketServiceService } from '../../tickets/Services/TicketService/ticket-service.service';
 
 @Component({
   selector: 'app-rating',
@@ -13,8 +14,7 @@ import { Router } from '@angular/router';
 })
 export class RatingComponent implements OnInit {
 
-
-  ticketData$: Observable<any>;
+  Ticket:any;
   id:any;
   data = new FormGroup({
     rating: new FormControl('', Validators.required),
@@ -23,22 +23,30 @@ export class RatingComponent implements OnInit {
   });
   averageRating: number;
 
-  constructor(private ticketDataService:TicketDataService,private ratingservice:RatingserviceService,
+  constructor(
+    private ActivatedRoute:ActivatedRoute,
+    private ticketService:TicketServiceService,
+    private ratingservice:RatingserviceService,
     private router:Router){
     this.data = new FormGroup({
       rating: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(5),Validators.pattern(/^\d+(\.\d+)?$/)])
     });
   }
   ngOnInit(): void {
-    this.ticketData$ = this.ticketDataService.ticketData$;
-    this.ticketData$.subscribe(data=>{
-      if(data){
-        console.log(data.id)
-        this.id=data.id
-      }
+    this.ActivatedRoute.paramMap.subscribe(params => {
+      this.id = params.get('id');
+      console.log('Received post ID:', this.id);
+      // Use the postId as needed
     });
-
+    this.getTicket();
     this.getAverageRating();
+  }
+
+  getTicket(){
+    this.ticketService.getTicketById(this.id).subscribe((res)=>{
+      this.Ticket=res;
+      console.log(res);
+        })
   }
     middle() {
       this.router.navigate(['ticketsStudent/list']);      ;

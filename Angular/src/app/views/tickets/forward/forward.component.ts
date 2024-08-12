@@ -9,7 +9,8 @@ import { CardREQ } from 'src/app/shared/models/CardREQ';
 import { TicketServiceService } from '../Services/TicketService/ticket-service.service';
 import { Etat } from 'src/app/shared/models/Etat';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-forward',
@@ -23,37 +24,33 @@ export class ForwardComponent implements OnInit {
   details: any; // Define details property
   type:any;
   CardREQ: CardREQ = { cardId: '', ticketID: '' }; // Initialize CardREQ with default values
-  /*TrelloCard = new FormGroup({
-    cardId: new FormControl('',Validators.required),
-    ticketID: new FormControl('',Validators.required),
-  })*/
-  ticketData$: Observable<any>;
+  ticket:any;
   data = new FormGroup({
     developper: new FormControl('', Validators.required),
     activity: new FormControl('', Validators.required),
-    /*projet: new FormControl(''),
-    client: new FormControl('')*/
+
   });
 
   employee = ["touatiahmed", "ahmed_touati"];
 
-  constructor(private router : Router,private ticketDataService: TicketDataService,
+  constructor(private router : Router,
+    private ActivatedRoute:ActivatedRoute,
      private trelloService: TrelloserviceService,private ticketservice:TicketServiceService) { }
 
   ngOnInit(): void {
-    this.ticketData$ = this.ticketDataService.ticketData$;
-    this.ticketData$.subscribe(data => {
-      if (data) {
-        console.log(data)
-        this.type=data.type;
-        this.id = data.id;
-        this.sujet = data.sujet;
-        this.details = data.details;
-        console.log('ID:', this.id);
+    this.ActivatedRoute.paramMap.subscribe(res=>{
+      this.id=res.get('id');
+      console.log(this.id)
+    })
+    this.ticketservice.getTicketById(this.id).subscribe((res)=>{
+      this.ticket=res;
+      this.type=res.type;
+      this.sujet=res.sujet;
+      this.details=res.details
+      console.log('ID:', this.id);
         console.log('SUJET:', this.sujet);
         console.log('Description:', this.details);
-      }
-    });
+    })
   }
 
   forward() {
@@ -68,7 +65,7 @@ export class ForwardComponent implements OnInit {
     var splitted = activity.split(".", activity.length);
 
     console.log('Forwarding Data:', member, ticketId, ticketName, ticketDetails, activity,"Le Type",ticketType);
-    this.trelloService.getBoardByType(ticketType).subscribe((res:any)=>{
+   this.trelloService.getBoardByType(ticketType).subscribe((res:any)=>{
       console.log("le type ",res);
       this.trelloService.createCard(res.idListToDo,this.sujet,this.details).subscribe((card:any)=>{
         console.log("le card",card.id)
@@ -99,12 +96,13 @@ export class ForwardComponent implements OnInit {
                   title: 'Success...',
                   text: 'Transférer avec succès!',
                 })
+                this.router.navigate(['tickets/list']);
               }
               else {
                 Swal.fire({
                   icon: 'success',
                   title: 'Success...',
-                  text: 'Transférer avec succès!',
+                  text: 'Echec avec succès!',
                 })
               }
             })

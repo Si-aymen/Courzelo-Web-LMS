@@ -1,7 +1,7 @@
-<div *ngIf="ticketData$ | async as ticketData">
+<div *ngIf="Ticket">
     <h2>Ticket Details :</h2>
-    <h5>Id :{{ticketData.id}}</h5>
-    <h5>Subject :{{ticketData.sujet}}</h5>
+    <h5>Subject :{{Ticket.sujet}}</h5>
+    <h5>Details :{{Ticket.details}}</h5>
     <div class="rating-container">
         <h3>Average Rating: 
         <button class="btn btn-rounded btn-sm btn-outline-primary mr-2" (click)="heartRating = 1.35">{{ averageRating }}</button>

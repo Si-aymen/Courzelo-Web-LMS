@@ -1,7 +1,8 @@
-<div *ngIf="ticketData$ | async as ticketData">
+<div *ngIf="ticket">
     <h2>Ticket Details :</h2>
-    <h5>Subject :{{ticketData.sujet}}</h5>
-    <h5>Description :{{ticketData.details}}</h5>
+    <h5>Subject :{{ticket.sujet}}</h5>
+    <h5>Type :{{ticket.type.type}}</h5>
+    <p>Descirption :{{ticket.details}}</p>
   </div>
    <div class="card-body">
                 <div class="m-sm-4">

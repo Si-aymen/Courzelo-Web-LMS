@@ -10,7 +10,7 @@ const routes: Routes = [
   {path:'list',component:ListTicketComponent},
   {path:'add',component:AddTicketComponent},
   {path:'update',component:UpdateTicketComponent},
-  { path:'rate', component: RatingComponent },
+  { path:'rate/:id', component: RatingComponent },
   {path:'faq',component:ListFaqComponent},
 ];
 

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
 import { Etat } from 'src/app/shared/models/Etat';
 import { Message } from 'src/app/shared/models/Message';
 import { Ticket } from 'src/app/shared/models/Ticket';
@@ -24,6 +24,9 @@ import { UpdateTicketComponent } from '../update-ticket/update-ticket.component'
 })
 export class ListTicketComponent implements OnInit{
   tickets$: Observable<any[]>;
+  filteredTickets$: Observable<any[]>;
+  searchQuery = '';
+  private searchQuerySubject = new BehaviorSubject<string>('');
   ticket:Ticket []=[];
   trelloBoardList: TrelloBoard[] = [];
   TrelloBoard:TrelloBoard;
@@ -45,11 +48,20 @@ connectedUser: UserResponse;
     private sessionStorageService: SessionStorageService,
     public dialog: MatDialog){}
 
-  ngOnInit(): void {
-    this.getTickets();
-  //this.changeStatus();
-   this.getAllCards();
-  }
+    ngOnInit(): void {
+      this.getTickets();
+  
+      // Setup the filteredTickets$ observable by combining tickets$ and the search query
+      this.filteredTickets$ = combineLatest([this.tickets$, this.searchQuerySubject.asObservable()]).pipe(
+        map(([tickets, query]) => {
+          console.log('Filtering tickets with query:', query);
+          return tickets.filter(ticket =>
+            ticket.sujet.toLowerCase().includes(query.toLowerCase())
+          );
+        })
+      );
+      this.getAllCards();
+    }
 
   getAllCards() {
     this.ticketservice.getCards().subscribe((res: any[]) => {
@@ -161,27 +173,32 @@ updateTicketStatus(ticketId: string, status: string) {
 }
 
 
- getTickets(): void {
-  this.connectedUser = this.sessionStorageService.getUser();
-  console.log("Le USERRRRR CONNECTED :",this.connectedUser);
-    this.tickets$ = this.ticketservice.getTicketsByUser(this.connectedUser.email).pipe(
-      tap(data => {
-        console.log('Fetched tickets:', data);
-        // Iterate through each ticket and call changeStatus
-        data.forEach(ticket => {
-          console.log(ticket.id); // Pass the id to changeStatus
-        });
-      }),
-      catchError(err => {
-        console.error('Error loading tickets', err);
-        return of([]); // Return an empty array on error
-      })
-    );
-  }
+getTickets(): void {
+  const connectedUser = this.sessionStorageService.getUser();
+  console.log("Connected user:", connectedUser);
+
+  this.tickets$ = this.ticketservice.getTicketsByUser(connectedUser.email).pipe(
+    tap(data => {
+      console.log('Fetched tickets:', data);
+    }),
+    catchError(err => {
+      console.error('Error loading tickets', err);
+      return of([]);
+    })
+  );
+}
+
+// Update search query method to trigger filtering
+onSearchQueryChanged(query: string): void {
+  this.searchQuerySubject.next(query);
+}
 
 
 
-  onRate(row: any) {
+  onRate(id:any){
+    this.router.navigate(['ticketsStudent/rate', id]);
+    }  
+  onRate1(row: any) {
     this.ticketDataService.sendTicketData(row); // Send row data to service
     this.router.navigate(['ticketsStudent/rate']); // Navigate to forward component
   }

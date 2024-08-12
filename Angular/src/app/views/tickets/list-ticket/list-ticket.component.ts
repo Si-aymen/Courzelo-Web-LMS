@@ -26,6 +26,9 @@ export class ListTicketComponent implements OnInit{
   trelloBoardList: TrelloBoard[] = [];
   TrelloBoard:TrelloBoard;
   types:any[]
+  pageSize = 10;  // Number of rows per page
+  offset = 0;     // Current page offset
+  totalRows = 0;
   idCards: string[] = [];
 ticketIds: string[] = [];
 cardDetails: any[] = [];
@@ -39,7 +42,6 @@ connectedUser: UserResponse;
       private typeservice:TickettypeService,
       private trelloservice:TrelloserviceService,
     private ticketservice:TicketServiceService,
-    private ticketDataService:TicketDataService,
     private sessionStorageService: SessionStorageService,
     public dialog: MatDialog){}
 
@@ -47,6 +49,7 @@ connectedUser: UserResponse;
     this.getTickets();
   //this.changeStatus();
    this.getAllCards();
+   
   }
 
   getAllCards() {
@@ -178,9 +181,9 @@ updateTicketStatus(ticketId: string, status: string) {
   }
 
 
-  onButtonClick(row: any) {
-    this.ticketDataService.sendTicketData(row); // Send row data to service
-    this.router.navigate(['tickets/forward']); // Navigate to forward component
+  onButtonClick(id: any) {
+    console.log("obclick id",id)
+    this.router.navigate(['tickets/forward', id]);
   }
 
 

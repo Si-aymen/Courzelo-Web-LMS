@@ -10,7 +10,7 @@ import { AddfaqComponent } from './faq/addfaq/addfaq.component';
 
 const routes: Routes = [
   { path: 'list', component: ListTicketComponent },
-  { path: 'forward', component: ForwardComponent },
+  { path: 'forward/:id', component: ForwardComponent },
   { path: 'typeticket', component: TickettypeComponent },
   { path: 'listtype', component: ListComponent },
   { path: 'faq', component: FaqComponent },
