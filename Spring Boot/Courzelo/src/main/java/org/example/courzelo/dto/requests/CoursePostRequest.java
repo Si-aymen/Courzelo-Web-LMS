@@ -9,7 +9,5 @@ import java.time.Instant;
 @Builder
 public class CoursePostRequest {
     private String title;
-    private String author;
-    private Instant created;
-    private MultipartFile[] files;
+    private String description;
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class CoursePostResponse {
     private String id;
     private String title;
-    private String author;
+    private String description;
     private Instant created;
-    private List<byte[]> files;
+    private List<String> files;
 }

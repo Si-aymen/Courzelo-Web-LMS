@@ -1,5 +1,6 @@
 package org.example.courzelo.controllers.institution;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.CoursePostRequest;
 import org.example.courzelo.dto.requests.CourseRequest;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -47,8 +49,18 @@ public class CourseController {
     }
     @PutMapping("/{courseID}/addPost")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")
-    public ResponseEntity<HttpStatus> addPost(@PathVariable String courseID,@RequestBody CoursePostRequest coursePostRequest) {
-        return iCourseService.addPost(courseID,coursePostRequest);
+    public ResponseEntity<HttpStatus> addPost(
+            @PathVariable String courseID,
+            @RequestPart("title") String title,
+            @RequestPart("description") String description,
+            @RequestPart("files") MultipartFile[] files) {
+        CoursePostRequest coursePostRequest = CoursePostRequest.builder().title(title).description(description).build();
+        return iCourseService.addPost(courseID, coursePostRequest, files);
+    }
+    @PreAuthorize("isAuthenticated()&&@customAuthorization.canAccessCourse(#courseID)")
+    @GetMapping("/{courseID}/{fileName:.+}/download")
+    public ResponseEntity<byte[]> downloadExcel(@PathVariable @NotNull String courseID,@PathVariable @NotNull String fileName) {
+        return iCourseService.downloadFile(courseID,fileName);
     }
     @DeleteMapping("/{courseID}/deletePost")
     @PreAuthorize("hasRole('TEACHER')&&@customAuthorization.canAccessCourse(#courseID)")

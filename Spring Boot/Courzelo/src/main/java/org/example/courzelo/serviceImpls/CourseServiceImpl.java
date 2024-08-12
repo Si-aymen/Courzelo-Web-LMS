@@ -25,9 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -49,6 +48,7 @@ public class CourseServiceImpl implements ICourseService {
                 .institutionID(institution.getId())
                 .teacher(courseRequest.getTeacher())
                 .group(courseRequest.getGroup())
+                .posts(new ArrayList<>())
                 .build();
         courseRepository.save(course);
         institution.getCoursesID().add(course.getId());
@@ -108,6 +108,7 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ResponseEntity<CourseResponse> getCourse(String courseID) {
         Course course = courseRepository.findById(courseID).orElseThrow(() -> new NoSuchElementException("Course not found"));
+
         return ResponseEntity.ok(CourseResponse.builder()
                 .id(course.getId())
                 .name(course.getName())
@@ -118,9 +119,9 @@ public class CourseServiceImpl implements ICourseService {
                 .posts(course.getPosts() != null ? course.getPosts().stream().map(coursePost -> CoursePostResponse.builder()
                         .id(coursePost.getId())
                         .title(coursePost.getTitle())
-                        .author(coursePost.getAuthor())
+                        .description(coursePost.getDescription())
                         .created(coursePost.getCreated())
-                        .files(getBytesFromFiles(coursePost.getFiles()))
+                        .files(coursePost.getFiles() != null ? returnOnlyFileName(coursePost.getFiles()) : null)
                         .build()).toList() : List.of())
                         .institutionID(course.getInstitutionID())
                 .build());
@@ -140,18 +141,33 @@ public class CourseServiceImpl implements ICourseService {
         }
         return ResponseEntity.badRequest().build();
     }
-
+    public List<String> returnOnlyFileName(List<String> files) {
+        log.info("Returning only file name {}", files);
+        return files.stream()
+                .map(file -> file.replace("\\", "/"))
+                .map(file -> file.substring(file.lastIndexOf('/') + 1))
+                .toList();
+    }
 
     @Override
-    public ResponseEntity<HttpStatus> addPost(String courseID, CoursePostRequest coursePostRequest) {
+    public ResponseEntity<HttpStatus> addPost(String courseID, CoursePostRequest coursePostRequest, MultipartFile[] files) {
+        log.info("Adding post to course");
+        log.info("Course ID: " + courseID);
+        log.info("Title: " + coursePostRequest.getTitle());
+        log.info("Description: " + coursePostRequest.getDescription());
+        log.info("Files: " + Arrays.toString(files));
         Course course = courseRepository.findById(courseID).orElseThrow();
         Institution institution = institutionRepository.findById(course.getInstitutionID()).orElseThrow();
+        if(course.getPosts()==null){
+            course.setPosts(new ArrayList<>());
+        }
         course.getPosts().add(CoursePost.builder()
                 .title(coursePostRequest.getTitle())
-                .author(coursePostRequest.getAuthor())
-                .created(coursePostRequest.getCreated())
-                .files(uploadFiles(coursePostRequest.getFiles(),coursePostRequest,institution))
+                .description(coursePostRequest.getDescription())
+                .created(Instant.now())
+                .files(uploadFiles(files,course.getId(),institution))
                 .build());
+        log.info("Post added to course");
         courseRepository.save(course);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -173,6 +189,29 @@ public class CourseServiceImpl implements ICourseService {
         courseRepository.save(course);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<byte[]> downloadFile(String courseID, String fileName) {
+        log.info("Downloading file {}", fileName);
+        Course course = courseRepository.findById(courseID).orElseThrow();
+        List<CoursePost> posts = course.getPosts();
+        for (CoursePost post : posts) {
+            for (String filePath : post.getFiles()) {
+                String normalizedFilePath = filePath.replace("\\", "/");
+                String extractedFileName = normalizedFilePath.substring(normalizedFilePath.lastIndexOf('/') + 1);
+                if (extractedFileName.equals(fileName)) {
+                    log.info("File found");
+                    try {
+                        return ResponseEntity.ok(Files.readAllBytes(new File(normalizedFilePath).toPath()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     private List<byte[]> getBytesFromFiles(List<String> files) {
         return files.stream().map(file -> {
             try {
@@ -182,8 +221,9 @@ public class CourseServiceImpl implements ICourseService {
             }
         }).toList();
     }
-    private List<String> uploadFiles(MultipartFile[] files,CoursePostRequest coursePostRequest,Institution institution) {
-        String baseDir = "upload" + File.separator + institution.getName() + File.separator + coursePostRequest.getTitle() + "files" + File.separator;
+    private List<String> uploadFiles(MultipartFile[] files,String courseID,Institution institution) {
+        log.info("Uploading files");
+        String baseDir = "upload" + File.separator + institution.getId()+ File.separator +courseID  + File.separator;
         return Stream.of(files).map(file -> {
             try {
                 File dir = new File(baseDir);
@@ -201,6 +241,7 @@ public class CourseServiceImpl implements ICourseService {
                 String filePath = baseDir + newFileName;
                 log.info("File path: " + filePath);
                 Files.copy(file.getInputStream(), new File(filePath).toPath());
+                log.info("File uploaded");
                 return filePath;
             } catch (IOException e) {
                 throw new RuntimeException(e);

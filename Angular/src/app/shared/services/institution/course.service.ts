@@ -28,7 +28,9 @@ export class CourseService {
   getCourse(courseID: string): Observable<CourseResponse> {
     return this.http.get<CourseResponse>(`${this.baseUrl}/${courseID}`);
   }
-
+  downloadFile(courseID: string, fileName: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${courseID}/${fileName}/download`, { responseType: 'blob' });
+  }
   setTeacher(courseID: string, email: string): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${courseID}/setTeacher`, null, { params: { email } });
   }
@@ -45,9 +47,19 @@ export class CourseService {
     return this.http.put<void>(`${this.baseUrl}/${courseID}/leave`, null);
   }
 
-  addPost(courseID: string, coursePostRequest: CoursePostRequest): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${courseID}/addPost`, coursePostRequest);
+  addPost(courseID: string, coursePostRequest: CoursePostRequest, files: File[]): Observable<void> {
+    const formData: FormData = new FormData();
+    // Append the coursePostRequest fields to the form data
+    formData.append('title', coursePostRequest.title);
+    formData.append('description', coursePostRequest.description);
+    // Append each file to the form data
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i], files[i].name);
+    }
+
+    return this.http.put<void>(`${this.baseUrl}/${courseID}/addPost`, formData);
   }
+
 
   deletePost(courseID: string, postID: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${courseID}/deletePost`, { params: { postID } });

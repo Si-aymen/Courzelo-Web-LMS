@@ -25,13 +25,11 @@
 <!-- Buttons Section -->
 <div *ngIf="course" class="container mt-3">
     <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-success mr-2" *ngIf="isUserTeacherInCourse()" >Add Post</button>
+        <button class="btn btn-success mr-2" *ngIf="isUserTeacherInCourse()" (click)="addPostModel(ModalAddPost)"  >Add Post</button>
         <button class="btn btn-warning mr-2" (click)="updateCourseModel(ModalUpdateCourse)"  *ngIf="isUserTeacherInCourse()" >Edit Course</button>
         <button class="btn btn-danger mr-2" *ngIf="isUserTeacherInCourse()" (click)="deleteCourse(modalConfirmCourse)">Delete Course</button>
-        <button class="btn btn-secondary" *ngIf="user.roles == ['STUDENT'] || (isUserTeacherInCourse() && course.teacher.length > 1)" (click)="leaveCourse(modalConfirmLeaveCourse)">Leave Course</button>
     </div>
 </div>
-
 <!-- Main Content Section -->
 <div *ngIf="course" class="container mt-3">
     <div class="row">
@@ -41,31 +39,27 @@
         </div>
 
         <!-- Posts Section -->
-        <div class="col-md-8">
-            <div class="card mb-3">
+        <div *ngIf="course.posts && course.posts.length > 0; else noPosts" class="col-md-8">
+            <div *ngFor="let post of course.posts" class="card mb-3">
                 <div class="card-header">
-                    <h5 class="mb-0">Post Title 1</h5>
+                    <h5 class="mb-0">{{ post.title }}</h5>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">Post Description: This is a brief description of the first post.</p>
-                    <a href="#" class="btn btn-link">Download File 1</a>
-                    <a href="#" class="btn btn-link">Download File 2</a>
+                    <p class="card-text">{{ post.description }}</p>
+                    <div *ngIf="post.files && post.files.length > 0">
+                        <a *ngFor="let file of post.files" (click)="downloadFile(file)" class="btn btn-link">{{ file }}</a>
+                    </div>
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-info mr-2">Edit Post</button>
-                    <button class="btn btn-danger">Delete Post</button>
-                </div>
-            </div>
-            <div class="post card mb-3">
-                <div class="card-body">
-                    <h2 class="card-title">Post Title: Week 1 - Introduction</h2>
-                    <p class="card-text">Description: Overview of the course and introduction to programming concepts.</p>
-                    <p class="card-text">Files: <a href="#">intro.pdf</a>, <a href="#">syllabus.pdf</a></p>
-                    <button class="btn btn-primary">Edit Post</button>
-                    <button class="btn btn-danger">Delete Post</button>
+                    <button class="btn btn-danger" (click)="deletePostModal(modalConfirmDeletePost, post.id)">Delete Post</button>
                 </div>
             </div>
         </div>
+        <ng-template #noPosts>
+            <div class="col-md-8">
+                <p>No posts available.</p>
+            </div>
+        </ng-template>
 
         <!-- Right Sidebar -->
         <div class="col-md-2">
@@ -91,16 +85,16 @@
         <button type="button" ngbAutofocus class="btn btn-danger btn-rounded" (click)="modal.close('Ok')">Ok</button>
     </div>
 </ng-template>
-<ng-template #modalConfirmLeaveCourse let-modal>
+<ng-template #modalConfirmDeletePost let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-title-course-leave">Leave Course</h4>
+        <h4 class="modal-title" id="modal-title-post-delete">Delete Post</h4>
         <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p><strong>Are you sure you want to leave the course <span class="text-primary">{{ course.name }}</span>?</strong></p>
-        <p>You will no longer have access to this course.
+        <p><strong>Are you sure you want to delete this post ?</strong></p>
+        <p>All information associated with this post will be permanently deleted.
             <span class="text-danger">This operation cannot be undone.</span>
         </p>
     </div>
@@ -122,13 +116,13 @@
                 <div class="col-md-6 form-group mb-3">
                     <label for="name">Name</label>
                     <input type="text" formControlName="name" class="form-control" id="name" placeholder="Course name">
-                    <div *ngIf="shouldShowError('name', 'required')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('name', 'required')" class="text-danger">
                         Name is required.
                     </div>
-                    <div *ngIf="shouldShowError('name', 'maxlength')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('name', 'maxlength')" class="text-danger">
                         Name must be less than 50 characters.
                     </div>
-                    <div *ngIf="shouldShowError('name', 'minlength')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('name', 'minlength')" class="text-danger">
                         Name must be more than 3 characters.
                     </div>
                 </div>
@@ -136,25 +130,74 @@
                 <div class="col-md-6 form-group mb-3">
                     <label for="description">description</label>
                     <textarea type="text" formControlName="description" class="form-control" id="description" placeholder="Course description"></textarea>
-                    <div *ngIf="shouldShowError('description', 'required')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('description', 'required')" class="text-danger">
                         Description is required.
                     </div>
-                    <div *ngIf="shouldShowError('description', 'maxlength')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('description', 'maxlength')" class="text-danger">
                         Description must be less than 100 characters.
                     </div>
-                    <div *ngIf="shouldShowError('description', 'minlength')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('description', 'minlength')" class="text-danger">
                         Description must be more than 3 characters.
                     </div>
                 </div>
                 <div class="col-md-6 form-group mb-3">
                     <label for="credit">credit</label>
                     <input type="number" formControlName="credit" class="form-control" id="credit" placeholder="Course credit">
-                    <div *ngIf="shouldShowError('credit', 'required')" class="text-danger">
+                    <div *ngIf="shouldShowErrorUpdateCourse('credit', 'required')" class="text-danger">
                         Credit is required.
                     </div>
                 </div>
                 <div class="col-md-12">
                     <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">update</btn-loading>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #ModalAddPost let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title-post">Add Post</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="addPostForm" (ngSubmit)="addPost()">
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="title">Title</label>
+                    <input type="text" formControlName="title" class="form-control" id="title" placeholder="Post title">
+                    <div *ngIf="shouldShowErrorAddPost('title', 'required')" class="text-danger">
+                        Title is required.
+                    </div>
+                    <div *ngIf="shouldShowErrorAddPost('title', 'maxlength')" class="text-danger">
+                        Title must be less than 50 characters.
+                    </div>
+                    <div *ngIf="shouldShowErrorAddPost('title', 'minlength')" class="text-danger">
+                        Title must be more than 3 characters.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="description">Description</label>
+                    <textarea type="text" formControlName="description" class="form-control" id="descriptionPost" placeholder="Post description"></textarea>
+                    <div *ngIf="shouldShowErrorAddPost('description', 'required')" class="text-danger">
+                        Description is required.
+                    </div>
+                    <div *ngIf="shouldShowErrorAddPost('description', 'maxlength')" class="text-danger">
+                        Description must be less than 100 characters.
+                    </div>
+                    <div *ngIf="shouldShowErrorAddPost('description', 'minlength')" class="text-danger">
+                        Description must be more than 3 characters.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="files">Files</label>
+                    <input type="file"  class="form-control" id="files" (change)="onFileSelected($event)" multiple>
+                </div>
+                <div class="col-md-12">
+                    <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Add Post</btn-loading>
                 </div>
             </div>
         </form>

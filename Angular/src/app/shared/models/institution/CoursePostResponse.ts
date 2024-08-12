@@ -1,7 +1,7 @@
 export interface CoursePostResponse {
     id?: string;
     title?: string;
-    author?: string;
+    description?: string;
     created?: Date;
-    files?: Uint8Array[];
+    files?: string[];
 }
