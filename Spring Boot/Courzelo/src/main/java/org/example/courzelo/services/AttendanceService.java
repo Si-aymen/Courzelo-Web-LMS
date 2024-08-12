@@ -10,6 +10,7 @@ import org.example.courzelo.models.AttendanceStatus;
 import org.example.courzelo.repositories.AttendanceRepository;
 import org.example.courzelo.repositories.AttendanceSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
+    @Autowired
     private AttendanceSettingsRepository repository;
     private static final Map<String, String> studentData = new HashMap<>();
 
@@ -35,9 +37,15 @@ public class AttendanceService {
     }
     public AttendanceDTO markAttendance(String studentId, AttendanceStatus status, int minutesLate) {
         String studentName = studentData.getOrDefault(studentId, "Unknown");
-        if ("LATE".equals(status) && minutesLate > 15) {
-            throw new RuntimeException("Attendance cannot be marked. The student is more than 15 minutes late.");
+
+        // Fetch the late threshold from the attendance settings
+        AttendanceSettings settings = repository.findById("1").orElse(new AttendanceSettings());
+        int lateThreshold = settings.getLateThreshold() != 0 ? settings.getLateThreshold() : 15;
+
+        if ("LATE".equals(status.toString()) && minutesLate > lateThreshold) {
+            throw new RuntimeException("Attendance cannot be marked. The student is more than " + lateThreshold + " minutes late.");
         }
+
         Attendance attendance = new Attendance();
         attendance.setStudentId(studentId);
         attendance.setDate(LocalDate.now());
@@ -68,6 +76,7 @@ public class AttendanceService {
         List<Attendance> attendances = attendanceRepository.findByDate(date);
         return attendances.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
+    @Cacheable("attendanceSettings")
     public AttendanceSettingsDTO getSettings() {
         AttendanceSettings settings = repository.findById("1").orElse(new AttendanceSettings());
         return mapToDTO(settings);

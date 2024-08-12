@@ -6,6 +6,11 @@ import {ToastrService} from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 
 
+interface AttendanceSettingsDTO {
+    lateThreshold: number;
+    absenceThreshold: number;
+}
+
 @Component({
   selector: 'app-mark-attendance',
   templateUrl: './mark-attendance.component.html',
@@ -21,6 +26,7 @@ export class MarkAttendanceComponent implements OnInit {
   statuses = Object.values(AttendanceStatus);
   filteredStudents = this.students;
   attendances: { studentId: string, studentName: string, status: string, minutesLate?: number }[] = [];
+  settings: AttendanceSettingsDTO;
 
   constructor(
       private fb: FormBuilder,
@@ -33,8 +39,19 @@ export class MarkAttendanceComponent implements OnInit {
       minutesLate: ['']
     });
   }
+  loadSettings(): void {
+    this.attendanceService.getSettings().subscribe(
+        (data) => {
+          this.settings = data;
+        },
+        (error) => {
+          console.error('Error fetching attendance settings:', error);
+        }
+    );
+  }
 
   ngOnInit(): void {
+    this.loadSettings();
     this.onClassNameChange();
   }
 
@@ -51,6 +68,7 @@ export class MarkAttendanceComponent implements OnInit {
   }
 
   markAttendance(studentId: string, status: string, minutesLate: string) {
+    this.loadSettings();
     const student = this.students.find(s => s.id === studentId);
     if (!student) {
       this.toastr.error('Invalid student ID', 'Error');
