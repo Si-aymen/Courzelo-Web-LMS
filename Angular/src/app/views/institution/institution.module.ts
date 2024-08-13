@@ -10,13 +10,17 @@ import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedComponentsModule} from '../../shared/components/shared-components.module';
 import {NgbDatepickerModule, NgbTabsetModule} from '@ng-bootstrap/ng-bootstrap';
+import { CourseComponent } from './course/course.component';
+import { ClassComponent } from './class/class.component';
 
 
 @NgModule({
   declarations: [
     UsersComponent,
     EditComponent,
-    HomeComponent
+    HomeComponent,
+    CourseComponent,
+    ClassComponent
   ],
     imports: [
         CommonModule,

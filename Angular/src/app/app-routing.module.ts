@@ -131,7 +131,6 @@ const routes: Routes = [
     component: AdminLayoutSidebarCompactComponent,
     canActivate: [AuthGuard],
     children: userRoutes,
-      data: { roles: ['STUDENT', 'TEACHER', 'ADMIN' , 'SUPERADMIN'] }
   },
 
   {
