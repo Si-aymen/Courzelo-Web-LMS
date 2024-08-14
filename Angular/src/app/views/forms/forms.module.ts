@@ -20,6 +20,7 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
+import { ProfessorAvailabilityComponentComponent } from './professor-availability-component/professor-availability-component.component';
 
 @NgModule({
   imports: [
@@ -35,6 +36,6 @@ import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
     FormWizardModule,
     FormsRoutingModule
   ],
-  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent]
+  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, ProfessorAvailabilityComponentComponent]
 })
 export class AppFormsModule { }

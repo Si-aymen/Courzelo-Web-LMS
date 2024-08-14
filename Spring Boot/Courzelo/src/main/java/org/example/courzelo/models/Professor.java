@@ -10,5 +10,6 @@ import java.util.Set;
 public class Professor {
     private String professorId;
     private String name;
-    private Set<String> unavailableTimeSlots;
+    private Set<Timeslot> unavailableTimeSlots;
+
 }
