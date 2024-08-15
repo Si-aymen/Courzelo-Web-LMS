@@ -8,7 +8,7 @@ import java.util.Set;
 @Data
 @Document(collection = "professors")
 public class Professor {
-    private String professorId;
+    private String id;
     private String name;
     private Set<Timeslot> unavailableTimeSlots;
 

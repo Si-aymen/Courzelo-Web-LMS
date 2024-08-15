@@ -1,1 +1,45 @@
-<p>professor-availability-component works!</p>
+<!-- professor-availability-component.component.html -->
+<div class="container mt-5">
+    <h2 class="mb-4">Manage Professor Availability</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Select Time Slot</h5>
+                    <div class="form-group mb-3">
+                        <label for="dayOfWeekSelect">Day of the Week</label>
+                        <select id="dayOfWeekSelect" class="form-select" [(ngModel)]="selectedTimeSlot.dayOfWeek">
+                            <option *ngFor="let day of dayOfWeekOptions" [value]="day">{{ day }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="periodSelect">Period</label>
+                        <select id="periodSelect" class="form-select" [(ngModel)]="selectedTimeSlot.period">
+                            <option *ngFor="let period of periodOptions" [value]="period">{{ period }}</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" (click)="addTimeSlot()">Add Time Slot</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Unavailable Time Slots</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            *ngFor="let timeSlot of unavailableTimeSlots">
+                            {{ timeSlot.dayOfWeek }} - {{ timeSlot.period }}
+                            <button class="btn btn-danger btn-sm" (click)="removeTimeSlot(timeSlot)">Remove</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-success" (click)="updateUnavailableTimeSlots()">Update Availability</button>
+    </div>
+</div>
+
+

@@ -18,47 +18,52 @@ public class professorController {
     @Autowired
     private ProfessorService professorService;
     @GetMapping
-    public List<Professor> getAllProfessors() {
-        return professorService.getAllProfessors();
+    public ResponseEntity<List<ProfessorDTO>> getAllProfessors() {
+        List<ProfessorDTO> professors = professorService.getAllProfessors();
+        return ResponseEntity.ok(professors);
     }
 
-    @GetMapping("/{professorId}")
-    public ResponseEntity<Professor> getProfessorById(@PathVariable String professorId) {
-        Optional<Professor> professor = professorService.getProfessorById(professorId);
+    // Get a professor by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfessorDTO> getProfessorById(@PathVariable("id") String professorId) {
+        Optional<ProfessorDTO> professor = professorService.getProfessorById(professorId);
         return professor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // Add a new professor
     @PostMapping
-    public Professor addProfessor(@RequestBody Professor professor) {
-        return professorService.addProfessor(professor);
+    public ResponseEntity<ProfessorDTO> addProfessor(@RequestBody Professor professor) {
+        ProfessorDTO createdProfessor = professorService.addProfessor(professor);
+        return ResponseEntity.ok(createdProfessor);
     }
 
-    @PutMapping("/{professorId}")
-    public ResponseEntity<Professor> updateProfessor(@PathVariable String professorId, @RequestBody ProfessorDTO professorDTO) {
-        Optional<Professor> existingProfessor = professorService.getProfessorById(professorId);
-        if (existingProfessor.isPresent()) {
-            Professor professor = existingProfessor.get();
-            professor.setName(professorDTO.getName());
-            professor.setUnavailableTimeSlots(professorDTO.getUnavailableTimeSlots());
-            return ResponseEntity.ok(professorService.updateProfessor(professor));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    // Update an existing professor
+    @PutMapping("/{id}")
+    public ResponseEntity<ProfessorDTO> updateProfessor(@PathVariable("id") String professorId, @RequestBody Professor professor) {
+        professor.setId(professorId);
+        ProfessorDTO updatedProfessor = professorService.updateProfessor(professor);
+        return ResponseEntity.ok(updatedProfessor);
     }
 
-    @DeleteMapping("/{professorId}")
-    public ResponseEntity<Void> deleteProfessor(@PathVariable String professorId) {
+    // Delete a professor by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProfessor(@PathVariable("id") String professorId) {
         professorService.deleteProfessor(professorId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{professorId}/unavailable-timeslots")
-    public ResponseEntity<Professor> updateUnavailableTimeSlots(@PathVariable String professorId, @RequestBody Set<Timeslot> unavailableTimeSlots) {
-        Professor updatedProfessor = professorService.updateUnavailableTimeSlots(professorId, unavailableTimeSlots);
-        if (updatedProfessor != null) {
-            return ResponseEntity.ok(updatedProfessor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    // Get unavailable time slots for a professor
+    @GetMapping("/{id}/unavailable-timeslots")
+    public ResponseEntity<Set<Timeslot>> getUnavailableTimeSlots(@PathVariable("id") String professorId) {
+        Set<Timeslot> timeSlots = professorService.getUnavailableTimeSlots(professorId);
+        return timeSlots != null ? ResponseEntity.ok(timeSlots) : ResponseEntity.notFound().build();
+    }
+
+    // Update unavailable time slots for a professor
+    @PutMapping("/{id}/unavailable-timeslots")
+    public ResponseEntity<ProfessorDTO> updateUnavailableTimeSlots(
+            @PathVariable("id") String professorId, @RequestBody Set<Timeslot> unavailableTimeSlots) {
+        ProfessorDTO updatedProfessor = professorService.updateUnavailableTimeSlots(professorId, unavailableTimeSlots);
+        return updatedProfessor != null ? ResponseEntity.ok(updatedProfessor) : ResponseEntity.notFound().build();
     }
 }

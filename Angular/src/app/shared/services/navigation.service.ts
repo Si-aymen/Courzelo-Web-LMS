@@ -118,6 +118,21 @@ export class NavigationService {
             ]
         },
         {
+            name: 'Forms',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-File-Clipboard-File--Text',
+            sub: [
+                { icon: 'i-File-Clipboard-Text--Image', name: 'professor Availability', state: '/forms/ProfessorAvailability', type: 'link' },
+                { icon: 'i-Split-Vertical', name: 'Form layouts', state: '/forms/layouts', type: 'link' },
+                { icon: 'i-Receipt-4', name: 'Input Group', state: '/forms/input-group', type: 'link' },
+                { icon: 'i-File-Edit', name: 'Input Mask', state: '/forms/input-mask', type: 'link' },
+                { icon: 'i-Tag-2', name: 'Tag Input', state: '/forms/tag-input', type: 'link' },
+                { icon: 'i-Width-Window', name: 'Wizard', state: '/forms/wizard', type: 'link' },
+                { icon: 'i-Crop-2', name: 'Image Cropper', state: '/forms/img-cropper', type: 'link' },
+            ]
+        },
+        {
             name: 'Data Tables',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
             type: 'dropDown',

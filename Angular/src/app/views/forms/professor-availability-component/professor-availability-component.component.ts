@@ -1,7 +1,28 @@
 import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {ProfessorService} from '../../../shared/services/professor.service';
+import {ToastrService} from 'ngx-toastr';
 
+
+export interface TimeSlot {
+  dayOfWeek: DayOfWeek;
+  period: Period;
+}
+export enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+export enum Period {
+  P1 = 'P1',
+  P2 = 'P2',
+  P3 = 'P3',
+  P4 = 'P4',
+}
 
 
 @Component({
@@ -10,29 +31,65 @@ import {ProfessorService} from '../../../shared/services/professor.service';
   styleUrls: ['./professor-availability-component.component.scss']
 })
 export class ProfessorAvailabilityComponentComponent implements OnInit {
-  professorId: string;
+  professorId = '66be6e4d5af0e46059a692c5'; // Directly set the ID
   unavailableTimeSlots: TimeSlot[] = [];
-  timeSlots: TimeSlot[] = [
-    { dayOfWeek: 'MONDAY', period: 'P1' },
-    { dayOfWeek: 'MONDAY', period: 'P2' },
-    { dayOfWeek: 'TUESDAY', period: 'P1' },
-    { dayOfWeek: 'TUESDAY', period: 'P2' },
-    // ... add more time slots as needed
-  ];
+  dayOfWeekOptions = Object.values(DayOfWeek);
+  periodOptions = Object.values(Period);
+  selectedTimeSlot: TimeSlot = { dayOfWeek: DayOfWeek.MONDAY, period: Period.P1 };
 
-  constructor(private route: ActivatedRoute, private professorService: ProfessorService) { }
+  constructor(
+      private professorService: ProfessorService,
+      private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    this.professorId = this.route.snapshot.paramMap.get('id');
-    this.professorService.getProfessorById(this.professorId).subscribe(professor => {
-      this.unavailableTimeSlots = professor.unavailableTimeSlots;
-    });
+    this.professorService.getProfessorById(this.professorId).subscribe(
+        professor => {
+          this.unavailableTimeSlots = professor.unavailableTimeSlots;
+        },
+        error => {
+          console.error('An error occurred while fetching professor data:', error);
+          this.toastr.error('Failed to load professor data');
+        }
+    );
+  }
+
+  addTimeSlot(): void {
+    if (this.professorId && !this.isTimeSlotAvailable(this.selectedTimeSlot)) {
+      this.toastr.warning('Time slot already selected as unavailable.');
+      return;
+    }
+    this.unavailableTimeSlots.push({ ...this.selectedTimeSlot });
+    this.toastr.success('Time slot added.');
+  }
+
+  removeTimeSlot(timeSlot: TimeSlot): void {
+    this.unavailableTimeSlots = this.unavailableTimeSlots.filter(
+        slot => !(slot.dayOfWeek === timeSlot.dayOfWeek && slot.period === timeSlot.period)
+    );
+    this.toastr.success('Time slot removed.');
   }
 
   updateUnavailableTimeSlots(): void {
-    this.professorService.updateUnavailableTimeSlots(this.professorId, this.unavailableTimeSlots).subscribe(() => {
-      alert('Unavailable time slots updated successfully');
-    });
+    if (this.professorId) {
+      this.professorService.updateUnavailableTimeSlots(this.professorId, this.unavailableTimeSlots).subscribe(
+          () => {
+            this.toastr.success('Unavailable time slots updated successfully');
+          },
+          error => {
+            console.error('An error occurred while updating unavailable time slots:', error);
+            this.toastr.error('Failed to update unavailable time slots');
+          }
+      );
+    } else {
+      console.error('Professor ID is null');
+      this.toastr.error('Professor ID is not available');
+    }
   }
 
+  isTimeSlotAvailable(timeSlot: TimeSlot): boolean {
+    return !this.unavailableTimeSlots.some(
+        slot => slot.dayOfWeek === timeSlot.dayOfWeek && slot.period === timeSlot.period
+    );
+  }
 }
