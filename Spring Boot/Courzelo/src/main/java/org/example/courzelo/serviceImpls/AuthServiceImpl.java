@@ -115,7 +115,7 @@ public class AuthServiceImpl implements IAuthService {
         return ResponseEntity.ok(new StatusMessageResponse("success","User logged out successfully"));
     }
 
-    boolean isUserAuthenticated(){
+    public boolean isUserAuthenticated(){
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
