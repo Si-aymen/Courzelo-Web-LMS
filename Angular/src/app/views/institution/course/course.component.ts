@@ -125,7 +125,7 @@ export class CourseComponent implements OnInit, OnDestroy {
         return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
     }
     shouldShowErrorAddPost(controlName: string, errorName: string): boolean {
-        const control = this.updateCourseForm.get(controlName);
+        const control = this.addPostForm.get(controlName);
         return control && control.errors && control.errors[errorName] && (control.dirty || control.touched);
     }
     updateCourseModel(content) {
@@ -225,6 +225,7 @@ export class CourseComponent implements OnInit, OnDestroy {
     }
 
     onFileSelected(event) {
+        this.files = [];
         if (event.target.files.length > 0) {
             for (let i = 0; i < event.target.files.length; i++) {
                 this.files.push(event.target.files[i]);

@@ -62,6 +62,7 @@ export class HomeComponent implements OnInit {
                 this.institutionService.acceptInvite(this.code).subscribe(
                     res => {
                         this.toastr.success('You have successfully joined ' + this.currentInstitution.name);
+                        this.authenticationService.refreshPageInfo();
                     },
                     error => {
                         console.error(error);

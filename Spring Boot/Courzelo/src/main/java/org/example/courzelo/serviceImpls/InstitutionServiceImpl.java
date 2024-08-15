@@ -461,7 +461,7 @@ public class InstitutionServiceImpl implements IInstitutionService {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         if(user.getEducation().getInstitutionID()!=null && !isUserInInstitution(user, institution)){
-            removeInstitutionUser(codeVerification.getInstitutionID(), codeVerification.getEmail(), null);
+            removeInstitutionUser(user.getEducation().getInstitutionID(), codeVerification.getEmail(), null);
         }
         addInstitutionToUser(user, institution, codeVerification.getRole());
         addUserToInstitution(user, institution, codeVerification.getRole());
@@ -528,7 +528,6 @@ public class InstitutionServiceImpl implements IInstitutionService {
         return ResponseEntity.ok().build();
     }
     public void addInstitutionToUser(User user, Institution institution, Role role){
-        if(user.getEducation().getInstitutionID()==null) {
             log.info("Setting user institution");
             user.getEducation().setInstitutionID(institution.getId());
 
@@ -536,7 +535,6 @@ public class InstitutionServiceImpl implements IInstitutionService {
                 user.getRoles().add(role);
             }
             userRepository.save(user);
-        }
     }
     public void addUserToInstitution(User user, Institution institution, Role role){
         switch (role) {

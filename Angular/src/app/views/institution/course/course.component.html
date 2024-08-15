@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-danger" (click)="deletePostModal(modalConfirmDeletePost, post.id)">Delete Post</button>
+                    <button class="btn btn-danger" *ngIf="isUserTeacherInCourse()" (click)="deletePostModal(modalConfirmDeletePost, post.id)">Delete Post</button>
                 </div>
             </div>
         </div>

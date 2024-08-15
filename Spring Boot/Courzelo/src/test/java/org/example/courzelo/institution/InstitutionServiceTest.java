@@ -38,7 +38,6 @@ public class InstitutionServiceTest {
 
     @BeforeEach
     void setUp() {
-        institutionRepository.deleteAll();  // Clear any existing data
 
         // Create a sample institution for testing
         institution = new Institution();

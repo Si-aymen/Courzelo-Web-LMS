@@ -38,9 +38,6 @@ public class CustomAuthorization {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         User user = userRepository.findUserByEmail(userEmail);
-        if(user != null && user.getRoles().contains(Role.SUPERADMIN)){
-            return true;
-        }
         if (user == null || !user.getRoles().contains(Role.ADMIN)) {
             return false;
         }
