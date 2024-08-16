@@ -124,7 +124,7 @@ export class NavigationService {
             icon: 'i-File-Clipboard-File--Text',
             sub: [
                 { icon: 'i-File-Clipboard-Text--Image', name: 'professor Availability', state: '/forms/ProfessorAvailability', type: 'link' },
-                { icon: 'i-Split-Vertical', name: 'Form layouts', state: '/forms/layouts', type: 'link' },
+                { icon: 'i-Split-Vertical', name: 'GenerateTimetable', state: '/forms/Timetable', type: 'link' },
                 { icon: 'i-Receipt-4', name: 'Input Group', state: '/forms/input-group', type: 'link' },
                 { icon: 'i-File-Edit', name: 'Input Mask', state: '/forms/input-mask', type: 'link' },
                 { icon: 'i-Tag-2', name: 'Tag Input', state: '/forms/tag-input', type: 'link' },

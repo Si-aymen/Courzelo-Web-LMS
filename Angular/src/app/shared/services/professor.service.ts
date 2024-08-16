@@ -12,6 +12,9 @@ export class ProfessorService {
 
   constructor(private http: HttpClient) {
   }
+  getAllProfessors(): Observable<any> {
+    return this.http.get(this.apiUrl);
+  }
 
   getProfessorById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);

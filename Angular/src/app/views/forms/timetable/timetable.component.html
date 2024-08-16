@@ -1,0 +1,53 @@
+<div class="container">
+    <h2 class="text-center my-4">Generated Timetable</h2>
+
+    <!-- Button to Generate Timetable -->
+    <button class="btn btn-primary mb-3" (click)="generateTimetable()">Generate Timetable</button>
+
+    <!-- Form for Adding New Timetable Slot -->
+    <form (ngSubmit)="addTimetableSlot()">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="dayOfWeek">Day of Week</label>
+                <select id="dayOfWeek" class="form-control" [(ngModel)]="newSlot.dayOfWeek" name="dayOfWeek" required>
+                    <option *ngFor="let day of daysOfWeek" [value]="day">{{ day }}</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="period">Period</label>
+                <select id="period" class="form-control" [(ngModel)]="newSlot.period" name="period" required>
+                    <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="courseName">Course Name</label>
+                <input type="text" id="courseName" class="form-control" [(ngModel)]="newSlot.courseName" name="courseName" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="professorName">Professor Name</label>
+                <input type="text" id="professorName" class="form-control" [(ngModel)]="newSlot.professorName" name="professorName" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Slot</button>
+    </form>
+
+    <!-- Display the Timetable -->
+    <table class="table table-bordered mt-4">
+        <thead>
+        <tr>
+            <th>Day of Week</th>
+            <th>Period</th>
+            <th>Course Name</th>
+            <th>Professor Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let slot of timetable">
+            <td>{{ slot.dayOfWeek }}</td>
+            <td>{{ slot.period }}</td>
+            <td>{{ slot.courseName }}</td>
+            <td>{{ slot.professorName }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

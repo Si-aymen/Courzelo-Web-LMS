@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {ProfessorService} from '../../../shared/services/professor.service';
 import {ToastrService} from 'ngx-toastr';
+import {Professor} from '../../../shared/models/Professor';
 
 
 export interface TimeSlot {
@@ -36,6 +37,7 @@ export class ProfessorAvailabilityComponentComponent implements OnInit {
   dayOfWeekOptions = Object.values(DayOfWeek);
   periodOptions = Object.values(Period);
   selectedTimeSlot: TimeSlot = { dayOfWeek: DayOfWeek.MONDAY, period: Period.P1 };
+  private professors: Professor[] = [];
 
   constructor(
       private professorService: ProfessorService,
@@ -43,9 +45,9 @@ export class ProfessorAvailabilityComponentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.professorService.getProfessorById(this.professorId).subscribe(
-        professor => {
-          this.unavailableTimeSlots = professor.unavailableTimeSlots;
+    this.professorService.getAllProfessors().subscribe(
+        professors => {
+          this.professors = professors;
         },
         error => {
           console.error('An error occurred while fetching professor data:', error);
