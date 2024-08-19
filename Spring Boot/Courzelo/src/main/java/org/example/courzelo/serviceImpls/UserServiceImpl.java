@@ -18,7 +18,6 @@ import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.User;
-import org.example.courzelo.models.UserInterest;
 import org.example.courzelo.models.UserProfile;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICodeVerificationService;
@@ -288,44 +287,63 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
     }
 
+
     @Override
-
-
-    public ResponseEntity<StatusMessageResponse> addUserInterest(String email, String newInterest) {
-
-        // Find user by email
+    public ResponseEntity<StatusMessageResponse> addSkill(String email, String skill) {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "User not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StatusMessageResponse("error", "User not found"));
         }
 
-        // Convert the string to a UserInterest enum constant
-        UserInterest interestEnum;
-        try {
-            interestEnum = UserInterest.valueOf(newInterest.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StatusMessageResponse("error", "Invalid interest"));
+        String skillUpper = skill.toUpperCase();
+        boolean added = user.getProfile().getSkills().add(skillUpper);
+        if (!added) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new StatusMessageResponse("error", "Skill already exists"));
         }
 
-        // Check if the interest is already in the user's list
-        if (user.getProfile().getIntersets().contains(interestEnum)) {
-            return ResponseEntity.ok(new StatusMessageResponse("ok", "Interest already in the list"));
-        }
-
-        // Add the new interest to the user's interests list
-        user.getProfile().getIntersets().add(interestEnum);
-
-        // Save user (if necessary, depending on your persistence setup)
         userRepository.save(user);
-
-        return ResponseEntity.ok(new StatusMessageResponse("ok", "Interest added"));
+        return ResponseEntity.ok(new StatusMessageResponse("success", "Skill added to user"));
     }
 
     @Override
-    public List<UserInterest>  getUserInterest(String email) {
+    public ResponseEntity<?> getSkills(String email) {
         User user = userRepository.findUserByEmail(email);
-        return  user.getProfile().getIntersets();
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StatusMessageResponse("error", "User not found"));
+        }
+
+        if (user.getProfile() == null || user.getProfile().getSkills() == null) {
+            return ResponseEntity.ok(Collections.emptySet());
+        }
+
+        return ResponseEntity.ok(user.getProfile().getSkills());
     }
+
+    public ResponseEntity<?> removeSkill(String email, String skill) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StatusMessageResponse("error", "User not found"));
+        }
+
+        if (user.getProfile() == null || user.getProfile().getSkills() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new StatusMessageResponse("error", "User has no skills to remove"));
+        }
+
+        boolean removed = user.getProfile().getSkills().remove(skill);
+        if (!removed) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StatusMessageResponse("error", "Skill not found for this user"));
+        }
+
+        userRepository.save(user);
+        return ResponseEntity.ok(new StatusMessageResponse("success", "Skill removed successfully"));
+    }
+
 
 
 }

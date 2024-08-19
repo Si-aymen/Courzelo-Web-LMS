@@ -16,5 +16,5 @@ public class UserProfile {
     private String country;
     private String title;
     private String bio;
-    private List<UserInterest> intersets = new ArrayList<>();
-}
+
+    private List<String> skills = new ArrayList<>();}

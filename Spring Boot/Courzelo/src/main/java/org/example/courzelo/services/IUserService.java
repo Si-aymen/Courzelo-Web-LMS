@@ -5,14 +5,12 @@ import org.example.courzelo.dto.requests.UpdatePasswordRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.models.UserInterest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 public interface IUserService {
 
@@ -37,6 +35,9 @@ UserDetails loadUserByEmail(String email);
     boolean verifyTwoFactorAuth(String email, int verificationCode);
     ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal,String email);
 
-   ResponseEntity<StatusMessageResponse> addUserInterest(String email , String userInterset) ;
-   List<UserInterest> getUserInterest(String email) ;
-}
+
+    public ResponseEntity<StatusMessageResponse> addSkill(String email, String skill) ;
+    public ResponseEntity<?> getSkills(String email);
+    public ResponseEntity<?> removeSkill(String email, String skill);
+
+    }

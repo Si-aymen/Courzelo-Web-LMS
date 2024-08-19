@@ -51,5 +51,4 @@ public class StageController {
         stagesService.AssignStudentToInternship(studentId, internshipId);
         return ResponseEntity.ok().build();
     }
-
 }
