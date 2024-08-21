@@ -157,10 +157,9 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserSkills() {
-    this.user = this.sessionStorageService.getUser();
     console.log("user Email  " + this.user.email);
 
-    this.userService.getUserSkills(this.user.email).subscribe(
+    this.userService.getUserSkills(this.connectedUser.email).subscribe(
       (res: any) => {
         this.skills = res; // Assuming the API returns the skills directly
         this.toastr.success('Skills retrieved successfully', 'Success!', { progressBar: true });
@@ -175,8 +174,8 @@ export class ProfileComponent implements OnInit {
 
   addSkill(event: any) {
     const skill = event.value;
-    console.log("user Email  " + this.user.email);
-    this.userService.addSkillToUser(this.user.email, skill).subscribe(
+    console.log("user Email  " + this.connectedUser.email);
+    this.userService.addSkillToUser(this.connectedUser.email, skill).subscribe(
       (response: StatusMessageResponse) => {
         this.toastr.success(response.message, 'Success!', { progressBar: true });
         console.log("adding skill  " + skill);
@@ -192,9 +191,8 @@ export class ProfileComponent implements OnInit {
 
     const skill = event.tag;
 
-    this.user = this.sessionStorageService.getUser();
 
-    this.userService.deleteUserSkill(this.user.email, event).subscribe(
+    this.userService.deleteUserSkill(this.connectedUser.email, event).subscribe(
       (response: StatusMessageResponse) => {
         this.toastr.success(response.message, 'Success!', { progressBar: true });
         this.getUserSkills();
