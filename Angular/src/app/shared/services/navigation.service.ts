@@ -63,6 +63,9 @@ export class NavigationService {
         childnavOpen: false
     };
     selectedItem: IMenuItem;
+    user: UserResponse = this.storageService.getUserFromSession();
+    user$: Observable<UserResponse | null>;
+    defaultMenu: IMenuItem[] = null;
 
     // sets iconMenu as default;
     menuItems = new BehaviorSubject<IMenuItem[]>(this.defaultMenu);
@@ -210,24 +213,6 @@ export class NavigationService {
                     { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.user?.email, type: 'link' }
                 ]
             },
-                  {
-            name: 'Transportations',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-Jeep',
-            sub: [
-                { icon: 'i-Jeep', name: 'Transportation', state: '/transports/transports', type: 'link' },
-            ]
-        },
-        {
-            name: 'Internships',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-Add-Window',
-            sub: [
-                { icon: 'i-Add-Window', name: 'Internships', state: '/stages/stages', type: 'link' },
-            ]
-        },
             {
                 name: 'Icons',
                 description: '600+ premium icons',
