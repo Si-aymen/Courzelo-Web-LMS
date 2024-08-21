@@ -70,4 +70,25 @@ export class UserService {
   getUserProfileByEmail(email: string): Observable<LoginResponse> {
     return this.http.get<LoginResponse>(`${this.baseUrl}/profile/${email}`);
   }
+
+
+  getUserSkills(email : string ) :  Observable<StatusMessageResponse> {
+    return this.http.get<StatusMessageResponse>(`${this.baseUrl}/${email}/skills`);
+  }
+
+
+  addSkillToUser(email: string, skill: string): Observable<StatusMessageResponse> {
+    return this.http.post<StatusMessageResponse>(
+      `${this.baseUrl}/${email}/skills`,
+      null,
+      { params: {skill} }
+    );
+  }
+
+  deleteUserSkill(email: string, skill: string): Observable<StatusMessageResponse> {
+    return this.http.delete<StatusMessageResponse>(
+      `${this.baseUrl}/${email}/skills`,
+      { params: { skill: skill } }
+    );
+  }
 }

@@ -106,27 +106,19 @@
     </div>
 
 
- <!-- User intersts part -->
+    <!-- TagInput for Skills-->
 
- <div class="col-md-12">
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5 class="card-title">User Interests</h5>
-        <tag-input
-          [(ngModel)]="userInterests"
-          [modelAsStrings]="true"
-          [addOnBlur]="true"
-          [addOnPaste]="true"
-          [separatorKeyCodes]="[13, 188]"
-          placeholder="Add interests"
-          secondaryPlaceholder="Enter interests"
-          (onAdd)="onAddItem($event)"
-          (onRemove)="onRemoveItem($event)"
-          theme='primary'>
-        </tag-input>
-      </div>
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">User Skills</h5>
+                <tag-input [(ngModel)]="skills" [modelAsStrings]="true" [addOnBlur]="true" [addOnPaste]="true"
+                    [separatorKeyCodes]="[13, 188]" placeholder="Add skills" secondaryPlaceholder="Enter Skills"
+                    (onAdd)="addSkill($event)" (onRemove)="removeSkill($event)" theme='primary'>
+                </tag-input>
+            </div>
+        </div>
     </div>
-  </div>
 
 </div>
 
