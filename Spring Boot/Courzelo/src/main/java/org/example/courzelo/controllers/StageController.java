@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.example.courzelo.models.Stages;
 import org.example.courzelo.models.Transports;
 import org.example.courzelo.services.IStagesService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,5 +46,9 @@ public class StageController {
         stagesService.removeStage(stageId);
     }
 
-
+    @PostMapping("/assign")
+    public ResponseEntity<Void> assignStudentToInternship(@RequestParam String studentId, @RequestParam String internshipId) {
+        stagesService.AssignStudentToInternship(studentId, internshipId);
+        return ResponseEntity.ok().build();
+    }
 }

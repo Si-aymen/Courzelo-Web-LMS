@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbDatepickerModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedComponentsModule} from '../../shared/components/shared-components.module';
 import { AccountComponent } from './account/account.component';
+import { TagInputModule } from 'ngx-chips';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { AccountComponent } from './account/account.component';
     ReactiveFormsModule,
     SettingsRoutingModule,
     NgbDatepickerModule,
+    TagInputModule,
     SharedComponentsModule
   ]
 })

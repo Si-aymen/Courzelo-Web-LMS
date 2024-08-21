@@ -7,7 +7,7 @@
       <div class="card-body text-center">
         <i class="i-Add-User"></i>
         <div class="content">
-          <p class="text-muted mt-2 mb-0">Applicants</p>
+          <p class="text-muted mt-2 mb-0">Internships</p>
           <p class="text-primary text-24 line-height-1 mb-2">205</p>
         </div>
       </div>
@@ -230,7 +230,7 @@
         <ngx-datatable-column name="Actions" [width]="210">
           <ng-template ngx-datatable-header-template> Actions </ng-template>
           <ng-template ngx-datatable-cell-template let-row="row">
-            <button class="btn btn-primary mr-2" (click)="view(row)">
+            <button class="btn btn-primary mr-2" (click)="view(row.id)">
               View
             </button>
             <button class="btn btn-warning mr-2" (click)="edit(row)">

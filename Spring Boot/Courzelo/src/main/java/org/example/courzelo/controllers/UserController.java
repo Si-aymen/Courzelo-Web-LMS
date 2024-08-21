@@ -1,14 +1,11 @@
 package org.example.courzelo.controllers;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UpdatePasswordRequest;
-import org.example.courzelo.dto.requests.UserProfileRequest;
 import org.example.courzelo.dto.responses.LoginResponse;
 import org.example.courzelo.dto.responses.QRCodeResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.dto.responses.UserResponse;
 import org.example.courzelo.services.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -66,5 +64,29 @@ public class UserController {
     public ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(Principal principal) {
      return   userService.disableTwoFactorAuth(principal.getName());
     }
+    @PostMapping("/{email}/skills")
+    public ResponseEntity<StatusMessageResponse> addSkillToUser(
+            @PathVariable String email,
+            @RequestParam String skill) {
+        return userService.addSkill(email, skill);
+    }
+
+    @GetMapping("/{email}/skills")
+    public ResponseEntity<?> getUserSkills(@PathVariable String email) {
+        return userService.getSkills(email);
+    }
+
+    @DeleteMapping("/{email}/skills")
+    public ResponseEntity<?> removeSkillFromUser(
+            @PathVariable String email,
+            @RequestParam String skill) {
+        return userService.removeSkill(email, skill);
+    }
+
+
+
+
+
+
 
 }

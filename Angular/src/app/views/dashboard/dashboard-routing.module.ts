@@ -4,8 +4,6 @@ import { DashboadDefaultComponent } from './dashboad-default/dashboad-default.co
 import { DashboardV2Component } from './dashboard-v2/dashboard-v2.component';
 import { DashboardV3Component } from './dashboard-v3/dashboard-v3.component';
 import { DashboardV4Component } from './dashboard-v4/dashboard-v4.component';
-import { TransportsComponent } from './transports/transports.component';
-import { StagesComponent } from './stages/stages.component';
 
 const routes: Routes = [
   {
@@ -24,14 +22,6 @@ const routes: Routes = [
     path: 'v4',
     component: DashboardV4Component
   },
-  {
-    path: 'transports',
-    component: TransportsComponent
-  },
-  {
-    path: 'stages',
-    component: StagesComponent
-  }
 ];
 
 @NgModule({
