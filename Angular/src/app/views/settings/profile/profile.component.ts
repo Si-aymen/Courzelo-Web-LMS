@@ -55,16 +55,17 @@ export class ProfileComponent implements OnInit {
   file: any;
   countries = [];
   ngOnInit() {
-    this.getUserSkills();
-    this.userService.getCountries().subscribe(
-      countries => {
-        this.countries = countries;
-        console.log(this.countries);
-      }
-    );
-    this.connectedUser = this.sessionStorageService.getUser();
-    console.log(this.connectedUser);
-    this.initializeFormWithUserData();
+      this.getUserSkills();
+      this.userService.getCountries().subscribe(
+            countries => {
+                this.countries = countries;
+                console.log(this.countries);
+            }
+        );
+   this.connectedUser = this.sessionStorageService.getUserFromSession();
+   console.log(this.connectedUser);
+      this.initializeFormWithUserData();
+
     const date = new Date(this.connectedUser.profile.birthDate);
     this.birthDate = {
       year: date.getFullYear(),

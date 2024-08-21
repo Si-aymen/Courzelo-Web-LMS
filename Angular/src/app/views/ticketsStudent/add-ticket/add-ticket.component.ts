@@ -55,7 +55,7 @@ console.log(this.types);
 this.ticketForm.get('type')?.valueChanges.subscribe(selectedValue => {
 console.log('Selected value:', selectedValue);
 });
-this.connectedUser = this.sessionStorageService.getUser();
+this.connectedUser = this.sessionStorageService.getUserFromSession();
 this.ticketForm.patchValue({ user: this.connectedUser.email })
   console.log(this.ticketForm.value)
    console.log("-----------",  this.reclamationtypeValue())        

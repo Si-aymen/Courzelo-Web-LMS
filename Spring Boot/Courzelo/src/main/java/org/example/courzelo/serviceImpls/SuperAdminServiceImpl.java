@@ -1,14 +1,11 @@
 package org.example.courzelo.serviceImpls;
 
 import lombok.AllArgsConstructor;
-import org.example.courzelo.dto.responses.PaginatedUsersResponse;
-import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.dto.responses.*;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ISuperAdminService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -45,7 +42,14 @@ public class SuperAdminServiceImpl implements ISuperAdminService {
         long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class);
 
         List<UserResponse> userResponses = users.stream()
-                .map(UserResponse::new)
+                .map(
+                        user -> UserResponse.builder()
+                                .email(user.getEmail())
+                                .profile(new UserProfileResponse(user.getProfile()))
+                                .roles(user.getRoles().stream().map(Role::name).toList())
+                                .security(new UserSecurityResponse(user.getSecurity()))
+                                .build()
+                )
                 .collect(Collectors.toList());
 
         PaginatedUsersResponse response = new PaginatedUsersResponse();
