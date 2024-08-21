@@ -11,6 +11,9 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {InstitutionUserResponse} from '../../../shared/models/institution/InstitutionUserResponse';
 import {UserResponse} from '../../../shared/models/user/UserResponse';
+import {GroupResponse} from '../../../shared/models/institution/GroupResponse';
+import {GroupService} from '../../../shared/services/institution/group.service';
+import {GroupRequest} from '../../../shared/models/institution/GroupRequest';
 
 @Component({
   selector: 'app-institutions',
@@ -46,7 +49,8 @@ export class InstitutionsComponent implements OnInit {
       private formBuilder: FormBuilder,
       private toastr: ToastrService,
       private userService: UserService,
-      private modalService: NgbModal
+      private modalService: NgbModal,
+      private groupService: GroupService,
   ) { }
     showInstitutionsTable = true;
   institutions: InstitutionResponse[] = [];
@@ -57,7 +61,7 @@ export class InstitutionsComponent implements OnInit {
   totalItems = 0;
   itemsPerPage = 10;
   showInstitutionUsersTable = false;
-  users: InstitutionUserResponse[] = [];
+    users: InstitutionUserResponse[] = [];
     _currentPageUsers = 1;
     totalPagesUsers = 0;
     totalItemsUsers = 0;

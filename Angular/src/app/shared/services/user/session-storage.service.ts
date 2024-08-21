@@ -3,18 +3,22 @@ import {UserResponse} from '../../models/user/UserResponse';
 import {UserService} from './user.service';
 import {LoginResponse} from '../../models/user/LoginResponse';
 import {ResponseHandlerService} from './response-handler.service';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionStorageService {
+  private userSubject: BehaviorSubject<UserResponse | null>;
 
   constructor(private userService: UserService,
-              private handleResponse: ResponseHandlerService) { }
-
+              private handleResponse: ResponseHandlerService) {
+    const user = this.getUserFromSession();
+    this.userSubject = new BehaviorSubject<UserResponse | null>(user);
+  }
   setUser(user: UserResponse): void {
+    this.userSubject.next(user);
     sessionStorage.setItem('user', JSON.stringify(user));
   }
   setAuthenticated(authenticated: boolean): void {
@@ -23,11 +27,12 @@ export class SessionStorageService {
   getAuthenticated(): boolean {
     return JSON.parse(sessionStorage.getItem('authenticated'));
   }
-  getUser(): UserResponse {
-    return JSON.parse(sessionStorage.getItem('user'));
+  getUserFromSession(): UserResponse {
+    const userJson = sessionStorage.getItem('user');
+    return userJson ? JSON.parse(userJson) : null;
   }
-  getUserEmail(): string {
-    return this.getUser().email;
+  getUser() {
+    return this.userSubject.asObservable();
   }
   /*  getUser(): Observable<UserResponse> {
       const userInSession = sessionStorage.getItem('user');
@@ -48,6 +53,7 @@ export class SessionStorageService {
       }
     }*/
   clearUser(): void {
+    this.userSubject.next(null);
     sessionStorage.removeItem('user');
   }
 }

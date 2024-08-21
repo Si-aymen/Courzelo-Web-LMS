@@ -1,5 +1,6 @@
 package org.example.courzelo.dto.responses;
 
+import lombok.Builder;
 import lombok.Data;
 import org.example.courzelo.models.UserProfile;
 

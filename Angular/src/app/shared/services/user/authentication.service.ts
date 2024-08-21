@@ -69,7 +69,7 @@ export class AuthenticationService {
     return this.http.get<StatusMessageResponse>(`${this.baseUrl}/forgot-password`, {params: {email}});
   }
     checkAuthState(): Observable<boolean> {
-        if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUser()) {
+        if (this.sessionStorageService.getAuthenticated() && this.sessionStorageService.getUserFromSession()) {
             console.log('CheckAUTH Authenticated');
             return new BehaviorSubject<boolean>(true);
         }
@@ -79,7 +79,6 @@ export class AuthenticationService {
                     console.log('CheckAUTH Authenticated');
                     this.sessionStorageService.setUser(response.user);
                     this.sessionStorageService.setAuthenticated(true);
-                    this.navigation.updateMenuItems();
                 } else {
                     console.log('CheckAUTH Not Authenticated');
                     this.sessionStorageService.setAuthenticated(false);
@@ -88,5 +87,23 @@ export class AuthenticationService {
             }),
             map((response: any) => this.sessionStorageService.getAuthenticated())
         );
+    }
+    refreshMyInfo(): void {
+         this.http.get<LoginResponse>(`${this.baseUrl}/check-auth`).subscribe(
+                response => {
+                    this.sessionStorageService.setUser(response.user);
+                    this.sessionStorageService.setAuthenticated(true);
+                },
+                error => {
+                    this.responseHandlerService.handleError(error);
+                    this.sessionStorageService.setAuthenticated(false);
+                    this.sessionStorageService.clearUser();
+                    this.router.navigateByUrl('/sessions/signin');
+                }
+            );
+    }
+    refreshPageInfo(): void {
+      this.refreshMyInfo();
+      this.navigation.setDefaultMenu();
     }
 }

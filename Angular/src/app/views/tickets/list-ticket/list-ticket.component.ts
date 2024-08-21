@@ -160,7 +160,7 @@ updateTicketStatus(ticketId: string, status: string) {
 
 
  getTickets(): void {
-  this.connectedUser = this.sessionStorageService.getUser();
+  this.connectedUser = this.sessionStorageService.getUserFromSession();
   console.log("Le USERRRRR CONNECTED :",this.connectedUser);
     this.tickets$ = this.ticketservice.getTicketList().pipe(
       tap(data => {
