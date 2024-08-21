@@ -10,7 +10,7 @@ import {id} from 'date-fns/locale';
   providedIn: 'root'
 })
 export class QuizService {
-  private apiUrl = 'http://localhost:8081/api/quizzes';
+  private apiUrl = 'http://localhost:8080/api/quizzes';
   quizzes: Quiz[] = [];
   constructor(private http: HttpClient, public toastr: ToastrService) { }
 
@@ -34,6 +34,7 @@ export class QuizService {
     return this.http.get<Quiz[]>(this.apiUrl);
   }
 
+  // tslint:disable-next-line:no-shadowed-variable
   getQuizById(id: string): Observable<Quiz> {
     return this.http.get<Quiz>(`${this.apiUrl}/${id}`);
   }
@@ -42,9 +43,13 @@ export class QuizService {
     return this.http.get<Quiz[]>(`${this.apiUrl}/quizzes`, { params });
   }
 
+  // tslint:disable-next-line:no-shadowed-variable
   updateQuiz(id: string, quiz: Quiz): Observable<Quiz> {
-    return this.http.put<Quiz>(`${this.apiUrl}/${id}`, quiz);
+    const url = `${this.apiUrl}/quizzes/${id}`;
+    return this.http.put<Quiz>(url, quiz);
   }
+
+  // tslint:disable-next-line:no-shadowed-variable
   deleteQuiz(id: string): Observable<Quiz> {
     return this.http.delete<Quiz>(`${this.apiUrl}/${id}`);
   }

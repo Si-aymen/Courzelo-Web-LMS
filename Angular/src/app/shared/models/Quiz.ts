@@ -10,7 +10,7 @@ export class Quiz {
     questions: Question[] = [];
     isSelected: boolean;
     score: number;
-    Status: status;
+    status: status;
     duration: number;
     maxAttempts: number;
     category: string;

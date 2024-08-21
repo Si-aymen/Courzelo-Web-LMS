@@ -3,6 +3,7 @@ package org.example.courzelo.services;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.dto.QuizDTO;
+import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.*;
 import org.example.courzelo.repositories.AnswerRepository;
 import org.example.courzelo.repositories.QuestionRepository;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +47,19 @@ public class QuizService {
         quiz = quizRepository.save(quiz);
         return mapToDTO(quiz);
     }*/
+   @Transactional
+   public Quiz updateQuiz1(String id, Quiz updatedQuiz) {
+       if (quizRepository.existsById(id)) {
+           updatedQuiz.setId(id);
+           return quizRepository.save(updatedQuiz);
+       } else {
+           throw new ResourceNotFoundException("Quiz not found with id " + id);
+       }
+   }
 
     public QuizDTO updateQuiz(String id, Quiz quizDTO) {
         Quiz existingQuiz = quizRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + id));
-
-        // Update the existing quiz entity with values from the provided quizDTO
         updateQuizEntity(existingQuiz, quizDTO);
 
         Quiz savedQuiz = quizRepository.save(existingQuiz);
@@ -67,18 +76,30 @@ public class QuizService {
         if (quizDTO.getQuestions() != null) {
             existingQuiz.setQuestions(quizDTO.getQuestions());
         }
-        // Add other properties as needed
+    if (quizDTO.getDuration() != 0) {
+        existingQuiz.setDuration(quizDTO.getDuration());
+
     }
+    if (quizDTO.getMaxAttempts() != 0) {
+        existingQuiz.setMaxAttempts(quizDTO.getMaxAttempts());
+    }
+    if (quizDTO.getScore() != 0) {
+        existingQuiz.setScore(quizDTO.getScore());
+    }
+    if (quizDTO.getStatus() != null) {
+        existingQuiz.setStatus(quizDTO.getStatus());
+    }
+    if (quizDTO.getCategory() != null) {
+        existingQuiz.setCategory(quizDTO.getCategory());
+    }
+    }
+
     public QuizDTO updateQuizState(String QuizID ,Quiz updatedQuiz) {
         Quiz existingQuiz = quizRepository.findById(updatedQuiz.getId())
                 .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + updatedQuiz.getId()));
-
-        // Update the existing quiz entity with values from the updatedQuiz DTO
         existingQuiz.setTitle(updatedQuiz.getTitle());
         existingQuiz.setDescription(updatedQuiz.getDescription());
         existingQuiz.setQuestions(updatedQuiz.getQuestions());
-        // Add other properties as needed
-
         Quiz savedQuiz = quizRepository.save(existingQuiz);
         return mapToDTO(savedQuiz);
     }
@@ -117,11 +138,14 @@ public class QuizService {
 
     public QuizDTO createQuizWithQuestions(QuizDTO quizDTO) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
-        quiz.setStatus(quizDTO.getStatus()); // explicitly set the status
+        quiz.setStatus(quizDTO.getStatus());
         quiz = quizRepository.save(quiz);
-        logger.info("Quiz ID after save: {}", quiz.getId());
-        List<Question> questions = quiz.getQuestions().stream()
-                .map(question -> {
+        logger.info("Quiz ID after save: {}, Status: {}", quiz.getId(), quiz.getStatus());
+        final String quizId = quiz.getId();
+        List<Question> questions = quizDTO.getQuestions().stream()
+                .map(questionDTO -> {
+                    Question question = mapToQuestionEntity(questionDTO);
+                    question.setQuizID(quizId);
                     question = questionRepository.save(question);
                     logger.info("Question ID after save: {}", question.getId());
                     return question;
@@ -129,7 +153,7 @@ public class QuizService {
                 .collect(Collectors.toList());
         quiz.setQuestions(questions);
         quiz = quizRepository.save(quiz);
-        logger.info("Final Quiz ID: {}", quiz.getId());
+        logger.info("Final Quiz ID: {}, Status: {}", quiz.getId(), quiz.getStatus());
         return mapToDTO(quiz);
     }
 

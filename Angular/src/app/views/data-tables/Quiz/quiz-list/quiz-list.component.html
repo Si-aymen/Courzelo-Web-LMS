@@ -55,14 +55,14 @@
                             Status
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-row="row">
-        <span class="badge badge-pill px-3 py-1"
-              [ngClass]="{
-                  'badge-success': row.status === 'DONE' || row.status === 'PASSED' || row.status === 'COMPLETED',
-                  'badge-warning': row.status === 'IN_PROGRESS' || row.status === 'PENDING',
-                  'badge-danger': row.status === 'NOT_SUBMITTED' || row.status === 'FAILED'
-              }">
-            {{ row.status }}
-        </span>
+      <span class="badge badge-pill px-3 py-1"
+            [ngClass]="{
+          'badge-success': row.status === 'DONE' || row.status === 'PASSED' || row.status === 'COMPLETED',
+          'badge-warning': row.status === 'IN_PROGRESS' || row.status === 'PENDING',
+          'badge-danger': row.status === 'NOT_SUBMITTED' || row.status === 'FAILED',
+          'badge-secondary': !row.status}">
+    {{ row.status || 'Unknown' }}
+</span>
                         </ng-template>
                     </ngx-datatable-column>
                     <ngx-datatable-column name="score">

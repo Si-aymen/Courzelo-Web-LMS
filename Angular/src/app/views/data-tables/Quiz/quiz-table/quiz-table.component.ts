@@ -4,6 +4,8 @@ import {QuizService} from '../../../../shared/services/quiz.service';
 import {Quiz} from '../../../../shared/models/Quiz';
 import {ToastrService} from 'ngx-toastr';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {EditQuizComponent} from '../../../forms/Quiz/edit-quiz/edit-quiz.component';
+import {Routes} from '@angular/router';
 
 @Component({
   selector: 'app-quiz-table',
@@ -25,6 +27,17 @@ export class QuizTableComponent implements OnInit {
   page = 1;
   pageSize = 8;
   quizzes: Quiz[] = [];
+  selectedQuiz: Quiz | null = null;
+  selectQuizToEdit(quiz: Quiz) {
+    this.selectedQuiz = { ...quiz };
+  }
+  onQuizUpdated(updatedQuiz: Quiz) {
+    const index = this.quizzes.findIndex(q => q.id === updatedQuiz.id);
+    if (index > -1) {
+      this.quizzes[index] = updatedQuiz;
+    }
+    this.selectedQuiz = null; // Clear selection after update
+  }
 
   constructor(private quizService: QuizService, private toastr: ToastrService) {}
 
@@ -36,6 +49,7 @@ export class QuizTableComponent implements OnInit {
     this.quizService.getAllQuizzes()
         .subscribe((quizzes: Quiz[]) => {
           this.quizzes = quizzes;
+          
         }, error => {
           console.error('Error fetching quizzes', error);
         });
@@ -48,16 +62,12 @@ export class QuizTableComponent implements OnInit {
     });
   }
 
-  editQuiz(quiz: Quiz): void {
-    // Navigate to the edit quiz component/page
-    // This assumes you have a route defined for editing a quiz
-    // Example: this.router.navigate(['/edit-quiz', quiz.id]);
-  }
+
 
   deleteQuiz(id: string): void {
     this.quizService.deleteQuiz(id).subscribe(() => {
       this.toastr.success('Quiz deleted successfully', 'Success');
-      this.loadQuizzes(); // Refresh quiz list after deletion
+      this.loadQuizzes();
     }, error => {
       console.error('Error deleting quiz', error);
       this.toastr.error('Failed to delete quiz', 'Error');
