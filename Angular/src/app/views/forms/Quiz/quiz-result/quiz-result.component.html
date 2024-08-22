@@ -1,0 +1,16 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title">Quiz Summary</h4>
+        <p class="card-subtitle">Total Score: {{ totalScore }} / {{ maxScore }}</p>
+    </div>
+    <div class="card-body">
+        <div *ngFor="let quiz of quizzes" class="mb-4">
+            <h5 class="mb-3">{{ quiz.title }}</h5>
+            <div *ngFor="let question of quiz.questions; let i = index">
+                <p><strong>{{ i + 1 }}. {{ question.text }}</strong></p>
+                <p>Your Answer: {{ selectedAnswers[question.id] }}</p>
+                <p>Correct Answer: {{ question.correctAnswer }}</p>
+            </div>
+        </div>
+    </div>
+</div>

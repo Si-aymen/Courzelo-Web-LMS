@@ -1,0 +1,75 @@
+<div class="breadcrumb">
+    <h1>Create Quiz</h1>
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li>Create Quiz</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title">Create Quiz</h2>
+            </div>
+            <div class="card-body">
+                <form (ngSubmit)="submitQuiz()">
+                    <div class="form-group">
+                        <label for="quizTitle">Quiz Title</label>
+                        <input type="text" id="quizTitle" class="form-control" [(ngModel)]="quiz.title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quizDescription">Quiz Description</label>
+                        <textarea id="quizDescription" class="form-control" [(ngModel)]="quiz.description" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quizDuration">Quiz Duration (minutes)</label>
+                        <input type="number" id="quizDuration" class="form-control" [(ngModel)]="quiz.duration" name="duration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxAttempts">Maximum Attempts</label>
+                        <input type="number" id="maxAttempts" class="form-control" [(ngModel)]="quiz.maxAttempts" name="maxAttempts" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" class="form-control" [(ngModel)]="quiz.status" name="status" required>
+                            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                        </select>
+                    </div>
+                    <div *ngFor="let question of quiz.questions; let i = index; trackBy: trackByIndex" class="mb-4">
+                        <div class="form-group">
+                            <label for="questionText{{i}}">Question {{i + 1}}</label>
+                            <input type="text" id="questionText{{i}}" class="form-control" [(ngModel)]="question.text" name="questionText{{i}}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="questionType{{i}}">Question Type</label>
+                            <select id="questionType{{i}}" class="form-control" [(ngModel)]="question.type" name="questionType{{i}}" required>
+                                <option [value]="QuestionType.MULTIPLE_CHOICE">Multiple Choice</option>
+                                <option [value]="QuestionType.SHORT_ANSWER">Short Answer</option>
+                                <option [value]="QuestionType.LONG_ANSWER">Long Answer</option>
+                            </select>
+                        </div>
+                        <div *ngIf="question.type === 'MULTIPLE_CHOICE'" class="form-group">
+                            <label>Options</label>
+                            <div *ngFor="let option of question.options; let j = index; trackBy: trackByIndex" class="input-group mb-2">
+                                <input type="text" class="form-control" [(ngModel)]="question.options[j]" name="question{{i}}option{{j}}" required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-danger" (click)="removeOption(i, j)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" (click)="addOption(i)">Add Option</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="correctAnswer{{i}}">Correct Answer</label>
+                            <input type="text" id="correctAnswer{{i}}" class="form-control" [(ngModel)]="question.correctAnswer" name="correctAnswer{{i}}" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" (click)="addQuestion()">Add Question</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

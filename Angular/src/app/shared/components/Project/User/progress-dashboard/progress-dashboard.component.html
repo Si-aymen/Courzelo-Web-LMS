@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="row">
+      <!-- To Do Section -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">To Do</div>
+          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #todoList>
+            <div id="task3" cdkDrag>Begin back end</div>
+          </div>
+        </div>
+      </div>
+      <!-- In Progress Section -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">In Progress</div>
+          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'Done')" #inProgressList>
+            <div id="task2" cdkDrag>Begin the first ecommerce try website</div>
+          </div>
+        </div>
+      </div>
+      <!-- Done Section -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Done</div>
+          <div class="card-body" cdkDropList (cdkDropListDropped)="onTaskDropped($event, 'InProgress')" #doneList>
+            <div id="task1" cdkDrag>Begin sprint 0 with class diag</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+          <div class="progress">
+            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="calculateProgress()" aria-valuemin="0" aria-valuemax="100">{{ calculateProgress() }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
