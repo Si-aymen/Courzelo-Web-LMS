@@ -8,7 +8,7 @@ import { SearchModule } from './components/search/search.module';
 import { SharedComponentsModule } from './components/shared-components.module';
 import { SharedDirectivesModule } from './directives/shared-directives.module';
 import { SharedPipesModule } from './pipes/shared-pipes.module';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -19,8 +19,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     SharedComponentsModule,
     SharedDirectivesModule,
     SharedPipesModule,
-    RouterModule ,
-    NgxDatatableModule,
+    RouterModule
   ]
 })
 export class SharedModule { }

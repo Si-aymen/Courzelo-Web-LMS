@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {SessionStorageService} from "./user/session-storage.service";
 
 export interface IMenuItem {
     id?: string;
@@ -47,7 +46,7 @@ export class NavigationService {
     };
     selectedItem: IMenuItem;
     
-    constructor(private storageService: SessionStorageService) {
+    constructor() {
     }
 
     defaultMenu: IMenuItem[] = [
@@ -128,20 +127,6 @@ export class NavigationService {
                 { icon: 'i-Full-View-Window', name: 'Fullscreen', state: '/tables/full', type: 'link' },
                 { icon: 'i-Code-Window', name: 'Paging', state: '/tables/paging', type: 'link' },
                 { icon: 'i-Filter-2', name: 'Filter', state: '/tables/filter', type: 'link' },
-                { icon: 'i-Filter-2', name: 'Filter', state: '/tables/create-quiz', type: 'link' },
-            ]
-        },
-        {
-            name: 'Quiz',
-            description: '',
-            type: 'dropDown',
-            icon: 'i-File-Horizontal-Text',
-            sub: [
-                { icon: 'i-File-Horizontal-Text', name: 'Create Quiz', state: '/forms/create-quiz', type: 'link' },
-                { icon: 'i-Full-View-Window', name: 'Take Quiz', state: '/forms/take-quiz', type: 'link' },
-                { icon: 'i-Code-Window', name: 'Quiz Table', state: '/tables/QuizTable', type: 'link' },
-                { icon: 'i-Filter-2', name: 'Quiz List', state: '/tables/QuizList', type: 'link' },
-                { icon: 'i-Filter-2', name: 'Scoring', state: '/forms/QuizResult', type: 'link' },
             ]
         },
         {
@@ -152,8 +137,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
                 { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' },
-                { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' }
+                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
             ]
         },
         {
@@ -162,7 +146,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Windows-2',
             sub: [
-                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile/' + this.storageService.getUserEmail(), type: 'link' }
+                { icon: 'i-Male', name: 'User Profile', state: '/pages/profile', type: 'link' }
             ]
         },
         {

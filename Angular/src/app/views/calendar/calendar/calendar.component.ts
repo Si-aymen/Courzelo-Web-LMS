@@ -63,6 +63,7 @@ export class CalendarComponent implements OnInit {
 				this.events = this.initEvents(events);
 			});
 	}
+
 	public removeEvent(event) {
 		this.modalService.open(this.eventDeleteConfirm, { ariaLabelledBy: 'modal-basic-title', centered: true })
 			.result.then((result) => {

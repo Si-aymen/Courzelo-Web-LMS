@@ -7,10 +7,6 @@ import { WizardComponent } from './wizard/wizard.component';
 import { InputMaskComponent } from './input-mask/input-mask.component';
 import { InputGroupsComponent } from './input-groups/input-groups.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
-import { CreateQuizComponent } from './Quiz/create-quiz/create-quiz.component';
-import {TakeQuizComponent} from './Quiz/take-quiz/take-quiz.component';
-import {QuizResultComponent} from './Quiz/quiz-result/quiz-result.component';
-import {EditQuizComponent} from './Quiz/edit-quiz/edit-quiz.component';
 
 const routes: Routes = [
   {
@@ -40,24 +36,8 @@ const routes: Routes = [
   {
     path: 'img-cropper',
     component: AppImgCropperComponent
-  },
-  {
-    path: 'create-quiz',
-    component: CreateQuizComponent
-  },
-  {
-    path: 'take-quiz',
-    component: TakeQuizComponent
-  },
-  {
-    path: 'quizzes/edit/:id',
-    component: EditQuizComponent
-  },
-
-  {
-    path: 'QuizResult',
-    component: QuizResultComponent
-  }];
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

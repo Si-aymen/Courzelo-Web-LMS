@@ -4,9 +4,6 @@ import { FullscreenTableComponent } from './fullscreen-table/fullscreen-table.co
 import { PagingTableComponent } from './paging-table/paging-table.component';
 import { FilterTableComponent } from './filter-table/filter-table.component';
 import { ListPaginationComponent } from './list-pagination/list-pagination.component';
-import {QuizTableComponent} from './Quiz/quiz-table/quiz-table.component';
-import {QuizListComponent} from './Quiz/quiz-list/quiz-list.component';
-import {EditQuizComponent} from '../forms/Quiz/edit-quiz/edit-quiz.component';
 
 const routes: Routes = [
   {
@@ -24,19 +21,8 @@ const routes: Routes = [
   {
     path: 'filter',
     component: FilterTableComponent
-  },
-  {
-    path: 'QuizTable',
-    component: QuizTableComponent
-  },
-  {
-    path: 'QuizList',
-    component: QuizListComponent},
-
-  { path: 'quizzes/edit/:id',
-    component: EditQuizComponent }
+  }
 ];
-
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

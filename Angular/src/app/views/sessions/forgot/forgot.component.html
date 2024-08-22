@@ -6,10 +6,10 @@
             <img src="assets/images/logo.png" alt="">
           </div>
           <h1 class="mb-3 text-18">Forgot Password</h1>
-          <form [formGroup]="emailForm" (ngSubmit)="sendResetLink()">
+          <form action="">
             <div class="form-group">
               <label for="email">Email address</label>
-              <input formControlName="email" id="email" class="form-control form-control-rounded" type="email">
+              <input id="email" class="form-control form-control-rounded" type="email">
             </div>
             <button class="btn btn-primary btn-block btn-rounded mt-3">Reset Password</button>
             
