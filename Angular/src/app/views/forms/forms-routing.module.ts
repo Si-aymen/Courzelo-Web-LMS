@@ -50,7 +50,7 @@ const routes: Routes = [
     component: TakeQuizComponent
   },
   {
-    path: 'quizzes/edit/:id',
+    path: 'EditQuiz',
     component: EditQuizComponent
   },
 

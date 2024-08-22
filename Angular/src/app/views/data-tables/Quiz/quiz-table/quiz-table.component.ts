@@ -27,17 +27,7 @@ export class QuizTableComponent implements OnInit {
   page = 1;
   pageSize = 8;
   quizzes: Quiz[] = [];
-  selectedQuiz: Quiz | null = null;
-  selectQuizToEdit(quiz: Quiz) {
-    this.selectedQuiz = { ...quiz };
-  }
-  onQuizUpdated(updatedQuiz: Quiz) {
-    const index = this.quizzes.findIndex(q => q.id === updatedQuiz.id);
-    if (index > -1) {
-      this.quizzes[index] = updatedQuiz;
-    }
-    this.selectedQuiz = null; // Clear selection after update
-  }
+  selectedQuiz: Quiz | null = null; // Stores the quiz to be edited
 
   constructor(private quizService: QuizService, private toastr: ToastrService) {}
 
@@ -46,43 +36,64 @@ export class QuizTableComponent implements OnInit {
   }
 
   loadQuizzes(): void {
-    this.quizService.getAllQuizzes()
-        .subscribe((quizzes: Quiz[]) => {
+    this.quizService.getAllQuizzes().subscribe(
+        (quizzes: Quiz[]) => {
           this.quizzes = quizzes;
-          
-        }, error => {
+        },
+        error => {
           console.error('Error fetching quizzes', error);
-        });
+        }
+    );
   }
 
-  selectAll(e): void {
+  selectAll(e: Event): void {
     this.quizzes = this.quizzes.map(quiz => {
       quiz.isSelected = this.allSelected;
       return quiz;
     });
   }
 
+  selectQuizToEdit(quiz: Quiz): void {
+    this.selectedQuiz = { ...quiz };
+  }
 
+  onQuizUpdated(updatedQuiz: Quiz): void {
+    const index = this.quizzes.findIndex(q => q.id === updatedQuiz.id);
+    if (index > -1) {
+      this.quizzes[index] = updatedQuiz;
+    }
+    this.selectedQuiz = null; // Clear selection after update
+  }
 
   deleteQuiz(id: string): void {
-    this.quizService.deleteQuiz(id).subscribe(() => {
-      this.toastr.success('Quiz deleted successfully', 'Success');
-      this.loadQuizzes();
-    }, error => {
-      console.error('Error deleting quiz', error);
-      this.toastr.error('Failed to delete quiz', 'Error');
-    });
+    this.quizService.deleteQuiz(id).subscribe(
+        () => {
+          this.toastr.success('Quiz deleted successfully', 'Success');
+          this.loadQuizzes();
+        },
+        error => {
+          console.error('Error deleting quiz', error);
+          this.toastr.error('Failed to delete quiz', 'Error');
+        }
+    );
   }
 
   deleteSelectedQuizzes(): void {
     const selectedQuizzes = this.quizzes.filter(quiz => quiz.isSelected);
     const deleteRequests = selectedQuizzes.map(quiz => this.quizService.deleteQuiz(quiz.id).toPromise());
 
-    Promise.all(deleteRequests).then(() => {
-      this.toastr.success('Selected quizzes deleted successfully', 'Success');
-      this.loadQuizzes(); // Refresh quiz list after deletion
-    }).catch(error => {
-      console.error('Error deleting selected quizzes', error);
-      this.toastr.error('Failed to delete selected quizzes', 'Error');
-    });
-  }}
+    Promise.all(deleteRequests)
+        .then(() => {
+          this.toastr.success('Selected quizzes deleted successfully', 'Success');
+          this.loadQuizzes(); // Refresh quiz list after deletion
+        })
+        .catch(error => {
+          console.error('Error deleting selected quizzes', error);
+          this.toastr.error('Failed to delete selected quizzes', 'Error');
+        });
+  }
+
+  closeEdit(): void {
+    this.selectedQuiz = null; // Close the edit form without saving
+  }
+}

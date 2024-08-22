@@ -12,8 +12,8 @@ const output = Output();
   styleUrls: ['./edit-quiz.component.scss']
 })
 export class EditQuizComponent implements OnInit {
-    @Input() quiz: Quiz | null = null;
-    @Output() quizUpdated = new EventEmitter<Quiz>(); // Use @Output with correct casing
+    @Input() quiz: Quiz | null = null; // Receives the quiz to edit
+    @Output() quizUpdated = new EventEmitter<Quiz>(); // Emits the updated quiz
     statuses: string[] = ['DONE', 'IN_PROGRESS', 'NOT_SUBMITTED', 'PASSED', 'COMPLETED', 'FAILED', 'PENDING'];
 
     constructor(
@@ -24,16 +24,16 @@ export class EditQuizComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        const quizId = this.route.snapshot.paramMap.get('id');
-        console.log('Extracted quiz ID:', quizId); // Add this line for debugging
-        if (quizId) {
-            this.loadQuiz(quizId);
-        } else {
-            console.error('Quiz ID is not available');
-            this.toastr.error('Quiz ID is not available', 'Error');
-        }
+        this.route.params.subscribe(params => {
+            const quizId = params['id'];
+            if (quizId) {
+                this.loadQuiz(quizId);
+            } else {
+                console.error('Quiz ID is not available');
+                this.toastr.error('Quiz ID is not available', 'Error');
+            }
+        });
     }
-
 
     loadQuiz(id: string): void {
         this.quizService.getQuizById(id).subscribe(
@@ -52,6 +52,7 @@ export class EditQuizComponent implements OnInit {
             this.quizService.updateQuiz(this.quiz.id, this.quiz).subscribe(
                 response => {
                     this.toastr.success('Quiz updated successfully', 'Success');
+                    // Optionally navigate after successful update
                 },
                 error => {
                     console.error('Error updating quiz:', error);
@@ -63,5 +64,4 @@ export class EditQuizComponent implements OnInit {
             this.toastr.error('Quiz ID is missing', 'Error');
         }
     }
-
 }

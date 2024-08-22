@@ -33,7 +33,7 @@ const routes: Routes = [
     path: 'QuizList',
     component: QuizListComponent},
 
-  { path: 'quizzes/edit/:id',
+  { path: 'EditQuiz',
     component: EditQuizComponent }
 ];
 
