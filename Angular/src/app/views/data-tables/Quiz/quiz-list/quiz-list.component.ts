@@ -15,11 +15,11 @@ export class QuizListComponent implements OnInit {
   filteredQuizzes;
   constructor( private QS: QuizService) { }
   ngOnInit(): void {
-    this.QS.getAllQuizzes()
-        .subscribe((res: any[]) => {
-          this.quizzes=[...res];
-          this.filteredQuizzes = res;
-        });
+    this.QS.getAllQuizzes().subscribe((res: any[]) => {
+      console.log(res);
+      this.quizzes = [...res];
+      this.filteredQuizzes = res;
+    });
     this.searchControl.valueChanges
         .pipe(debounceTime(200))
         .subscribe(value => {
@@ -39,16 +39,17 @@ export class QuizListComponent implements OnInit {
     }
 
     const rows = this.quizzes.filter(function(d) {
-      for (let i = 0; i <= columns.length; i++) {
+      for (let i = 0; i < columns.length; i++) {  // Changed loop condition to < columns.length
         const column = columns[i];
-        // console.log(d[column]);
         if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
           return true;
         }
       }
+      return false; // Ensure that a boolean value is returned
     });
     this.filteredQuizzes = rows;
   }
+
   getStatusIcon(quizStatus: status): string {
     switch (quizStatus) {
       case status.DONE:

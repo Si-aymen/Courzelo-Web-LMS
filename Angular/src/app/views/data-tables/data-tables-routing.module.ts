@@ -31,12 +31,17 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['TEACHER', 'ADMIN'] }
   },
-  {
-    path: 'QuizList',
+ 
+
+  { path: 'EditQuiz',
+    component: EditQuizComponent },
+{
     component: QuizListComponent,
     canActivate:  [AuthGuard],
   },
+
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

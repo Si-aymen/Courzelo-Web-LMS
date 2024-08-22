@@ -15,7 +15,7 @@ import {status} from '../../../../shared/models/status';
 export class CreateQuizComponent  {
   selectedAnswer: string;
   quiz: Quiz = {
-    Status: status.COMPLETED, // Corrected property name from `Status` to `status`
+    status: status.COMPLETED, // Corrected property name from `Status` to `status`
     category: '',
     isSelected: false,
     id: '',
@@ -53,9 +53,11 @@ export class CreateQuizComponent  {
   }
 
   submitQuiz(): void {
+    console.log('Quiz status before saving:', this.quiz.status);
     this.quizService.saveQuiz(this.quiz).subscribe(
         response => {
           console.log('Quiz created:', response);
+          console.log('Quiz status after saving:', this.quiz.status);
           this.quizService.toastr.success('Quiz submitted successfully', 'Success');
         },
         error => {

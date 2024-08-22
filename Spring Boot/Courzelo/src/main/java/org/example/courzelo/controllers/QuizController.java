@@ -1,11 +1,10 @@
 package org.example.courzelo.controllers;
 
-import jakarta.validation.Valid;
 import org.example.courzelo.dto.QuizDTO;
+import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.Quiz;
 import org.example.courzelo.models.QuizSubmission;
 import org.example.courzelo.models.QuizSubmissionResult;
-import org.example.courzelo.repositories.QuizRepository;
 import org.example.courzelo.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,6 +51,9 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+
+    
    @PutMapping("/{id}")
    @PreAuthorize("isAuthenticated()")
    public ResponseEntity<QuizDTO> updateQuizState(@PathVariable String id, @RequestBody Quiz updatedQuiz) {
@@ -61,7 +63,19 @@ public class QuizController {
        } catch (Exception e) {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
        }
-   }
+   }*/
+    @PutMapping("/{id}")
+    public ResponseEntity<Quiz> updateQuiz1(
+            @PathVariable String id,
+            @RequestBody Quiz quiz
+    ) {
+        try {
+            Quiz updated = quizService.updateQuiz1(id, quiz);
+            return ResponseEntity.ok(updated);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public ResponseEntity<QuizDTO> deleteQuiz(@PathVariable String id) {
@@ -116,4 +130,6 @@ public class QuizController {
         QuizDTO quiz = quizService.getQuizWithAnswersById(id);
         return ResponseEntity.ok(quiz);
     }
+
+
 }

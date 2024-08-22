@@ -53,6 +53,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['STUDENT'] }
   },
+  {
+    path: 'EditQuiz',
+    component: EditQuizComponent
+  },
 
   {
     path: 'QuizResult',

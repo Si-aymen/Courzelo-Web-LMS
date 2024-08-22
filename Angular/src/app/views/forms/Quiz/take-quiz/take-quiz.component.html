@@ -12,19 +12,26 @@
                         <h5 class="mb-2">{{ i + 1 }}. {{ question.text }}</h5>
                         <div *ngIf="question.type === 'MULTIPLE_CHOICE'" class="form-check">
                             <div *ngFor="let option of question.options; let j = index">
-                                <input class="form-check-input" type="checkbox" [id]="'option' + question.id + '_' + j" [value]="option"
-                                       (change)="toggleOptionSelection(question.id, option)"
-                                       [checked]="selectedAnswers[question.id]?.includes(option)">
-                                <label class="form-check-label" [for]="'option' + question.id + '_' + j">{{ option }}</label>
+                                <input class="form-check-input" type="checkbox"
+                                       [id]="'option' + question.id + '_' + j"
+                                       [value]="option"
+                                       (change)="toggleOptionSelection(currentQuizIndex, question.id, option)"
+                                       [checked]="selectedAnswers[currentQuizIndex]?.[question.id]?.includes(option)">
+                                <label class="form-check-label"
+                                       [for]="'option' + question.id + '_' + j">{{ option }}</label>
                             </div>
                         </div>
                         <div *ngIf="question.type === 'SHORT_ANSWER'">
-                            <input type="text" class="form-control" [(ngModel)]="selectedAnswers[question.id]">
-                            <button class="btn btn-primary mt-2" (click)="submitShortAnswer(question.id)">Submit Answer</button>
+                            <input type="text" class="form-control"
+                                   [(ngModel)]="selectedAnswers[currentQuizIndex][question.id]">
+                            <button class="btn btn-primary mt-2"
+                                    (click)="submitShortAnswer(currentQuizIndex, question.id)">Submit Answer</button>
                         </div>
                         <div *ngIf="question.type === 'LONG_ANSWER'">
-                            <textarea class="form-control" rows="4" [(ngModel)]="selectedAnswers[question.id]"></textarea>
-                            <button class="btn btn-primary mt-2" (click)="submitLongAnswer(question.id)">Submit Answer</button>
+                            <textarea class="form-control" rows="4"
+                                      [(ngModel)]="selectedAnswers[currentQuizIndex][question.id]"></textarea>
+                            <button class="btn btn-primary mt-2"
+                                    (click)="submitLongAnswer(currentQuizIndex, question.id)">Submit Answer</button>
                         </div>
                     </div>
                 </div>
@@ -38,29 +45,25 @@
             </div>
         </div>
 
+        <!-- Quiz Summary -->
         <div *ngIf="showSummary" class="card mb-4">
             <div class="card-header">
                 <h4 class="card-title">Quiz Summary</h4>
             </div>
             <div class="card-body">
-                <div *ngFor="let quiz of quizzes" class="mb-4">
+                <div *ngFor="let quiz of quizzes; let quizIndex = index" class="mb-4">
                     <h5 class="mb-3">{{ quiz.title }}</h5>
                     <div *ngFor="let question of quiz.questions; let i = index">
                         <p><strong>{{ i + 1 }}. {{ question.text }}</strong></p>
-                        <p>Your Answer: {{ selectedAnswers[question.id] }}</p>
+                        <p>Your Answer: {{ selectedAnswers[quizIndex]?.[question.id] }}</p>
+                        <p>Correct Answer: {{ question.correctAnswer }}</p> <!-- Display the correct answer -->
                     </div>
                 </div>
             </div>
             <div class="card-footer">
+                <p>Your final score: {{ finalScore }}</p> <!-- Display the final score -->
                 <button class="btn btn-secondary" (click)="resetQuiz()">Restart Quizzes</button>
             </div>
-        </div>
-    </div>
-    <div class="card mb-4">
-        <!-- ... -->
-        <div class="card-footer">
-            <p>Your final score: {{ finalScore }}</p>
-            <!-- ... -->
         </div>
     </div>
 </div>

@@ -33,7 +33,6 @@ export class QuizService {
   getAllQuizzes(): Observable<Quiz[]> {
     return this.http.get<Quiz[]>(this.apiUrl);
   }
-
   getQuizById(id: string): Observable<Quiz> {
     return this.http.get<Quiz>(`${this.apiUrl}/${id}`);
   }
@@ -41,9 +40,9 @@ export class QuizService {
     const params = { ids: ids.join(',') };
     return this.http.get<Quiz[]>(`${this.apiUrl}/quizzes`, { params });
   }
-
   updateQuiz(id: string, quiz: Quiz): Observable<Quiz> {
-    return this.http.put<Quiz>(`${this.apiUrl}/${id}`, quiz);
+    const url = `${this.apiUrl}/quizzes/${id}`;
+    return this.http.put<Quiz>(url, quiz);
   }
   deleteQuiz(id: string): Observable<Quiz> {
     return this.http.delete<Quiz>(`${this.apiUrl}/${id}`);
