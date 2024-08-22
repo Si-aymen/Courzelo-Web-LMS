@@ -5,7 +5,9 @@ import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.dto.QuizDTO;
 import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.*;
+import org.example.courzelo.models.institution.Course;
 import org.example.courzelo.repositories.AnswerRepository;
+import org.example.courzelo.repositories.CourseRepository;
 import org.example.courzelo.repositories.QuestionRepository;
 import org.example.courzelo.repositories.QuizRepository;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,15 +28,17 @@ public class QuizService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionService questionService;
+    private final CourseRepository courseRepository;
     private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
 
     @Autowired
-    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, QuestionService questionService) {
+    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, QuestionService questionService, CourseRepository courseRepository) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.questionService = questionService;
+        this.courseRepository = courseRepository;
     }
 
     public List<QuizDTO> getAllQuizzes() {
@@ -105,6 +110,10 @@ public class QuizService {
     }
 
     public void deleteQuiz(String id) {
+       Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Quiz not found"));
+         if(quiz.getCourse() != null) {
+                removeQuizFromCourse(quiz);
+         }
         quizRepository.deleteById(id);
     }
 
@@ -140,7 +149,13 @@ public class QuizService {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz.setStatus(quizDTO.getStatus()); // explicitly set the status
         quiz.setUser(email);
+        if(quizDTO.getCourse() != null) {
+            quiz.setCourse(quizDTO.getCourse());
+        }
         quiz = quizRepository.save(quiz);
+        if(quizDTO.getCourse() != null) {
+            addQuizToCourse(quiz, quizDTO.getCourse());
+        }
         logger.info("Quiz ID after save: {}, Status: {}", quiz.getId(), quiz.getStatus());
         final String quizId = quiz.getId();
         List<Question> questions = quizDTO.getQuestions().stream()
@@ -157,11 +172,33 @@ public class QuizService {
         logger.info("Final Quiz ID: {}, Status: {}", quiz.getId(), quiz.getStatus());
         return mapToDTO(quiz);
     }
+    public void addQuizToCourse(Quiz quiz, String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new NoSuchElementException("Course not found"));
+        if(course.getQuizzes() == null) {
+            log.info("Course quizzes is null");
+            course.setQuizzes(List.of(quiz.getId()));
+        } else {
+            log.info("Course quizzes is not null");
+            course.getQuizzes().add(quiz.getId());
+        }
+        courseRepository.save(course);
+    }
+    public void removeQuizFromCourse(Quiz quiz) {
+        Course course = courseRepository.findById(quiz.getCourse()).orElseThrow(() -> new NoSuchElementException("Course not found"));
+        course.getQuizzes().remove(quiz.getId());
+        courseRepository.save(course);
+    }
 
     public QuizDTO createQuizWithAnswers(QuizDTO quizDTO,String email) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz.setUser(email);
+        if(quizDTO.getCourse() != null) {
+            quiz.setCourse(quizDTO.getCourse());
+        }
         Quiz savedQuiz = quizRepository.save(quiz);
+        if(quizDTO.getCourse() != null) {
+            addQuizToCourse(savedQuiz, quizDTO.getCourse());
+        }
         for (Question question : quiz.getQuestions()) {
             question.setQuizID(savedQuiz.getId());
             questionRepository.save(question);
@@ -187,6 +224,9 @@ public class QuizService {
     }
 
     private QuizDTO mapToDTO(final Quiz quiz, final QuizDTO quizDTO) {
+        if (quiz.getId() != null) {
+            quizDTO.setId(quiz.getId());
+        }
         quizDTO.setUserEmail(quiz.getUser());
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
@@ -199,9 +239,13 @@ public class QuizService {
         quizDTO.setStatus(quiz.getStatus());
         quizDTO.setCategory(quiz.getCategory());
         quizDTO.setSelected(quiz.isSelected());
+        quizDTO.setCourse(quiz.getCourse() != null ? quiz.getCourse() : null);
         return quizDTO;
     }
     public Quiz mapToEntity(final QuizDTO quizDTO, final Quiz quiz) {
+        if (quizDTO.getId() != null) {
+            quiz.setId(quizDTO.getId());
+        }
         quiz.setTitle(quizDTO.getTitle());
         quiz.setDescription(quizDTO.getDescription());
         quiz.setQuestions(quizDTO.getQuestions().stream()
@@ -213,6 +257,7 @@ public class QuizService {
         quiz.setStatus(quizDTO.getStatus());
         quiz.setCategory(quizDTO.getCategory());
         quiz.setSelected(quizDTO.isSelected());
+        quiz.setCourse(quizDTO.getCourse()!= null ? quizDTO.getCourse() : null);
         return quiz;
     }
     public QuizDTO getQuizStatus(String id) {

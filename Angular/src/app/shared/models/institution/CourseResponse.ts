@@ -1,4 +1,5 @@
 import {CoursePostResponse} from './CoursePostResponse';
+import {Quiz} from '../Quiz';
 
 export interface CourseResponse {
     id?: string;
@@ -9,4 +10,5 @@ export interface CourseResponse {
     group?: string;
     institutionID?: string;
     posts?: CoursePostResponse[];
+    quizzes?: Quiz[];
 }

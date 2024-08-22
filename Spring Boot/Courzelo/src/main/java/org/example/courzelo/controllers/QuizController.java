@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quizzes")
 @CrossOrigin(origins = "http://localhost:4200/", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("isAuthenticated()")
 public class QuizController {
     private final QuizService quizService;
 
@@ -108,6 +108,7 @@ public class QuizController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO, Principal principal) {
         QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO,principal.getName());
         return ResponseEntity.ok(createdQuiz);

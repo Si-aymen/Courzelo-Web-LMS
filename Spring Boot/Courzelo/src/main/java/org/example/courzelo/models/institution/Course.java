@@ -20,4 +20,5 @@ public class Course {
     private String group;
     private List<CoursePost> posts;
     private String institutionID;
+    private List<String> quizzes;
 }

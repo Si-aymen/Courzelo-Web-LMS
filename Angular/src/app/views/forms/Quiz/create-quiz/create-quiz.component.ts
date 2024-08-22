@@ -25,7 +25,8 @@ export class CreateQuizComponent  {
     questions: [],
     duration: 0,
     maxAttempts: 0,
-    score: 0
+    score: 0,
+    course: null
   };
 
   statuses = Object.values(status); // List of all possible statuses
