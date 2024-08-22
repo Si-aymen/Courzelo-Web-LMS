@@ -2,13 +2,14 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.models.ProjectEntities.Tasks;
-import org.example.courzelo.models.ProjectEntities.Validate;
+import org.example.courzelo.models.ProjectEntities.project.Project;
+import org.example.courzelo.models.ProjectEntities.project.Tasks;
+import org.example.courzelo.models.ProjectEntities.project.Validate;
 import org.example.courzelo.repositories.ProjectRepo.GroupProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.ProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.TasksRepo;
 import org.example.courzelo.services.Project.IProjectService;
+
 import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.stereotype.Service;
 

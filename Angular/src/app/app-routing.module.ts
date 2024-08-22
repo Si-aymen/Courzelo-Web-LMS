@@ -16,7 +16,12 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
 import {NoAuthGuard} from './shared/services/no-auth.guard';
 import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
 import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
-import { RevisionComponent } from './shared/components/Revision/revision/revision.component';
+import { RevisionComponent } from './shared/components/Revision/Teacher/revision/revision.component';
+import { ConsultRevisionComponent } from './shared/components/Revision/Teacher/consult-revision/consult-revision.component';
+import { ClientRevisionComponent } from './shared/components/Revision/User/client-revision/client-revision.component';
+import { ParticipateRevisionComponent } from './shared/components/Revision/User/participate-revision/participate-revision.component';
+import { QuizrevisionComponent } from './shared/components/Revision/User/quizrevision/quizrevision.component';
+
 
 const userRoutes: Routes = [
     {
@@ -76,8 +81,12 @@ const userRoutes: Routes = [
     { path: 'projectdetails/:id', component: ProjectDetailsComponent},
     { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},
     { path: 'publication/:id', component: PublicationComponent},
-   /////////////////////////////////////////////////////////////////é
-   { path: 'revision', component: RevisionComponent },
+ ///////////////////////////////////////////////////////
+     { path: 'revision', component:RevisionComponent },
+     { path: 'consultrevision/:id', component:ConsultRevisionComponent },
+     { path: 'clientrevision', component:ClientRevisionComponent },
+     { path: 'participaterevision/:id', component:ParticipateRevisionComponent },
+     { path: 'QandA/:id', component:QuizrevisionComponent },
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)

@@ -2,18 +2,14 @@ package org.example.courzelo.controllers.Project;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.ProjectEntities.Event;
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.repositories.ProjectRepo.EventRepository;
+import org.example.courzelo.models.ProjectEntities.event.Event;
+import org.example.courzelo.models.ProjectEntities.project.Project;
 import org.example.courzelo.services.Project.EventService;
-import org.example.courzelo.services.Project.GroupProjectService;
 import org.example.courzelo.services.Project.IProjectService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor

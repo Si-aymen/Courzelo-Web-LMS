@@ -2,7 +2,7 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.Event;
+import org.example.courzelo.models.ProjectEntities.event.Event;
 import org.example.courzelo.repositories.ProjectRepo.EventRepository;
 import org.example.courzelo.services.Project.EventService;
 import org.springframework.stereotype.Service;

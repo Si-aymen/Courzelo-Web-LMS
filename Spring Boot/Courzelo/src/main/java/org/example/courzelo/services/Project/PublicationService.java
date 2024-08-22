@@ -1,8 +1,7 @@
 package org.example.courzelo.services.Project;
 
-import org.example.courzelo.models.ProjectEntities.Comment;
-import org.example.courzelo.models.ProjectEntities.Publication;
-import org.example.courzelo.models.ProjectEntities.Reaction;
+import org.example.courzelo.models.ProjectEntities.publication.Comment;
+import org.example.courzelo.models.ProjectEntities.publication.Publication;
 
 import java.security.Principal;
 import java.util.List;

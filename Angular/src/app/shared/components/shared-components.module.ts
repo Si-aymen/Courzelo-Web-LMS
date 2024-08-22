@@ -5,10 +5,11 @@ import { FeatherIconComponent } from './feather-icon/feather-icon.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { SharedPipesModule } from '../pipes/shared-pipes.module';
-import { SearchModule } from './search/search.module';
+
 import { SharedDirectivesModule } from '../directives/shared-directives.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { LayoutsModule } from './layouts/layouts.module';
+import { SearchModule } from './Revision/User/quizrevision/search/search.module';
 
 const components = [
   BtnLoadingComponent,

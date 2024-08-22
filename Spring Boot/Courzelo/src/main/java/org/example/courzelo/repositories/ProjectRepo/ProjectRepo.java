@@ -1,12 +1,7 @@
 package org.example.courzelo.repositories.ProjectRepo;
 
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.example.courzelo.models.ProjectEntities.project.Project;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-
-import java.util.Collection;
-import java.util.List;
 
 public interface ProjectRepo extends MongoRepository<Project,String> {
 

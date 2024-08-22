@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title">Add Revision</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="addRevision()">
+      <div class="form-group">
+        <label for="titre">Title</label>
+        <input id="titre" [(ngModel)]="titre" name="titre" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="nbrmax">Max Number</label>
+        <input type="number" id="nbrmax" [(ngModel)]="nbrmax" name="nbrmax" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="subjectRevision">Subject Revision</label>
+        <select id="subjectRevision" [(ngModel)]="selectedSubjectRevision" name="subjectRevision" class="form-control" required>
+          <option *ngFor="let subject of subjectRevisions" [value]="subject">{{ subject }}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-dark btn-rounded">Save</button>
+      </div>
+    </form>
+  </div>

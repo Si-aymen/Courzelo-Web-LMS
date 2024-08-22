@@ -4,7 +4,6 @@ import { Publication } from '../../models/Project/Publication';
 import { Observable } from 'rxjs';
 import {  Commment } from '../../models/Project/Commment';
 
-
 const  apiUrl ='http://localhost:8080';
 @Injectable({
   providedIn: 'root'
@@ -35,6 +34,7 @@ export class PublicationService {
     return this.http.get<Commment[]>(`${apiUrl}/${publicationId}/comments`);
   }
 
+  
 }
 
     

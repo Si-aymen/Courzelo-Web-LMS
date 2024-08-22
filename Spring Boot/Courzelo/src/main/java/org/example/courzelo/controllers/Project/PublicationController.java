@@ -2,9 +2,9 @@ package org.example.courzelo.controllers.Project;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.ProjectEntities.Comment;
-import org.example.courzelo.models.ProjectEntities.Publication;
-import org.example.courzelo.models.ProjectEntities.Reaction;
+import org.example.courzelo.models.ProjectEntities.publication.Comment;
+import org.example.courzelo.models.ProjectEntities.publication.Publication;
+
 import org.example.courzelo.services.Project.PublicationService;
 import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.http.HttpStatus;

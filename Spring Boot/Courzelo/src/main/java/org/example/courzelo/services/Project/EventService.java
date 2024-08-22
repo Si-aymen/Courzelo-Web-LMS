@@ -1,6 +1,6 @@
 package org.example.courzelo.services.Project;
 
-import org.example.courzelo.models.ProjectEntities.Event;
+import org.example.courzelo.models.ProjectEntities.event.Event;
 
 import java.util.List;
 import java.util.Optional;

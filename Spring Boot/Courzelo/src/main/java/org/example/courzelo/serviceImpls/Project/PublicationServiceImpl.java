@@ -2,16 +2,17 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.Comment;
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.models.ProjectEntities.Publication;
-import org.example.courzelo.models.ProjectEntities.Reaction;
+import org.example.courzelo.models.ProjectEntities.publication.Comment;
+import org.example.courzelo.models.ProjectEntities.project.Project;
+import org.example.courzelo.models.ProjectEntities.publication.Publication;
+
 import org.example.courzelo.models.User;
 import org.example.courzelo.repositories.ProjectRepo.ProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.PublicationRepository;
 import org.example.courzelo.repositories.ProjectRepo.commentRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.Project.PublicationService;
+
 import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.stereotype.Service;
 

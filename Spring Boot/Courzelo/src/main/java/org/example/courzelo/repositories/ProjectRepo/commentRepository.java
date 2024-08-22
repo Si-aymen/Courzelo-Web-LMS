@@ -1,6 +1,6 @@
 package org.example.courzelo.repositories.ProjectRepo;
 
-import org.example.courzelo.models.ProjectEntities.Comment;
+import org.example.courzelo.models.ProjectEntities.publication.Comment;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -1,0 +1,53 @@
+<div class="breadcrumb">
+    <h1>Question And Answer</h1>
+    <ul>
+        <li><a href="">Pages</a></li>
+        <li>Q/A</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="card user-profile o-hidden mb-4">
+    <div class="header-cover" style="background-image: url('assets/images/photo-wide-4.jpg')"></div>
+    <div class="user-info">
+        <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg'" alt="">
+        <p class="m-0 text-24">{{ (user?.profile.name && user?.profile.lastname) ? (user?.profile.name + ' ' + user?.profile.lastname) : user?.email }}</p>
+        <p class="text-muted m-0">{{user?.profile.title || ''}}</p>
+    </div>
+    <div class="card-body">
+        <ngb-tabset class="nav-center">
+            <ngb-tab title="Questions & Answers">
+                <ng-template ngbTabContent>
+                    <ul>
+                        <li *ngFor="let question of questions">
+                            <div class="timeline-card card">
+                                <div class="card-body">
+                                    <div class="mb-1">
+                                        <strong class="mr-1">{{ question.text }}</strong>
+                                    </div>
+                                    
+                                    <!-- Display the answer and correct answer if submitted -->
+                                    <div *ngIf="question.answerSubmitted" class="mb-3">
+                                        <em>Your Answer: {{ question.userAnswerText }}</em><br>
+                                        <em *ngIf="question.correctAnswer">Correct Answer: {{ question.correctAnswer }}</em><br>
+                                        <em *ngIf="question.isCorrect" style="color: green;">Correct</em>
+                                        <em *ngIf="!question.isCorrect" style="color: red;">Incorrect</em>
+                                    </div>
+
+                                    <!-- Input field and submit button visible if answer not submitted -->
+                                    <div *ngIf="!question.answerSubmitted" class="input-group">
+                                        <input type="text" class="form-control" [(ngModel)]="question.userAnswerText" placeholder="Write your Answer" aria-label="comment">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button" (click)="submitAnswer(question)">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

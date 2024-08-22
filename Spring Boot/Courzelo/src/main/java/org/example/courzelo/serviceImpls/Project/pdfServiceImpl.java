@@ -2,8 +2,8 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.FileMetadata;
-import org.example.courzelo.models.ProjectEntities.Project;
+import org.example.courzelo.models.ProjectEntities.project.FileMetadata;
+import org.example.courzelo.models.ProjectEntities.project.Project;
 import org.example.courzelo.repositories.ProjectRepo.FileMetadataRepository;
 import org.example.courzelo.repositories.ProjectRepo.ProjectRepo;
 import org.example.courzelo.services.Project.PdfService;

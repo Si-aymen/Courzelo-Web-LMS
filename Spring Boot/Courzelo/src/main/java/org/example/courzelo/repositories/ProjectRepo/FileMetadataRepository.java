@@ -1,6 +1,6 @@
 package org.example.courzelo.repositories.ProjectRepo;
 
-import org.example.courzelo.models.ProjectEntities.FileMetadata;
+import org.example.courzelo.models.ProjectEntities.project.FileMetadata;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

@@ -38,7 +38,13 @@ import { ChatRoutingModule } from './views/chat/chat-routing.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { DataTablesRoutingModule } from './views/data-tables/data-tables-routing.module';
-import { RevisionComponent } from './shared/components/Revision/revision/revision.component';
+import { AddRevisionComponent } from './shared/components/Revision/Teacher/add-revision/add-revision.component';
+import { RevisionComponent } from './shared/components/Revision/Teacher/revision/revision.component';
+import { ModifyRevisionComponent } from './shared/components/Revision/Teacher/modify-revision/modify-revision.component';
+import { ConsultRevisionComponent } from './shared/components/Revision/Teacher/consult-revision/consult-revision.component';
+import { ClientRevisionComponent } from './shared/components/Revision/User/client-revision/client-revision.component';
+import { ParticipateRevisionComponent } from './shared/components/Revision/User/participate-revision/participate-revision.component';
+import { QuizrevisionComponent } from './shared/components/Revision/User/quizrevision/quizrevision.component';
 
 @NgModule({
   declarations: [
@@ -54,11 +60,13 @@ import { RevisionComponent } from './shared/components/Revision/revision/revisio
    CalendarFormProjectComponent,
    PublicationComponent,
    AddpublicationComponent,
- RevisionComponent,
- 
-
-
-   
+  RevisionComponent,
+   AddRevisionComponent,
+   ModifyRevisionComponent,
+   ConsultRevisionComponent,
+   ClientRevisionComponent,
+   ParticipateRevisionComponent,
+   QuizrevisionComponent
   ],
   imports: [
     BrowserModule,
@@ -89,7 +97,7 @@ import { RevisionComponent } from './shared/components/Revision/revision/revisio
    NgxPaginationModule,
    NgxDatatableModule,
    DataTablesRoutingModule,
-
+ 
   ],
   providers: [
     DatePipe,

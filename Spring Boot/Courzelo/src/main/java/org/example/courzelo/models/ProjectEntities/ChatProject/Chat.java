@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nonapi.io.github.classgraph.json.Id;
-import org.example.courzelo.models.ProjectEntities.Project;
+import org.example.courzelo.models.ProjectEntities.project.Project;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
