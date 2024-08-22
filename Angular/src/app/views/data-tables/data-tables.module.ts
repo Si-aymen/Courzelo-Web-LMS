@@ -25,6 +25,7 @@ import {AppFormsModule} from '../forms/forms.module';
         DataTablesRoutingModule,
         AppFormsModule,
     ],
-declarations: [FullscreenTableComponent, PagingTableComponent, FilterTableComponent, ListPaginationComponent, QuizTableComponent, QuizListComponent]
+declarations: [FullscreenTableComponent, PagingTableComponent, FilterTableComponent,
+    ListPaginationComponent, QuizTableComponent, QuizListComponent]
 })
 export class DataTablesModule { }

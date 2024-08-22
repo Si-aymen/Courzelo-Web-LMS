@@ -54,7 +54,7 @@ public class QuizController {
     
 
     
-   @PutMapping("/{id}")
+   @PutMapping("/state/{id}")
    @PreAuthorize("isAuthenticated()")
    public ResponseEntity<QuizDTO> updateQuizState(@PathVariable String id, @RequestBody Quiz updatedQuiz) {
        try {
@@ -63,7 +63,7 @@ public class QuizController {
        } catch (Exception e) {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
        }
-   }*/
+   }
     @PutMapping("/{id}")
     public ResponseEntity<Quiz> updateQuiz1(
             @PathVariable String id,
