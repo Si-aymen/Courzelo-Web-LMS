@@ -4,8 +4,6 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGuard } from './shared/services/auth-guard.service';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
-import {TakeQuizComponent} from './views/forms/Quiz/take-quiz/take-quiz.component';
-import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 
 import { ProjectComponent } from 'src/app/shared/components/Project/User/project/project.component';
 import { ProjectdetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
@@ -22,6 +20,18 @@ const userRoutes: Routes = [
     {
       path: 'dashboard',
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
+      path: 'tickets',
+      loadChildren: () => import('./views/tickets/tickets.module').then(m => m.TicketsModule)
+    },
+    {
+      path: 'mailing',
+      loadChildren: () => import('./views/Mail/mail.module').then(m => m.MailModule)
+    },
+    {
+      path: 'ticketsStudent',
+      loadChildren: () => import('./views/ticketsStudent/ticket-student.module').then(m => m.TicketStudentModule)
     },
     {
       path: 'uikits',
@@ -67,9 +77,9 @@ const userRoutes: Routes = [
     { path: 'getallprojects', component: ProjectComponent},
     { path: 'projectdetails', component: ProjectdetailsComponent},
     { path: 'ProgressDashboard', component: ProgressDashboardComponent},
-    { path: 'projects', component: DashboardProjectComponent},
-    { path: 'addprojects', component: AddProjectComponent},
-    { path: 'project/:id', component: ViewdetailsComponent },
+    { path: 'projects', component: DashboardProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
+    { path: 'addprojects', component: AddProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
+    { path: 'project/:id', component: ViewdetailsComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
     { path: 'pdf', component: PdfComponent },
     {
         path: 'settings',
@@ -77,7 +87,14 @@ const userRoutes: Routes = [
     },
     {
         path: 'tools',
-        loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule)
+        loadChildren: () => import('./views/tools/tools.module').then(m => m.ToolsModule),
+        canActivate: [AuthGuard],
+        data: { roles: ['SUPERADMIN'] }
+    },
+    {
+        path: 'institution',
+        loadChildren: () => import('./views/institution/institution.module').then(m => m.InstitutionModule),
+        canActivate: [AuthGuard],
     }
 
   ];
@@ -114,8 +131,8 @@ const routes: Routes = [
     component: AdminLayoutSidebarCompactComponent,
     canActivate: [AuthGuard],
     children: userRoutes,
-      data: { roles: ['STUDENT', 'TEACHER', 'ADMIN' , 'SUPER_ADMIN'] }
   },
+
   {
     path: '**',
     redirectTo: 'others/404'

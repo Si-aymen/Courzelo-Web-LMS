@@ -48,6 +48,7 @@
                 <div class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center"
                      [ngClass]="{'flex-lg-row': viewMode === 'list'}">
                     <div class="w-40 w-sm-100">
+                        <div class="item-title">{{ quiz.userEmail || "None" }}</div>
                         <div class="item-title">{{ quiz.title }}</div>
                         <div class="text-muted">{{ quiz.description }}</div>
                         <div class="text-muted">Duration: {{ quiz.duration }} minutes</div>

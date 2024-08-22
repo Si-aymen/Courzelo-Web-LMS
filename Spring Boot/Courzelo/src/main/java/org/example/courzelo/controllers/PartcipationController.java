@@ -1,13 +1,12 @@
 package org.example.courzelo.controllers;
 
 import org.example.courzelo.dto.ParticipationDTO;
-import org.example.courzelo.models.Participation;
 import org.example.courzelo.services.ParticipationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -19,15 +18,15 @@ public class PartcipationController {
         this.participationService = participationService;
     }
 
-    @GetMapping("/{studentId}")
-    public ResponseEntity<List<ParticipationDTO>> getParticipationByStudentId(@PathVariable String studentId) {
-        List<ParticipationDTO> participationList = participationService.findByStudentId(studentId);
+    @GetMapping("/{studentEmail}")
+    public ResponseEntity<List<ParticipationDTO>> getParticipationByStudentEmail(@PathVariable String studentEmail) {
+        List<ParticipationDTO> participationList = participationService.findByStudentEmail(studentEmail);
         return ResponseEntity.ok(participationList);
     }
 
     @PostMapping
-    public ResponseEntity<ParticipationDTO> saveParticipation(@RequestBody ParticipationDTO participationDTO) {
-        ParticipationDTO savedParticipation = participationService.saveParticipation(participationDTO);
+    public ResponseEntity<ParticipationDTO> saveParticipation(@RequestBody ParticipationDTO participationDTO, Principal principal) {
+        ParticipationDTO savedParticipation = participationService.saveParticipation(participationDTO,principal.getName());
         return new ResponseEntity<>(savedParticipation, HttpStatus.CREATED);
     }
 }

@@ -22,4 +22,5 @@ public class Quiz {
     private int duration; // in minutes
     private int maxAttempts;
     private String category;
+    private String user;
 }

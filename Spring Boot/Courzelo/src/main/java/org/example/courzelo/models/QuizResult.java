@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class QuizResult {
     @Id
     private String id;
-    private String studentId;
+    private String student;
     private double timeSpent;
     private double score;
 }

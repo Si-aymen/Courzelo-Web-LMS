@@ -3,7 +3,6 @@ package org.example.courzelo.services;
 import org.example.courzelo.dto.ParticipationDTO;
 import org.example.courzelo.models.Participation;
 import org.example.courzelo.repositories.ParticipationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,27 +16,28 @@ public class ParticipationService {
         this.participationRepository = participationRepository;
     }
 
-    public List<ParticipationDTO> findByStudentId(String studentId) {
-        return participationRepository.findByStudentId(studentId).stream()
+    public List<ParticipationDTO> findByStudentEmail(String studentEmail) {
+        return participationRepository.findByStudent(studentEmail).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public ParticipationDTO saveParticipation(ParticipationDTO participationDTO) {
+    public ParticipationDTO saveParticipation(ParticipationDTO participationDTO, String studentEmail) {
         Participation participation = convertToEntity(participationDTO);
+        participation.setStudent(studentEmail);
         participation = participationRepository.save(participation);
         return convertToDTO(participation);
     }
 
     public int getParticipationScore(String studentId) {
-        List<Participation> participations = participationRepository.findByStudentId(studentId);
+        List<Participation> participations = participationRepository.findByStudent(studentId);
         return participations.stream().mapToInt(Participation::getScore).sum();
     }
 
     private ParticipationDTO convertToDTO(Participation participation) {
         ParticipationDTO dto = new ParticipationDTO();
         dto.setId(participation.getId());
-        dto.setStudentId(participation.getStudentId());
+        dto.setStudentEmail(participation.getStudent());
         dto.setScore(participation.getScore());
         return dto;
     }
@@ -45,7 +45,6 @@ public class ParticipationService {
     private Participation convertToEntity(ParticipationDTO dto) {
         Participation participation = new Participation();
         participation.setId(dto.getId());
-        participation.setStudentId(dto.getStudentId());
         participation.setScore(dto.getScore());
         return participation;
     }

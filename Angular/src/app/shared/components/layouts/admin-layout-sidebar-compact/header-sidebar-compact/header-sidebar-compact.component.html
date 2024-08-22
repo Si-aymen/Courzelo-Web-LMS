@@ -32,6 +32,7 @@
                                 <a href="#"><i class="i-Drop"></i> Apps</a>
                                 <a href="#"><i class="i-File-Clipboard-File--Text"></i> Forms</a>
                                 <a href="#"><i class="i-Checked-User"></i> Sessions</a>
+                                <a routerLink='/xyz' >xyz</a>
                                 <a href="#"><i class="i-Ambulance"></i> Support</a>
                             </div>
                         </div>
@@ -72,11 +73,18 @@
                 <div ngbDropdownMenu class="menu-icon-grid-dropdown">
                     <div class="menu-icon-grid">
                         <a href="#"><i class="i-Shop-4"></i> Home</a>
+                        <a href="#"><i class="i-File-Clipboard-File--Text"></i> Forms</a>
+                        <a href="#"><i class="i-Checked-User"></i> Sessions</a>
+                        <a href="#"><i class="i-Shop-4"></i> Home</a>
                         <a href="#"><i class="i-Library"></i> UI Kits</a>
                         <a href="#"><i class="i-Drop"></i> Apps</a>
                         <a href="#"><i class="i-File-Clipboard-File--Text"></i> Forms</a>
                         <a href="#"><i class="i-Checked-User"></i> Sessions</a>
                         <a href="#"><i class="i-Ambulance"></i> Support</a>
+                     <!-- <a href="tickets/faq"><i class="i-Hand"></i> FAQ</a>
+                        <a href="tickets/list"><i class="i-Support"></i> Tickets</a>
+                        <a href="ticketsStudent/list"><i class="i-Support"></i> Student's Support</a>
+                        <a href="mailing"><i class="icon-regular i-Mail-Reply"></i> Mail</a>-->
                     </div>
                 </div>
             </div>
@@ -108,15 +116,21 @@
                 <img [src]="imageSrc || 'assets/default-image.jpg' " id="userDropdown" ngbDropdownToggle alt="">
 
                 <div ngbDropdownMenu aria-labelledby="userDropdown">
-                    <div class="dropdown-header">
-                        <i class="i-Lock-User mr-1"></i> {{ (user?.profile.name && user?.profile.lastname) ? (user?.profile.name + " " + user?.profile.lastname) : user?.email }}                    </div>
+                    <div *ngIf="user$ | async as user" class="dropdown-header">
+                        <i class="i-Lock-User mr-1"></i> {{ (user?.profile.name && user?.profile.lastname) ? (user?.profile.name + " " + user?.profile.lastname) : user?.email }}
+                    </div>
                     <button class="dropdown-item" routerLink="/settings/profile">Profile settings</button>
                     <button class="dropdown-item" routerLink="/settings/account">Account settings</button>
                     <button class="dropdown-item">Billing history</button>
                     <button class="dropdown-item" (click)="signout()">Sign out</button>
                 </div>
+                
             </div>
-    
+
+            
         </div>
     
     </div>
+  
+        
+    

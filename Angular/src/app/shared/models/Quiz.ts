@@ -5,6 +5,7 @@ import {status} from './status';
 
 export class Quiz {
     id?: string;
+    userEmail: string;
     title: string;
     description: string;
     questions: Question[] = [];

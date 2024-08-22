@@ -17,20 +17,21 @@ public class AssignementService {
         this.assignmentRepository = assignmentRepository;
     }
 
-    public List<AssignmentDTO> findByStudentId(String studentId) {
-        return assignmentRepository.findByStudentId(studentId).stream()
+    public List<AssignmentDTO> findByStudentEmail(String studentEmail) {
+        return assignmentRepository.findByStudent(studentEmail).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public AssignmentDTO saveAssignment(AssignmentDTO assignmentDTO) {
+    public AssignmentDTO saveAssignment(AssignmentDTO assignmentDTO, String studentEmail) {
         Assignment assignment = convertToEntity(assignmentDTO);
+        assignment.setStudent(studentEmail);
         assignment = assignmentRepository.save(assignment);
         return convertToDTO(assignment);
     }
 
-    public double calculateAssignmentCompletionRate(String studentId) {
-        List<Assignment> assignments = assignmentRepository.findByStudentId(studentId);
+    public double calculateAssignmentCompletionRate(String studentEmail) {
+        List<Assignment> assignments = assignmentRepository.findByStudent(studentEmail);
         long completedCount = assignments.stream().filter(Assignment::isCompleted).count();
         return (double) completedCount / assignments.size();
     }
@@ -38,8 +39,8 @@ public class AssignementService {
     private AssignmentDTO convertToDTO(Assignment assignment) {
         AssignmentDTO dto = new AssignmentDTO();
         dto.setId(assignment.getId());
-        dto.setStudentId(assignment.getStudentId());
         dto.setAssignmentId(assignment.getAssignmentId());
+        dto.setStudentEmail(assignment.getStudent());
         dto.setCompleted(assignment.isCompleted());
         dto.setTotalMarks(assignment.getTotalMarks());
         dto.setMarksObtained(assignment.getMarksObtained());
@@ -49,7 +50,6 @@ public class AssignementService {
     private Assignment convertToEntity(AssignmentDTO dto) {
         Assignment assignment = new Assignment();
         assignment.setId(dto.getId());
-        assignment.setStudentId(dto.getStudentId());
         assignment.setAssignmentId(dto.getAssignmentId());
         assignment.setCompleted(dto.isCompleted());
         assignment.setTotalMarks(dto.getTotalMarks());

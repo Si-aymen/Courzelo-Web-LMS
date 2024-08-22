@@ -14,4 +14,7 @@ public enum Status {
     NOT_COMPLETED,
     NOT_STARTED_YET,
     STARTED,
+    EN_COURS,
+    EN_ATTENTE,
+    FINIE
 }

@@ -9,14 +9,17 @@ import org.example.courzelo.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
 @CrossOrigin(origins = "http://localhost:4200/", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
+@PreAuthorize("hasRole('ADMIN')")
 public class QuizController {
     private final QuizService quizService;
 
@@ -26,6 +29,7 @@ public class QuizController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
         List<QuizDTO> quizzes = quizService.getAllQuizzes();
         return ResponseEntity.ok(quizzes);
@@ -37,7 +41,8 @@ public class QuizController {
         return ResponseEntity.ok(createdQuiz);
     }*/
 
-    /*@PutMapping("/{quizId}")
+    @PutMapping("/{quizId}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public ResponseEntity<QuizDTO> updateQuiz(@PathVariable String quizId, @RequestBody Quiz updatedQuiz) {
         try {
             QuizDTO updatedQuizDTO = quizService.updateQuiz(quizId, updatedQuiz);
@@ -45,8 +50,12 @@ public class QuizController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }*/
-  /* @PutMapping("/{id}")
+    }
+    
+
+    
+   @PutMapping("/{id}")
+   @PreAuthorize("isAuthenticated()")
    public ResponseEntity<QuizDTO> updateQuizState(@PathVariable String id, @RequestBody Quiz updatedQuiz) {
        try {
            QuizDTO updatedQuizDTO = quizService.updateQuiz(id, updatedQuiz);
@@ -68,6 +77,7 @@ public class QuizController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public ResponseEntity<QuizDTO> deleteQuiz(@PathVariable String id) {
         try {
             quizService.deleteQuiz(id);
@@ -78,36 +88,40 @@ public class QuizController {
     }
 
     @GetMapping("/duration/{quizId}")
+    @PreAuthorize("isAuthenticated()")
     public int getQuizDuration(@PathVariable String quizId) {
         return quizService.getQuizDuration(quizId);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizDTO> getQuizById(@PathVariable String id) {
         QuizDTO quiz = quizService.getQuizById(id);
         return ResponseEntity.ok(quiz);
     }
 
     @PostMapping("/submit")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizSubmissionResult> submitQuiz(@RequestBody QuizSubmission submission) {
         QuizSubmissionResult result = quizService.submitQuiz(submission);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO) {
-        QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO);
+    public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO, Principal principal) {
+        QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO,principal.getName());
         return ResponseEntity.ok(createdQuiz);
     }
     @GetMapping("/status/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizDTO> getQuizStatus(@PathVariable String id) {
         QuizDTO quiz = quizService.getQuizStatus(id);
         return ResponseEntity.ok(quiz);
     }
 
     @PostMapping("/with-answers")
-    public ResponseEntity<QuizDTO> createQuizWithAnswers(@RequestBody QuizDTO quizDTO) {
-        QuizDTO createdQuiz = quizService.createQuizWithAnswers(quizDTO);
+    public ResponseEntity<QuizDTO> createQuizWithAnswers(@RequestBody QuizDTO quizDTO, Principal principal) {
+        QuizDTO createdQuiz = quizService.createQuizWithAnswers(quizDTO,principal.getName());
         return ResponseEntity.ok(createdQuiz);
     }
 

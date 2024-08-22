@@ -18,4 +18,5 @@ public class RefreshToken {
     private Instant expiryDate;
     @DBRef
     private User user;
+
 }

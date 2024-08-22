@@ -9,20 +9,15 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.ProfileInformationRequest;
 import org.example.courzelo.dto.requests.UpdatePasswordRequest;
-import org.example.courzelo.dto.requests.UserProfileRequest;
-import org.example.courzelo.dto.responses.LoginResponse;
-import org.example.courzelo.dto.responses.QRCodeResponse;
-import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.dto.responses.UserResponse;
-import org.example.courzelo.models.CodeType;
-import org.example.courzelo.models.CodeVerification;
-import org.example.courzelo.models.User;
-import org.example.courzelo.models.UserProfile;
-import org.example.courzelo.repositories.CodeVerificationRepository;
+import org.example.courzelo.dto.responses.*;
+import org.example.courzelo.dto.responses.institution.SimplifiedCourseResponse;
+import org.example.courzelo.models.*;
+import org.example.courzelo.models.institution.Course;
+import org.example.courzelo.models.institution.Institution;
+import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICodeVerificationService;
 import org.example.courzelo.services.IUserService;
@@ -43,7 +38,6 @@ import java.nio.file.Files;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 
 
@@ -53,13 +47,13 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final ICodeVerificationService codeVerificationService;
-    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder encoder, CodeVerificationService codeVerificationService) {
+    private final InstitutionRepository institutionRepository;
+    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder encoder, CodeVerificationService codeVerificationService, InstitutionRepository institutionRepository) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.codeVerificationService = codeVerificationService;
+        this.institutionRepository = institutionRepository;
     }
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(email);
@@ -189,7 +183,21 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
         }
-        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
+        Institution institution = null;
+        if (user.getEducation() != null && user.getEducation().getInstitutionID() != null) {
+            institution = institutionRepository.findById(user.getEducation().getInstitutionID()).orElse(null);
+        }
+        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully",
+                UserResponse.builder()
+                        .email(user.getEmail())
+                        .profile(new UserProfileResponse(user.getProfile()))
+                        .roles(user.getRoles().stream().map(Role::name).toList())
+                        .security(new UserSecurityResponse(user.getSecurity()))
+                        .education(UserEducationResponse.builder()
+                                .institutionID(user.getEducation().getInstitutionID())
+                                .institutionName(institution != null ? institution.getName() : null)
+                                .build())
+                        .build()));
     }
 
     @Override
@@ -207,13 +215,13 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
 
     @Override
     public ResponseEntity<StatusMessageResponse> resetPassword(UpdatePasswordRequest updatePasswordRequest, String code) {
-        String email = codeVerificationService.verifyCode(code);
-        if (email==null) {
+        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        if (codeVerification.getEmail()==null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StatusMessageResponse("error", "Invalid or expired reset code"));
         }
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(codeVerification.getEmail());
         user.setPassword(encoder.encode(updatePasswordRequest.getNewPassword()));
-        codeVerificationService.deleteCode(email, CodeType.PASSWORD_RESET);
+        codeVerificationService.deleteCode(codeVerification.getEmail(), CodeType.PASSWORD_RESET);
         userRepository.save(user);
         return ResponseEntity.ok(new StatusMessageResponse("success", "Password reset successfully"));
     }
@@ -289,7 +297,21 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginResponse("error", "User not found"));
         }
-        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully", new UserResponse(user)));
+        Institution institution = null;
+        if (user.getEducation() != null && user.getEducation().getInstitutionID() != null) {
+            institution = institutionRepository.findById(user.getEducation().getInstitutionID()).orElse(null);
+        }
+        return ResponseEntity.ok(new LoginResponse("success", "User profile retrieved successfully",
+                UserResponse.builder()
+                        .email(user.getEmail())
+                        .profile(new UserProfileResponse(user.getProfile()))
+                        .roles(user.getRoles().stream().map(Role::name).toList())
+                        .security(new UserSecurityResponse(user.getSecurity()))
+                        .education(UserEducationResponse.builder()
+                                .institutionID(user.getEducation().getInstitutionID())
+                                .institutionName(institution != null ? institution.getName() : null)
+                                .build())
+                        .build()));
     }
 
 

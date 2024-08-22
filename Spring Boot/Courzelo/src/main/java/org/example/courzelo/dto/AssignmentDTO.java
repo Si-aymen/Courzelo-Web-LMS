@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class AssignmentDTO {
     private String id;
-    private String studentId;
     private String assignmentId;
+    private String studentEmail;
     private boolean completed;
     private double totalMarks;
     private double marksObtained;
