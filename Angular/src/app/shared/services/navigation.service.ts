@@ -130,6 +130,7 @@ export class NavigationService {
                 { icon: 'i-Filter-2', name: 'Filter', state: '/tables/filter', type: 'link' },
             ]
         },
+
         {
             name: 'Sessions',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
@@ -140,6 +141,28 @@ export class NavigationService {
                 { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
                 { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' },
                 { icon: 'i-Administrator', name: 'Super admin tools', state: '/tools/superadmin', type: 'link' }
+            ]
+        },
+        {
+            name: 'Project',
+            description: '',
+            type: 'dropDown',
+            icon: 'i-Computer-Secure',
+            sub: [
+                { icon: 'i-File-Horizontal-Text', name: 'Dashboard Project', state: '/projects', type: 'link' },// admin w teacher 
+                { icon: 'i-Full-View-Window', name: 'Projects', state: '/getallprojects', type: 'link' },
+              
+            ]
+        },
+        {
+            name: 'Revision',
+            description: '',
+            type: 'dropDown',
+            icon: 'i-Computer-Secure',
+            sub: [
+                { icon: 'i-File-Horizontal-Text', name: 'Revision Dashboard ', state: '/revision', type: 'link' },// admin w teacher 
+                { icon: 'i-Full-View-Window', name: 'Revisions', state: '/clientrevision', type: 'link' },//user 
+              
             ]
         },
         {
