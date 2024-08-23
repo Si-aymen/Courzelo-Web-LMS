@@ -40,7 +40,7 @@ export class ContentComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.connectedUser = this.sessionStorageService.getUser();
+    this.connectedUser = this.sessionStorageService.getUserFromSession();
     this.websocketchat.getMessages().subscribe(message => {
       console.log("Received message:", message);
       console.log(typeof(message)) // Log the received message

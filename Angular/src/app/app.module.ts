@@ -25,6 +25,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {Interceptor} from './shared/services/user/Interceptor';
 import { ForumRoutingModule } from './views/Forum/forum-routing.module';
 import { DossierComponent } from './views/dossier/dossier.component';
+import { UploadFileComponent } from './views/Admission/upload-file/upload-file.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { DossierComponent } from './views/dossier/dossier.component';
     DashboardProjectComponent,
     ViewdetailsComponent ,
     PdfComponent,
-    DossierComponent,    
+    DossierComponent,
+    UploadFileComponent,    
   ],
   imports: [
     NgxPaginationModule,

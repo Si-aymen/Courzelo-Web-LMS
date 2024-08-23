@@ -30,7 +30,7 @@ export class AddPostComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.connectedUser = this.sessionStorageService.getUser();
+    this.connectedUser = this.sessionStorageService.getUserFromSession();
     this.subService.getSubForums().subscribe((data) => {
       this.subs = data;
     }, error => {

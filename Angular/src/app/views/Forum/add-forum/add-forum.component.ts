@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserResponse } from 'src/app/shared/models/user/UserResponse';
 import { ForumService } from 'src/app/shared/services/Forum/forum.service';
 import { SessionStorageService } from 'src/app/shared/services/user/session-storage.service';
@@ -29,7 +28,7 @@ throw new Error('Method not implemented.');
   ngOnInit() {
     this.createForm();
     console.log("lelele");
-    this.connectedUser = this.sessionStorageService.getUser();
+    this.connectedUser = this.sessionStorageService.getUserFromSession();
   }
   createForm() {
     this.addforum = this.formBuilder.group({

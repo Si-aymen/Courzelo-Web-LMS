@@ -1,0 +1,25 @@
+<div class="container mt-4">
+  <div class="text-center mb-4">
+    <button *ngIf="Status === 'Closed'" type="button" class="btn btn-primary btn-rounded" (click)="createInterviews()">Affecte</button>
+  </div>
+
+  <p class="section-title text-center mb-3">Application Details</p>
+
+  <!-- Check if list is not null and has items -->
+  <div *ngIf="list && list.length > 0; else noApplications">
+    <ul class="list-group">
+      <li *ngFor="let item of list" class="list-group-item">
+        <div class="profile-info">
+          <p class="info"><strong>Name:</strong> {{ item.user?.profile?.name }}</p>
+          <p class="info"><strong>Last Name:</strong> {{ item.user?.profile?.lastname }}</p>
+          <p class="info mb-1"><strong>Status:</strong> {{ item.status }}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Template for when list is null or empty -->
+  <ng-template #noApplications>
+    <h2 class="text-center">No Applications Yet</h2>
+  </ng-template>
+</div>

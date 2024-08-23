@@ -1,0 +1,53 @@
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="card-title mb-3 text-center">
+                <h4>Admission Form</h4>
+            </div>
+            <form [formGroup]="formAdmission" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" formControlName="title" placeholder="Enter title" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" formControlName="description" placeholder="Enter description" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="places">Number Available</label>
+                        <input type="number" class="form-control" id="places" formControlName="places" placeholder="Places" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="waiting">Waiting List</label>
+                        <input type="number" class="form-control" id="waiting" formControlName="waiting" placeholder="Waiting" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="startDate">Start Date</label>
+                        <input type="datetime-local" class="form-control" id="startDate" formControlName="startDate" required>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="endDate">End Date</label>
+                        <input type="datetime-local" class="form-control" id="endDate" formControlName="endDate" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div *ngIf="dateRangeInvalid" class="alert alert-danger mb-3">
+                            Start Date must be before End Date.
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-primary btn-lg mr-2" type="submit" [disabled]="formAdmission.invalid">Submit</button>
+                        <button type="reset" class="btn btn-danger btn-lg" (click)="middle()">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

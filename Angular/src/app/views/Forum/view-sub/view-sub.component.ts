@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { Post } from 'src/app/shared/models/Forum/Post';
 import { PostService } from 'src/app/shared/services/Forum/post.service';
-import { ListPostComponent } from '../Post/list-post/list-post.component';
 import { UpdatePostComponent } from './update-post/update-post.component';
 
 @Component({

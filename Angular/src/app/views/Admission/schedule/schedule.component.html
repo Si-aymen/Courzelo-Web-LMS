@@ -1,0 +1,30 @@
+<div class="card shadow-sm p-4">
+  <h3 id="title" class="card-title text-center text-primary mb-4">Schedule Appointment</h3>
+  <form [formGroup]="appointmentForm" (ngSubmit)="scheduleMeeting()">
+    <div class="form-group mb-3">
+      <label for="appointmentTime" class="form-label">Meeting Time</label>
+      <input
+        type="datetime-local"
+        id="appointmentTime"
+        class="form-control"
+        formControlName="appointmentTime"
+      />
+      <div *ngIf="appointmentForm.controls['appointmentTime'].invalid && (appointmentForm.controls['appointmentTime'].dirty || appointmentForm.controls['appointmentTime'].touched)">
+        <small class="text-danger" *ngIf="appointmentForm.controls['appointmentTime'].errors?.['futureDate']">
+          Please select a future date and time.
+        </small>
+        <small class="text-danger" *ngIf="appointmentForm.controls['appointmentTime'].errors?.['required']">
+          Meeting time is required.
+        </small>
+      </div>
+    </div>
+    <button
+      type="submit"
+      id="schedule-button"
+      class="btn btn-primary w-100"
+      [disabled]="appointmentForm.invalid"
+    >
+      Schedule Appointment
+    </button>
+  </form>
+</div>

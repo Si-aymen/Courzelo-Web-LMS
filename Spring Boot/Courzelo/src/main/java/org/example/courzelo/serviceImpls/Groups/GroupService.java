@@ -3,7 +3,7 @@ package org.example.courzelo.serviceImpls.Groups;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.models.GroupChat.Group;
-import org.example.courzelo.repositories.Groups.GroupRepository;
+import org.example.courzelo.repositories.Groups.GroupMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class GroupService {
 
     @Autowired
-    private final GroupRepository groupRepository;
+    private final GroupMessageRepository groupRepository;
 
     public List<Group> getAllGroups() {
         return groupRepository.findAll();

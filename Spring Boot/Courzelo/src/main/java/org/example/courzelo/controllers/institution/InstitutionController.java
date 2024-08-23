@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/institution")
 @AllArgsConstructor
-@PreAuthorize("hasRole('SUPERADMIN')")
+//@PreAuthorize("hasRole('SUPERADMIN')")
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
 public class InstitutionController {
     private final IInstitutionService iInstitutionService;

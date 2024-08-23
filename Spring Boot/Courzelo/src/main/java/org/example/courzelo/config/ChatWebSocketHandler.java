@@ -4,7 +4,7 @@ import org.example.courzelo.dto.requests.Groups.MessagesREQ;
 import org.example.courzelo.models.GroupChat.Group;
 import org.example.courzelo.models.GroupChat.Message;
 import org.example.courzelo.models.User;
-import org.example.courzelo.repositories.Groups.GroupRepository;
+import org.example.courzelo.repositories.Groups.GroupMessageRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.serviceImpls.Groups.MessageService;
 import org.springframework.web.socket.WebSocketSession;
@@ -27,11 +27,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final MessageService messageService;
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
+    private final GroupMessageRepository groupRepository;
     private final ObjectMapper objectMapper;
 
     // Constructor injection for MessageService
-    public ChatWebSocketHandler(MessageService messageService,UserRepository userRepository,GroupRepository groupRepository) {
+    public ChatWebSocketHandler(MessageService messageService,UserRepository userRepository,GroupMessageRepository groupRepository) {
        this.groupRepository=groupRepository;
         this.userRepository = userRepository;
         this.messageService = messageService;

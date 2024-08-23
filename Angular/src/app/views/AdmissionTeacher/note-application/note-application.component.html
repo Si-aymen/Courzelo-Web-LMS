@@ -1,0 +1,19 @@
+<p>Applications</p>
+<ul class="list-group">
+  <li *ngFor="let application of resault" class="list-group-item d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-1">Admission: {{ application.admission.title }}</h5>
+      <p class="mb-1">By: {{ application.user.profile.name }} {{ application.user.profile.lastname }}</p>
+    </div>
+    <div *ngIf="!application.note">
+      <input type="number" id="note{{ application.id }}" 
+             placeholder="note" 
+             min="0" max="20" step="0.01">
+      <button class="btn btn-primary ms-2" (click)="save(application.id)">Save</button>
+    </div>
+    <div *ngIf="application.note">
+        <!-- Content to show if application.note exists -->
+        <p>Note: {{ application.note }}</p>
+      </div>
+  </li>
+</ul>

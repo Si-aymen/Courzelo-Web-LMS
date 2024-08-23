@@ -15,6 +15,7 @@ import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component
 
 import {NoAuthGuard} from './shared/services/no-auth.guard';
 import { AddForumComponent } from './views/Forum/add-forum/add-forum.component';
+import { UploadFileComponent } from './views/Admission/upload-file/upload-file.component';
 
 
 const userRoutes: Routes = [
@@ -67,6 +68,18 @@ const userRoutes: Routes = [
       loadChildren: () => import('./views/contacts/contacts.module').then(m => m.ContactsModule)
     },
     {
+      path: 'admission',
+      loadChildren: () => import('./views/Admission/list.module').then(m => m.ListModule)
+    },
+    {
+      path: 'admissionteacher',
+      loadChildren: () => import('./views/AdmissionTeacher/admissionteacher.module').then(m => m.AdmissionteacherModule)
+    },
+    {
+      path: 'studentadmission',
+      loadChildren: () => import('./views/AdmissionStudent/admissionstudent.module').then(m => m.AdmissionstudentModule)
+    },
+    {
       path: 'tables',
       loadChildren: () => import('./views/data-tables/data-tables.module').then(m => m.DataTablesModule)
     },
@@ -77,7 +90,6 @@ const userRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-
     } ,
     { path: 'getallprojects', component: ProjectComponent},
     { path: 'projectdetails', component: ProjectdetailsComponent},
@@ -87,6 +99,7 @@ const userRoutes: Routes = [
     { path: 'project/:id', component: ViewdetailsComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
     { path: 'pdf', component: PdfComponent },
     { path: 'addforum', component: AddForumComponent},
+    { path: 'uploadfile', component: UploadFileComponent},
 
     {
         path: 'settings',

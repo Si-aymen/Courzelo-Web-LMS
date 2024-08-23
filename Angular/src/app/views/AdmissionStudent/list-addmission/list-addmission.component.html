@@ -1,0 +1,15 @@
+<ul class="list-group">
+  <li *ngFor="let admission of AllAdmissions" class="list-group-item">
+    <div class="admission-info">
+      <h5 class="admission-title">{{ admission.title }}</h5>
+      <h6 class="admission-institution">Institution: {{ admission.institution.name }}</h6>
+      <p class="admission-description">{{ admission.description }}</p>
+      <div class="admission-dates">
+        <span class="admission-date">Start Date: {{ admission.starDate | date:'mediumDate' }}</span>
+        <span class="admission-date">End Date: {{ admission.endDate | date:'mediumDate' }}</span>
+      </div>
+      <button *ngIf="admission.status === 'Open'" class="btn btn-primary btn-apply" (click)="onSubmit(admission.id)">Apply</button>
+      <p *ngIf="admission.status==='Closed'"> <strong> Already Closed </strong></p>
+    </div>
+  </li>
+</ul>

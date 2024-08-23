@@ -55,7 +55,7 @@ private groupService:ChatService
 ){}
 
 ngAfterViewInit() {
-  this.connectedUser = this.SessionStorageService.getUser();
+  this.connectedUser = this.SessionStorageService.getUserFromSession();
   
   this.groupService.getGroupById("66afa207a022d1705e213d20").subscribe((res) => {
     this.members = res.members;

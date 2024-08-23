@@ -55,7 +55,7 @@ imageCache: { [email: string]: SafeUrl } = {};
           // Use the postId as needed
         });
         this.getPost();
-        this.connectedUser = this.sessionStorageService.getUser();
+        this.connectedUser = this.sessionStorageService.getUserFromSession();
         this.createForm();
       
         console.log("le id", this.postid);

@@ -1,0 +1,85 @@
+.container {
+    position: relative;
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  /* Button Container Styling */
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  /* Section Title Styling */
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+    color: #333;
+  }
+  
+  /* List Group Styling */
+  .list-group {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* List Item Styling */
+  .list-group-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Profile Info Styling */
+  .profile-info {
+    margin-bottom: 15px;
+  }
+  
+  .info {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .info strong {
+    color: #007bff;
+  }
+  
+  /* Button Styling */
+  .btn-rounded {
+    border-radius: 25px;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+  }
+  
+  .btn {
+    font-size: 0.875rem;
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn:focus {
+    outline: none;
+  }

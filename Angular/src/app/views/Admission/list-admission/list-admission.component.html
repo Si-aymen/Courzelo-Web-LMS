@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <!-- Check if Admissions array is defined and has elements -->
+  <div *ngIf="Admissions && Admissions.length > 0">
+    <ul class="list-group">
+      <li *ngFor="let admission of Admissions" class="list-group-item admission-item">
+        <!-- Card inside the list item -->
+        <div class="card admission-card shadow-sm mb-3">
+          <div class="card-body">
+            <h5 class="card-title mb-2"><strong>Title:</strong> {{ admission.title }}</h5>
+            <p class="card-text mb-2"><strong>Status:</strong> {{ admission.status | titlecase }}</p>
+            <div class="admission-dates mb-2">
+              <p><strong>Start Date:</strong> <span class="date">{{ admission.starDate | date:'fullDate' }}</span></p>
+              <p><strong>End Date:</strong> <span class="date">{{ admission.endDate | date:'fullDate' }}</span></p>
+            </div>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a [routerLink]="['/admission/applications', admission.id]" class="btn btn-primary">Check Applications</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Display this message if Admissions array is empty or undefined -->
+  <div *ngIf="!Admissions || Admissions.length === 0" class="text-center mt-4">
+    <p class="lead">You don't have any created admissions.</p>
+    <a [routerLink]="'/admission/create'" class="btn btn-primary">Check Applications</a>
+  </div>
+</div>

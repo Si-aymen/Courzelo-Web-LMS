@@ -1,0 +1,52 @@
+/* Card Styles */
+.card {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+/* Title Styles */
+#title {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333333;
+}
+
+.form-control {
+    height: 45px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Button Styles */
+#schedule-button {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
+    height: 45px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#schedule-button:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}

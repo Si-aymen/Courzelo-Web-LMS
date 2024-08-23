@@ -249,6 +249,17 @@ export class NavigationService {
                     { icon: 'icon-regular i-Mail-Reply', name: 'Mails', state: '/mailing', type: 'link' },
                 ]
             },
+            {
+                name: 'Admission',
+                description: 'Support Menu',
+                type: 'dropDown',
+                icon: 'i-File-Horizontal-Text',
+                sub: [
+                    { icon: 'i-Support', name: 'List Offers', state: '/studentadmission/list', type: 'link' , roles: ['STUDENT'] },
+                    { icon: 'i-Hand', name: 'Admissions', state: '/admission/list', type: 'link', roles: ['ADMIN'] },
+                    { icon: 'i-Hand', name: 'Interviews', state: '/admissionteacher/note', type: 'link', roles: ['TEACHER','STUDENT'] },
+                ]
+            },
         ];
     }
     filterMenuItemsByUser(menuItems: IMenuItem[], user: UserResponse): IMenuItem[] {
