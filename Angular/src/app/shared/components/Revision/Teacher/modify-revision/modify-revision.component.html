@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h4 class="modal-title">Update Revision</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="titre">Title</label>
+      <input type="text" id="titre" [(ngModel)]="titre" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="nbrmax">Max Participants</label>
+      <input type="number" id="nbrmax" [(ngModel)]="nbrmax" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="subjectRevision">Subject</label>
+      <select id="subjectRevision" [(ngModel)]="selectedSubjectRevision" class="form-control">
+        <option *ngFor="let subject of subjectRevisions" [value]="subject">{{subject}}</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('Cancel click')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="updateRevision()">Save changes</button>
+  </div>
+  

@@ -1,0 +1,121 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="content" class="content content-full-width">
+        <!-- Project Header -->
+        <div role="tab" class="card-header" id="ngb-panel-0-header">
+          <button type="button" class="btn btn-link" aria-expanded="true" aria-controls="ngb-panel-0" style="font-size: 20px;">
+            {{ project?.name }}
+          </button>
+        </div>
+
+        <!-- Project Description -->
+        <div class="card-body">
+          <div class="project-description" style="font-size: 1.5em; padding: 10px;">
+            {{ project?.description }}
+          </div>
+        </div>
+
+        <button (click)="openAddPublicationModal()" class="btn btn-outline-primary btn-rounded">Add Publication</button>
+
+        <!-- Publications Section -->
+        <div class="profile">
+          <div class="profile-header">
+            <div class="profile-header-cover"></div>
+          </div>
+
+          <div class="profile-content">
+            <div class="tab-content p-0">
+              <div class="tab-pane fade active show" id="profile-post">
+                <ul class="timeline">
+                  <li *ngFor="let publication of publications; let i = index">
+                    <div class="timeline-time">
+                      <span class="date">{{ publication.dateTime | date: 'mediumDate' }}</span>
+                      <span class="time">{{ publication.dateTime | date: 'shortTime' }}</span>
+                    </div>
+
+                    <div class="timeline-icon">
+                      <a href="javascript:;">&nbsp;</a>
+                    </div>
+
+                    <div class="timeline-body">
+                      <div class="timeline-header">
+                        <span class="userimage">
+                          <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                        </span>
+                        <span class="username">
+                          <a href="javascript:;">{{ publication.author.email }}</a>
+                        </span>
+                      </div>
+
+                      <div class="timeline-content">
+                        <p class="card-text">{{ publication?.content }}</p>
+                      </div>
+
+                      <div class="timeline-likes">
+                        <div class="stats">
+                          <a href="javascript:;" class="m-r-15 text-inverse-lighter" style="display: flex; align-items: center;">
+                            <picture style="margin: 0;" (click)="likePublication(publication.id)">
+                              <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d_1f3fb/512.webp" type="image/webp">
+                              <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d_1f3fb/512.gif" alt="👍" width="22" height="22">
+                            </picture>
+                            <span style="margin-right: 8px;">{{ publication.likes }}</span>
+                            <picture style="margin: 0;" (click)="dislikePublication(publication.id)">
+                              <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44e_1f3fb/512.webp" type="image/webp">
+                              <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44e_1f3fb/512.gif" alt="👎" width="22" height="22">
+                            </picture>
+                            <span style="margin-left: 8px;">{{ publication.dislikes }}</span>
+                          </a>
+                        </div>
+                      </div>
+
+                   
+
+                      <div class="timeline-comment-box">
+                        <div class="user">
+                          <img src="https://bootdey.com/img/Content/avatar/avatar3.png">
+                        </div>
+                        <div class="input">
+                          <form (submit)="addComment(publication.id, i)">
+                            <div class="input-group">
+                              <input type="text" [(ngModel)]="commentContent[i]" name="commentContent{{i}}" class="form-control rounded-corner" placeholder="Write a comment...">
+                              <span class="input-group-btn p-l-10">
+                                <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Comment</button>
+                              </span>
+                            </div>
+                          </form>
+                          <div class="timeline-comments">
+                            <ul class="comments-list">
+                              <li *ngFor="let comment of publication.comments" class="comment-item">
+                                <div class="comment-box">
+                                  <div class="comment-avatar">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="User Avatar">
+                                  </div>
+                                  <div class="comment-body">
+                                    <div class="comment-content">
+                                      <p>{{ comment?.content }}</p>
+                                    </div>
+                                    <div class="comment-meta">
+                                      <span class="comment-date">{{ comment?.dateTime | date: 'short' }}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include Font Awesome CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">

@@ -169,6 +169,29 @@ export class NavigationService {
                 ]
             },
             {
+                name: 'Project',
+                description: '',
+                type: 'dropDown',
+                icon: 'i-Computer-Secure',
+                sub: [
+                    { icon: 'i-File-Horizontal-Text', name: 'Dashboard Project', state: '/projects', type: 'link' },// admin w teacher 
+                    { icon: 'i-Full-View-Window', name: 'Projects', state: '/getallprojects', type: 'link' },
+                  
+                ]
+            },
+            {
+                name: 'Revision',
+                description: '',
+                type: 'dropDown',
+                icon: 'i-Library',
+                sub: [
+                    { icon: 'i-File-Horizontal-Text', name: 'Revision Dashboard ', state: '/revision', type: 'link' },// admin w teacher 
+                    { icon: 'i-Full-View-Window', name: 'Revisions', state: '/clientrevision', type: 'link' },//user 
+                  
+                ]
+            },
+
+            {
                 name: 'Tools',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
                 type: 'dropDown',

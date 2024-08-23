@@ -2,13 +2,14 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.models.ProjectEntities.Tasks;
-import org.example.courzelo.models.ProjectEntities.Validate;
+import org.example.courzelo.models.ProjectEntities.project.Project;
+import org.example.courzelo.models.ProjectEntities.project.Tasks;
+import org.example.courzelo.models.ProjectEntities.project.Validate;
 import org.example.courzelo.repositories.ProjectRepo.GroupProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.ProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.TasksRepo;
 import org.example.courzelo.services.Project.IProjectService;
+
 import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,30 +27,27 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Override
     public Project saveProject(Project project) {
-        // Get the list of tasks associated with the project
-        List<Tasks> tasksList = project.getTasks(); // Retrieve tasks from the project
+
+        List<Tasks> tasksList = project.getTasks();
 
         if (tasksList != null && !tasksList.isEmpty()) {
-            // Save all tasks first to generate unique IDs
+
             tasksList = tasksRepo.saveAll(tasksList);
         }
 
-        // Save the project after tasks to ensure tasks have IDs generated
         Project savedProject = projectRepo.save(project);
 
-        // Final copy of savedProject for use in lambda expression
         final Project finalSavedProject = savedProject;
 
-        // Associate tasks with the project
+
         tasksList.forEach(task -> {
             task.setProject(finalSavedProject);
             tasksRepo.save(task); // Save each task individually
         });
 
-        // Update the project to include the saved tasks
+
         savedProject.setTasks(tasksList);
 
-        // Return the saved project with associated tasks
         return projectRepo.save(savedProject);
     }
 
@@ -108,5 +106,7 @@ public class ProjectServiceImpl implements IProjectService {
             }
         }
     }
+
+
 
 }

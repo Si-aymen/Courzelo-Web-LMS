@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { Project } from '../../models/Project/Project';
 import { FileMetadata } from '../../models/Project/FileMetadata ';
 import { catchError } from 'rxjs/operators';
+import { status, Tasks } from '../../models/Project/Tasks';
 
 const addproject = 'http://localhost:8080/addProject'; 
 const getallprojecturl = 'http://localhost:8080/listofProjects'; 
@@ -13,7 +14,7 @@ const getidprojecturl = "http://localhost:8080/getProjectbyid";
 const uploadUrl = 'http://localhost:8080/projectId/upload';
 const getpdfs = 'http://localhost:8080/project';
  const  getfileUrl = 'http://localhost:8080'
- const getgeneratgroupurl="http://localhost:8081/projects/assignStudentsToGroup";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -100,4 +101,19 @@ export class ProjectService {
         responseType: 'text' 
       });
     }
+    getTasksByProject(projectId: string): Observable<Tasks[]> {
+      return this.http.get<Tasks[]>(`${getfileUrl}/${projectId}/tasks`);
+    }
+    getTasksByStatus(status: status){
+      return this.http.get<Tasks[]>(`${getfileUrl}/tasks/status/${status}`);
+    }
+    moveTask(id: string, newStatus: string) {
+      console.log(id)
+      console.log(newStatus)
+      return this.http.put<Tasks>(`${getfileUrl}/${id}/move?newStatus=${newStatus}`, {});
+    }
+
+
+    
+
 }

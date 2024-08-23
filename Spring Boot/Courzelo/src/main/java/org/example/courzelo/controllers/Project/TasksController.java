@@ -2,9 +2,8 @@ package org.example.courzelo.controllers.Project;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.ProjectEntities.Status;
-import org.example.courzelo.models.ProjectEntities.Tasks;
-import org.example.courzelo.services.Project.IProjectService;
+import org.example.courzelo.models.ProjectEntities.project.Status;
+import org.example.courzelo.models.ProjectEntities.project.Tasks;
 import org.example.courzelo.services.Project.ITaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import java.util.List;
 public class TasksController {
 
     private final ITaskService iTaskService;
-    private final IProjectService iProjectService;
+
 
     @PutMapping("/{id}/move")
     public void moveTask(@PathVariable String id, @RequestParam Status newStatus) {

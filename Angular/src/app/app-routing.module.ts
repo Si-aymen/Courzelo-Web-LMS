@@ -6,7 +6,7 @@ import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/b
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 
 import { ProjectComponent } from 'src/app/shared/components/Project/User/project/project.component';
-import { ProjectdetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
+import { ProjectDetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
 import { ProgressDashboardComponent } from './shared/components/Project/User/progress-dashboard/progress-dashboard.component';
 import { DashboardProjectComponent } from './shared/components/Project/Admin/dashboard-project/dashboard-project.component';
 import { AddProjectComponent } from './shared/components/Project/Admin/add-project/add-project.component';
@@ -14,6 +14,13 @@ import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdeta
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
 
 import {NoAuthGuard} from './shared/services/no-auth.guard';
+import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
+import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
+import { RevisionComponent } from './shared/components/Revision/Teacher/revision/revision.component';
+import { ConsultRevisionComponent } from './shared/components/Revision/Teacher/consult-revision/consult-revision.component';
+import { ClientRevisionComponent } from './shared/components/Revision/User/client-revision/client-revision.component';
+import { ParticipateRevisionComponent } from './shared/components/Revision/User/participate-revision/participate-revision.component';
+import { QuizrevisionComponent } from './shared/components/Revision/User/quizrevision/quizrevision.component';
 
 
 const userRoutes: Routes = [
@@ -74,13 +81,23 @@ const userRoutes: Routes = [
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
 
     } ,
-    { path: 'getallprojects', component: ProjectComponent},
-    { path: 'projectdetails', component: ProjectdetailsComponent},
-    { path: 'ProgressDashboard', component: ProgressDashboardComponent},
+ 
     { path: 'projects', component: DashboardProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
     { path: 'addprojects', component: AddProjectComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
     { path: 'project/:id', component: ViewdetailsComponent, canActivate: [AuthGuard], data: { roles: ['TEACHER'] }},
+
     { path: 'pdf', component: PdfComponent },
+    { path: 'projectcalendar/:id', component: ProjectCalendarComponent },//user
+    { path: 'getallprojects', component: ProjectComponent},//user
+    { path: 'projectdetails/:id', component: ProjectDetailsComponent},//user
+    { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},//user
+    { path: 'publication/:id', component: PublicationComponent},//user
+ ///////////////////////////////////////////////////////
+     { path: 'revision', component:RevisionComponent },//teacher
+     { path: 'consultrevision/:id', component:ConsultRevisionComponent },//teacher
+     { path: 'clientrevision', component:ClientRevisionComponent },//user
+     { path: 'participaterevision/:id', component:ParticipateRevisionComponent },//user
+     { path: 'QandA/:id', component:QuizrevisionComponent },//user
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
