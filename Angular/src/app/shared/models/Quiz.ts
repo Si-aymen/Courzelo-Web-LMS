@@ -16,6 +16,8 @@ export class Quiz {
     maxAttempts: number;
     category: string;
     course: string;
+    showSummary ? = false;
+    finalScore ? = 0;
 }
 export class QuizSubmission {
     quizID: string;

@@ -48,6 +48,7 @@ export class TakeQuizComponent implements OnInit {
 
         return currentQuiz.questions.every(question => {
             const answer = this.selectedAnswers[this.currentQuizIndex]?.[question.id];
+            console.log('Validating answer for question:', question);
             if (question.type === 'MULTIPLE_CHOICE') {
                 return Array.isArray(answer) && answer.length > 0;
             } else {

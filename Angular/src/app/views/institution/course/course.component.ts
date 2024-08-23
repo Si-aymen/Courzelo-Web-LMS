@@ -50,7 +50,9 @@ export class CourseComponent implements OnInit, OnDestroy {
         duration: 0,
         maxAttempts: 0,
         score: 0,
-        course: null
+        course: null,
+        showSummary: false,
+        finalScore: 0,
     };
     selectedAnswers: { [quizID: string]: { [questionId: string]: string[] | string } } = {};
     quizSubmissionStatus: { [key: string]: boolean } = {};
@@ -96,12 +98,50 @@ export class CourseComponent implements OnInit, OnDestroy {
             this.routeSub.unsubscribe();
         }
     }
+    resetQuiz(quiz: Quiz): void {
+        this.resetSelectAnswer(quiz);
+        this.quizSubmissionStatus = {};
+        quiz.showSummary = false;
+        quiz.finalScore = 0;
+    }
+
+    calculateScore(quiz: Quiz): void {
+        let totalScore = 0;
+            quiz.questions.forEach(question => {
+                const studentAnswer = this.selectedAnswers[quiz.id][question.id];
+                if (question.type === 'MULTIPLE_CHOICE' && (studentAnswer as string[]).includes(question.correctAnswer)) {
+                    totalScore++;
+                } else if ((question.type === 'SHORT_ANSWER' || question.type === 'LONG_ANSWER') &&
+                    (studentAnswer as string).trim().toLowerCase() === question.correctAnswer.trim().toLowerCase()) {
+                    totalScore++;
+                }
+            });
+        quiz.finalScore = totalScore;
+        this.toastr.success(`Your final score: ${quiz.finalScore}`, 'Score');
+    }
+    initializeSelectedAnswers(): void {
+        this.course.quizzes.forEach((quiz) => {
+            this.selectedAnswers[quiz.id] = {};
+            quiz.questions.forEach(question => {
+                this.selectedAnswers[quiz.id][question.id] =
+                    question.type === 'MULTIPLE_CHOICE' ? [] : '';
+                console.log('Selected answers:', this.selectedAnswers);
+            });
+        });
+    }
+    resetSelectAnswer(quiz: Quiz) {
+        this.selectedAnswers[quiz.id] = {};
+        quiz.questions.forEach(question => {
+            this.selectedAnswers[quiz.id][question.id] =
+                question.type === 'MULTIPLE_CHOICE' ? [] : '';
+            console.log('Selected answers:', this.selectedAnswers);
+        });
+    }
     // Submit short answer
-    submitShortAnswer(quizIndex: number): void {
-        if (!this.selectedAnswers[quizIndex]) {
-            this.selectedAnswers[quizIndex] = {};
+    submitShortAnswer(quizID: string): void {
+        if (!this.selectedAnswers[quizID]) {
+            this.selectedAnswers[quizID] = {};
         }
-        // No additional action required, as [(ngModel)] in the template handles updating the answer.
         this.toastr.success('Short answer submitted', 'Success');
     }
     validateQuizAnswers(quiz: Quiz): boolean {
@@ -127,22 +167,16 @@ export class CourseComponent implements OnInit, OnDestroy {
             console.log('Selected answers:', this.selectedAnswers);
             this.quizSubmissionStatus[currentQuiz.id] = true;
             this.toastr.success('Quiz submitted successfully', 'Success');
-
-         /*   if (this.currentQuizIndex === this.quizzes.length - 1) {
-                this.showSummary = true;
-                this.calculateScore();
-            } else {
-                this.currentQuizIndex++;
-            }*/
+             quiz.showSummary = true;
+             this.calculateScore(quiz);
         }
     }
 
 // Submit long answer
-    submitLongAnswer(quizIndex: number, questionId: string): void {
+    submitLongAnswer(quizIndex: string, questionId: string): void {
         if (!this.selectedAnswers[quizIndex]) {
             this.selectedAnswers[quizIndex] = {};
         }
-        // No additional action required, as [(ngModel)] in the template handles updating the answer.
         this.toastr.success('Long answer submitted', 'Success');
     }
     toggleOptionSelection(quizID: string, questionId: string, option: string): void {
@@ -191,6 +225,22 @@ export class CourseComponent implements OnInit, OnDestroy {
                 console.log('Quiz created:', response);
                 console.log('Quiz status after saving:', this.quizToAdd.status);
                 this.quizService.toastr.success('Quiz submitted successfully', 'Success');
+                this.quizToAdd = {
+                    status: status.COMPLETED, // Corrected property name from `Status` to `status`
+                    category: '',
+                    isSelected: false,
+                    id: '',
+                    userEmail: '',
+                    title: '',
+                    description: '',
+                    questions: [],
+                    duration: 0,
+                    maxAttempts: 0,
+                    score: 0,
+                    course: null,
+                    showSummary: false,
+                    finalScore: 0,
+                };
             },
             error => {
                 console.error('Error creating quiz:', error);
@@ -200,11 +250,44 @@ export class CourseComponent implements OnInit, OnDestroy {
     addQuizModel(content) {
         this.modalService.open( content, { ariaLabelledBy: 'add Quiz' })
             .result.then((result) => {
-            console.log(result);
-        }, (reason) => {
+                this.quizToAdd = {
+                    status: status.COMPLETED, // Corrected property name from `Status` to `status`
+                    category: '',
+                    isSelected: false,
+                    id: '',
+                    userEmail: '',
+                    title: '',
+                    description: '',
+                    questions: [],
+                    duration: 0,
+                    maxAttempts: 0,
+                    score: 0,
+                    course: null,
+                    showSummary: false,
+                    finalScore: 0,
+                }; }, (reason) => {
             console.log('Err!', reason);
         });
     }
+    resetForm(): void {
+this.quizToAdd = {
+    status: status.COMPLETED, // Corrected property name from `Status` to `status`
+    category: '',
+    isSelected: false,
+    id: '',
+    userEmail: '',
+    title: '',
+    description: '',
+    questions: [],
+    duration: 0,
+    maxAttempts: 0,
+    score: 0,
+    course: null,
+    showSummary: false,
+    finalScore: 0,
+};
+
+}
     fetchCourse() {
         this.courseService.getCourse(this.courseID).subscribe(
             course => {
@@ -215,6 +298,9 @@ export class CourseComponent implements OnInit, OnDestroy {
                         const objectURL = URL.createObjectURL(blob);
                         this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
                     });
+                }
+                if (this.course.quizzes) {
+                    this.initializeSelectedAnswers();
                 }
             }, error => {
                 console.error('Error fetching course:', error);

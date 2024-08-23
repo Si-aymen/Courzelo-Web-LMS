@@ -58,6 +58,9 @@ public class QuestionService {
             return null;
         }
         QuestionDTO questionDTO = new QuestionDTO();
+        if(question.getId() != null) {
+            questionDTO.setId(question.getId());
+        }
         questionDTO.setText(question.getText());
         questionDTO.setOptions(question.getOptions());
         questionDTO.setCorrectAnswer(question.getCorrectAnswer());
@@ -67,6 +70,9 @@ public class QuestionService {
 
     private Question convertToEntity(QuestionDTO questionDTO) {
         Question question = new Question();
+        if(questionDTO.getId() != null) {
+            question.setId(questionDTO.getId());
+        }
         question.setText(questionDTO.getText());
         question.setOptions(questionDTO.getOptions());
         question.setCorrectAnswer(questionDTO.getCorrectAnswer());

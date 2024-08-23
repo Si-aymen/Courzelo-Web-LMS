@@ -267,6 +267,9 @@ public class QuizService {
 
     private QuestionDTO mapToQuestionDTO(Question question) {
         QuestionDTO questionDTO = new QuestionDTO();
+        if(question.getId() != null) {
+            questionDTO.setId(question.getId());
+        }
         questionDTO.setText(question.getText());
         questionDTO.setOptions(question.getOptions());
         questionDTO.setCorrectAnswer(question.getCorrectAnswer());
@@ -276,6 +279,9 @@ public class QuizService {
 
     private Question mapToQuestionEntity(QuestionDTO questionDTO) {
         Question question = new Question();
+        if(questionDTO.getId() != null) {
+            question.setId(questionDTO.getId());
+        }
         question.setText(questionDTO.getText());
         question.setOptions(questionDTO.getOptions());
         question.setCorrectAnswer(questionDTO.getCorrectAnswer());
