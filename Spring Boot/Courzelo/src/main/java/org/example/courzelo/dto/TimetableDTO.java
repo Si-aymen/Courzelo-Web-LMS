@@ -2,6 +2,7 @@ package org.example.courzelo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.example.courzelo.models.Professor;
 
 import java.time.DayOfWeek;
 
@@ -12,6 +13,7 @@ public class TimetableDTO {
     private String period;
     private String courseName;
     private String professorName;
+    private Professor professor;
 
     public TimetableDTO(DayOfWeek dayOfWeek, String p1, String mathematics, String s) {
         this.dayOfWeek = dayOfWeek;

@@ -13,7 +13,12 @@ public class ProfessorDTO {
     private Set<Timeslot> unavailableTimeSlots;
 
 
+    public ProfessorDTO(String id, String name) {
+this.id = id;
+        this.name = name;
+    }
 
+    public ProfessorDTO() {
 
-
+    }
 }

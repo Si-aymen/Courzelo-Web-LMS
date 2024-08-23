@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DayOfWeek, Period} from '../professor-availability-component/professor-availability-component.component';
 import {ToastrService} from 'ngx-toastr';
 import {TimetableService} from '../../../shared/services/timetable.service';
+import {Professor} from '../../../shared/models/Professor';
 export interface Timetable {
   dayOfWeek: DayOfWeek;
   period: Period;
@@ -17,42 +18,70 @@ export class TimetableComponent implements OnInit {
   timetable: Timetable[] = [];
   daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   periods: string[] = ['P1', 'P2', 'P3', 'P4'];
-  newSlot: any = {
+    public professors: Professor[] = []; // Make sure it's public
+    public selectedProfessorId = ''; // Make sure it's public
+
+    newSlot: any = {
         dayOfWeek: '',
         period: '',
         courseName: '',
         professorName: ''
     };
-
   constructor(private timetableService: TimetableService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.getTimetable();
+    //this.getTimetable();
   }
+    loadProfessors(): void {
+        this.timetableService.getAllProfessorNames().subscribe(
+            (data: Professor[]) => {
+                this.professors = data;
+            },
+            error => {
+                console.error('Error fetching professors:', error);
+            }
+        );
+    }
 
-  generateTimetable(): void {
-    this.timetableService.generateTimetable().subscribe(
-        (data: Timetable[]) => {
-          this.timetable = data;
-          this.toastr.success('Timetable generated successfully!');
-        },
-        error => {
-          this.toastr.error('Failed to generate timetable.');
-          console.error('Error:', error);
-        }
-    );
-  }
+    generateTimetable(): void {
+        const courseIds = ['course1', 'course2']; // Replace with actual course IDs
+        this.timetableService.getProfessorIds().subscribe(
+            (professorIds: string[]) => {
+                this.timetableService.getAllProfessorNames().subscribe(
+                    (professors: Professor[]) => {
+                        // Map professors to names
+                        const professorNames = professors.map(prof => prof.name);
 
+                        // Step 3: Generate the timetable with professor names
+                        this.timetableService.generateTimetable(courseIds, professorNames).subscribe(
+                            (data) => {
+                                this.timetable = [data];
+                                console.log('Generated Timetable: ', this.timetable);
+                            },
+                            (error) => {
+                                console.error('Error generating timetable: ', error);
+                            }
+                        );
+                    },
+                    (error) => {
+                        console.error('Error fetching professor names: ', error);
+                    }
+                );
+            },
+            (error) => {
+                console.error('Error fetching professor IDs: ', error);
+            }
+        );
+    }
 
-    // Handle form submission
     addTimetableSlot() {
         if (this.newSlot.dayOfWeek && this.newSlot.period && this.newSlot.courseName && this.newSlot.professorName) {
-            this.timetable.push({...this.newSlot}); // Add a copy of the new slot to the timetable
-            this.newSlot = { dayOfWeek: '', period: '', courseName: '', professorName: '' }; // Reset form
+            this.timetable.push({...this.newSlot});
+            this.newSlot = { dayOfWeek: '', period: '', courseName: '', professorName: '' };
         }
     }
 
-  getTimetable(): void {
+  /*getTimetable(): void {
     this.timetableService.getTimetable().subscribe(
         (data: Timetable[]) => {
           this.timetable = data;
@@ -61,7 +90,7 @@ export class TimetableComponent implements OnInit {
           console.error('Error:', error);
         }
     );
-  }
+  }*/
 }
 
 

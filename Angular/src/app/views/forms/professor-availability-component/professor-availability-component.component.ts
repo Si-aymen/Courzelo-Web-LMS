@@ -45,7 +45,7 @@ export class ProfessorAvailabilityComponentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.professorService.getAllProfessors().subscribe(
+    /*this.professorService.getAllProfessors().subscribe(
         professors => {
           this.professors = professors;
         },
@@ -53,7 +53,7 @@ export class ProfessorAvailabilityComponentComponent implements OnInit {
           console.error('An error occurred while fetching professor data:', error);
           this.toastr.error('Failed to load professor data');
         }
-    );
+    );*/
   }
 
   addTimeSlot(): void {

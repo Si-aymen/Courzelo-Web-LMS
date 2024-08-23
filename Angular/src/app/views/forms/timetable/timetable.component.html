@@ -1,10 +1,9 @@
+<!-- your-component.component.html -->
 <div class="container">
     <h2 class="text-center my-4">Generated Timetable</h2>
 
-    <!-- Button to Generate Timetable -->
     <button class="btn btn-primary mb-3" (click)="generateTimetable()">Generate Timetable</button>
 
-    <!-- Form for Adding New Timetable Slot -->
     <form (ngSubmit)="addTimetableSlot()">
         <div class="form-row">
             <div class="form-group col-md-3">
@@ -24,14 +23,17 @@
                 <input type="text" id="courseName" class="form-control" [(ngModel)]="newSlot.courseName" name="courseName" required>
             </div>
             <div class="form-group col-md-3">
-                <label for="professorName">Professor Name</label>
-                <input type="text" id="professorName" class="form-control" [(ngModel)]="newSlot.professorName" name="professorName" required>
+                <label for="professorId">Professor</label>
+                <select id="professorId" class="form-control" [(ngModel)]="selectedProfessorId" name="professorId" required>
+                    <option *ngFor="let professor of professors" [value]="professor.id">
+                        {{ professor.name }}
+                    </option>
+                </select>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Add Slot</button>
     </form>
 
-    <!-- Display the Timetable -->
     <table class="table table-bordered mt-4">
         <thead>
         <tr>
@@ -51,3 +53,5 @@
         </tbody>
     </table>
 </div>
+
+

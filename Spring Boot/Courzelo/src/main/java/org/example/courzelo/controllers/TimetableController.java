@@ -1,6 +1,7 @@
 package org.example.courzelo.controllers;
 
 import org.example.courzelo.dto.ChromosomeDTO;
+import org.example.courzelo.dto.ProfessorDTO;
 import org.example.courzelo.dto.TimetableDTO;
 import org.example.courzelo.services.TimetableService;
 import org.slf4j.Logger;
@@ -8,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,5 +44,26 @@ public class TimetableController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+   /* @GetMapping
+    public ResponseEntity<List<TimetableDTO>> getTimetables() {
+        List<TimetableDTO> timetable = timetableService.getTimetables();
+        return ResponseEntity.ok(timetable);
+    }*/
+    @PostMapping( "/professor")
+    public ResponseEntity<ProfessorDTO>AddProfessor(@RequestBody ProfessorDTO professorDTO){
+        ProfessorDTO professor = timetableService.addProfessor(professorDTO);
+        return ResponseEntity.ok(professor);
+    }
+    @GetMapping("/names")
+    public ResponseEntity<List<ProfessorDTO>> getAllProfessorNames() {
+        List<ProfessorDTO> professors = timetableService.getAllProfessorNames();
+        return ResponseEntity.ok(professors);
+    }
+    @GetMapping("/professor")
+    public ResponseEntity<ProfessorDTO>GetProfessorByID(@RequestParam String professorId){
+        ProfessorDTO professor = timetableService.getProfessorById(professorId);
+        return ResponseEntity.ok(professor);
+    }
+
 }
 
