@@ -1,4 +1,5 @@
 $blue:    #263db5 !default;
+$courzeloBlue: #07294d !default;
 $indigo:  #6610f2 !default;
 $purple:  #663399 !default;
 $pink:    #e83e8c !default;
@@ -9,7 +10,7 @@ $green:   #4CAF50 !default;
 $teal:    #20c997 !default;
 $cyan:    #9C27B0 !default;
 
-$primary-base: $purple;
+$primary-base: $courzeloBlue;
 
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;
@@ -24,7 +25,7 @@ $gray-900: darken(desaturate($primary-base, 40), 12%) !default;
 $black:    darken($primary-base, 60%) !default;
 
 $primary:       $primary-base !default;
-$secondary:     $gray-800 !default;
+$secondary:     $yellow !default;
 $success:       $green !default;
 $info:          $blue !default;
 $warning:       $yellow !default;
@@ -37,6 +38,7 @@ $heading:       darken($foreground, 8%);
 
 $colors: (
   blue: $blue,
+  courzeloBlue: $courzeloBlue,
   indigo: $indigo,
   purple: $purple,
   pink: $pink,
