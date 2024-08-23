@@ -153,9 +153,7 @@ public class QuizService {
             quiz.setCourse(quizDTO.getCourse());
         }
         quiz = quizRepository.save(quiz);
-        if(quizDTO.getCourse() != null) {
-            addQuizToCourse(quiz, quizDTO.getCourse());
-        }
+        addQuizToCourse(quiz, quizDTO.getCourse());
         logger.info("Quiz ID after save: {}, Status: {}", quiz.getId(), quiz.getStatus());
         final String quizId = quiz.getId();
         List<Question> questions = quizDTO.getQuestions().stream()
@@ -179,6 +177,7 @@ public class QuizService {
             course.setQuizzes(List.of(quiz.getId()));
         } else {
             log.info("Course quizzes is not null");
+            log.info("QUIZ ID: {}", quiz.getId());
             course.getQuizzes().add(quiz.getId());
         }
         courseRepository.save(course);
@@ -243,9 +242,8 @@ public class QuizService {
         return quizDTO;
     }
     public Quiz mapToEntity(final QuizDTO quizDTO, final Quiz quiz) {
-        if (quizDTO.getId() != null) {
-            quiz.setId(quizDTO.getId());
-        }
+       log.info("QuizDTO: {}", quizDTO);
+       // quiz.setId(quizDTO.getId());
         quiz.setTitle(quizDTO.getTitle());
         quiz.setDescription(quizDTO.getDescription());
         quiz.setQuestions(quizDTO.getQuestions().stream()
@@ -258,6 +256,7 @@ public class QuizService {
         quiz.setCategory(quizDTO.getCategory());
         quiz.setSelected(quizDTO.isSelected());
         quiz.setCourse(quizDTO.getCourse()!= null ? quizDTO.getCourse() : null);
+        log.info("Quiz: {}", quiz);
         return quiz;
     }
     public QuizDTO getQuizStatus(String id) {
@@ -279,9 +278,6 @@ public class QuizService {
 
     private Question mapToQuestionEntity(QuestionDTO questionDTO) {
         Question question = new Question();
-        if(questionDTO.getId() != null) {
-            question.setId(questionDTO.getId());
-        }
         question.setText(questionDTO.getText());
         question.setOptions(questionDTO.getOptions());
         question.setCorrectAnswer(questionDTO.getCorrectAnswer());
