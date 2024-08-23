@@ -158,7 +158,7 @@ export class NavigationService {
             name: 'Revision',
             description: '',
             type: 'dropDown',
-            icon: 'i-Computer-Secure',
+            icon: 'i-Library',
             sub: [
                 { icon: 'i-File-Horizontal-Text', name: 'Revision Dashboard ', state: '/revision', type: 'link' },// admin w teacher 
                 { icon: 'i-Full-View-Window', name: 'Revisions', state: '/clientrevision', type: 'link' },//user 
