@@ -17,17 +17,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RevisionDto {
-
         private String id;
         private String titre;
-
         private List<FileMetadatarevisionDTO> files;
-
         private int nbrmax;
-
         private String subjectRevision;
-
-
         private List<QuizRevisionDTO> quizRevisions;
     }
 

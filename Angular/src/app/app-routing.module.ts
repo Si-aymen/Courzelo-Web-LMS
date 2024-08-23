@@ -71,22 +71,22 @@ const userRoutes: Routes = [
     } ,
     
     
-    { path: 'projects', component: DashboardProjectComponent},
-    { path: 'addprojects', component: AddProjectComponent},
-    { path: 'project/:id', component: ViewdetailsComponent },
+    { path: 'projects', component: DashboardProjectComponent},//teacher
+    { path: 'addprojects', component: AddProjectComponent},//teacher
+    { path: 'project/:id', component: ViewdetailsComponent },//teacher
 
     { path: 'pdf', component: PdfComponent },
-    { path: 'projectcalendar/:id', component: ProjectCalendarComponent },
-    { path: 'getallprojects', component: ProjectComponent},
-    { path: 'projectdetails/:id', component: ProjectDetailsComponent},
-    { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},
-    { path: 'publication/:id', component: PublicationComponent},
+    { path: 'projectcalendar/:id', component: ProjectCalendarComponent },//user
+    { path: 'getallprojects', component: ProjectComponent},//user
+    { path: 'projectdetails/:id', component: ProjectDetailsComponent},//user
+    { path: 'ProgressDashboard/:id', component: ProgressDashboardComponent},//user
+    { path: 'publication/:id', component: PublicationComponent},//user
  ///////////////////////////////////////////////////////
-     { path: 'revision', component:RevisionComponent },
-     { path: 'consultrevision/:id', component:ConsultRevisionComponent },
-     { path: 'clientrevision', component:ClientRevisionComponent },
-     { path: 'participaterevision/:id', component:ParticipateRevisionComponent },
-     { path: 'QandA/:id', component:QuizrevisionComponent },
+     { path: 'revision', component:RevisionComponent },//teacher
+     { path: 'consultrevision/:id', component:ConsultRevisionComponent },//teacher
+     { path: 'clientrevision', component:ClientRevisionComponent },//user
+     { path: 'participaterevision/:id', component:ParticipateRevisionComponent },//user
+     { path: 'QandA/:id', component:QuizrevisionComponent },//user
     {
         path: 'settings',
         loadChildren: () => import('./views/settings/settings.module').then(m => m.SettingsModule)
