@@ -2,8 +2,8 @@ package org.example.courzelo.controllers.Project;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.ProjectEntities.project.Project;
-import org.example.courzelo.models.ProjectEntities.project.Validate;
+import org.example.courzelo.models.ProjectEntities.Project;
+import org.example.courzelo.models.ProjectEntities.Validate;
 import org.example.courzelo.services.Project.IProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

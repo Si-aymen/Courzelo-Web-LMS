@@ -1,5 +1,3 @@
-import { Event } from "./Event";
-import { Publication } from "./Publication";
 import { Speciality } from "./Speciality";
 import { Tasks } from "./Tasks";
 import { Validate } from "./Validate";
@@ -18,8 +16,6 @@ export class Project {
     number!: number;
     hasGroupProject!: boolean;
     tasks: Tasks[];
-    events:Event [];
-    publications:Publication [];
 
 
     // Define the specialities array within the class

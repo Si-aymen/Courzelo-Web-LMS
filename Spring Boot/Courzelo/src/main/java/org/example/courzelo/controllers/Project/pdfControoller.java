@@ -3,7 +3,9 @@ package org.example.courzelo.controllers.Project;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.ServletContext;
-import org.example.courzelo.models.ProjectEntities.project.FileMetadata;
+import lombok.AllArgsConstructor;
+import org.example.courzelo.models.ProjectEntities.FileMetadata;
+import org.example.courzelo.repositories.ProjectRepo.FileMetadataRepository;
 import org.example.courzelo.services.Project.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

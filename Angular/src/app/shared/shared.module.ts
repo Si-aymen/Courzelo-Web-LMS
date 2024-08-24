@@ -4,12 +4,11 @@ import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { SearchModule } from './components/search/search.module';
 import { SharedComponentsModule } from './components/shared-components.module';
 import { SharedDirectivesModule } from './directives/shared-directives.module';
 import { SharedPipesModule } from './pipes/shared-pipes.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { SearchModule } from './components/Revision/User/quizrevision/search/search.module';
 @NgModule({
   imports: [
     CommonModule,

@@ -2,10 +2,10 @@ package org.example.courzelo.serviceImpls.Project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.courzelo.models.ProjectEntities.project.GroupProject;
-import org.example.courzelo.models.ProjectEntities.project.Profileproject;
-import org.example.courzelo.models.ProjectEntities.project.Project;
-import org.example.courzelo.models.ProjectEntities.project.Speciality;
+import org.example.courzelo.models.ProjectEntities.GroupProject;
+import org.example.courzelo.models.ProjectEntities.Profileproject;
+import org.example.courzelo.models.ProjectEntities.Project;
+import org.example.courzelo.models.ProjectEntities.Speciality;
 import org.example.courzelo.repositories.ProjectRepo.GroupProjectRepo;
 import org.example.courzelo.repositories.ProjectRepo.ProfileprojectRepo;
 import org.example.courzelo.repositories.ProjectRepo.ProjectRepo;

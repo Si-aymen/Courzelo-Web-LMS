@@ -1,5 +1,4 @@
-import { CalendarModule } from "angular-calendar";
-
+import { CalendarModule } from './calendar.module';
 
 describe('CalendarModule', () => {
   let calendarModule: CalendarModule;

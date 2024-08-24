@@ -1,6 +1,6 @@
 package org.example.courzelo.services.Project;
 
-import org.example.courzelo.models.ProjectEntities.project.FileMetadata;
+import org.example.courzelo.models.ProjectEntities.FileMetadata;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

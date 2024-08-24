@@ -4,7 +4,6 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { CalendarAppEvent } from 'src/app/shared/models/calendar-event.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Utils } from 'src/app/shared/utils';
-import { Event } from 'src/app/shared/models/Project/Event';
 
 interface DialogData {
   event?: CalendarEvent;
@@ -18,7 +17,7 @@ interface DialogData {
 })
 export class CalendarFormDialogComponent implements OnInit {
   data: DialogData;
-  event: CalendarAppEvent;
+  event: CalendarEvent;
   dialogTitle: string;
   eventForm: FormGroup;
   action: string;
