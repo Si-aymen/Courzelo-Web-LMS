@@ -2,19 +2,19 @@
     <img src="assets/images/logo.png" class="logo mb-3" style="display: none" alt="">
     <div class="loader-bubble loader-bubble-primary d-block"></div>
 </div>
-<div *ngIf="course" class="container-fluid rounded bg-primary  p-4">
+<div *ngIf="course" class="container-fluid rounded bg-primary text-white p-4">
     <div class="row">
         <div  class="col-lg-6">
-            <h1 class=" text-white display-4">{{this.course.name || "Course name" }}</h1>
-            <p class=" text-white lead">{{this.course.description || "Course description" }}</p>
-            <p class="text-white">Credits: {{this.course.credit || 0}}</p>
+            <h1 class="display-4">{{this.course.name || "Course name" }}</h1>
+            <p class="lead">{{this.course.description || "Course description" }}</p>
+            <p>Credits: {{this.course.credit || 0}}</p>
         </div>
         <div class="col">
             <div class="row mt-5">
                 <div class="col-lg-8 user-profile mb-4">
                     <div class="user-info">
                         <img class="profile-picture avatar-lg mb-2" [src]="imageSrc || 'assets/default-image.jpg' " alt="">
-                        <h1 class="m-0 text-white" >{{this.course.teacher ||"Course teacher"}}</h1>
+                        <h1 class="m-0" >{{this.course.teacher ||"Course teacher"}}</h1>
                     </div>
                 </div>
             </div>
