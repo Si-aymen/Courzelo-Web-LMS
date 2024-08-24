@@ -22,15 +22,9 @@ export class TimetableService {
   getTimetables(): Observable<Timetable[]> {
     return this.http.get<Timetable[]>(this.baseUrl);
   }
-
-  getProfessorIds(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/professors/ids`);
+  getAllProfessorNames(): Observable<Professor[]> {
+    return this.http.get<Professor[]>(`${this.baseUrl}/names`);
   }
-
-  // Fetch professor names by IDs
-
-
   getProfessorById(professorId: string) {
-    return this.http.get<Professor>(`${this.baseUrl}/professor/${professorId}`);
-  }
+    return this.http.get<Professor>(`${this.baseUrl}/professor/${professorId}`);}
 }

@@ -123,7 +123,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-File-Clipboard-File--Text',
             sub: [
-                { icon: 'i-File-Clipboard-Text--Image', name: 'professor Availability', state: '/forms/ProfessorAvailability', type: 'link' },
+                { icon: 'i-File-Clipboard-Text--Image', name: 'professor Availability', state: '/forms/professor/:professorId/availability', type: 'link' },
                 { icon: 'i-Split-Vertical', name: 'GenerateTimetable', state: '/forms/Timetable', type: 'link' },
                 { icon: 'i-Receipt-4', name: 'Input Group', state: '/forms/input-group', type: 'link' },
                 { icon: 'i-File-Edit', name: 'Input Mask', state: '/forms/input-mask', type: 'link' },

@@ -40,7 +40,7 @@ const routes: Routes = [
     component: AppImgCropperComponent
   },
   {
-    path: 'ProfessorAvailability',
+    path: 'professor/:professorId/availability',
     component: ProfessorAvailabilityComponentComponent
   },
   {

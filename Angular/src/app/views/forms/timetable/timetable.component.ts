@@ -22,6 +22,7 @@ export class TimetableComponent implements OnInit {
     timetable: Timetable[] = [];
     daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     periods: string[] = ['P1', 'P2', 'P3', 'P4'];
+    professorIds: string[] = [];
     newSlot: any = {
         dayOfWeek: '',
         period: '',
@@ -31,22 +32,29 @@ export class TimetableComponent implements OnInit {
     constructor(private timetableService: TimetableService, private toastr: ToastrService, private professorService: ProfessorService) { }
 
     ngOnInit(): void {
-        this.loadProfessors();
+        this.fetchProfessorNamesByIds();
     }
 
     generateTimetable(): void {
-        const courseIds = ['course1', 'course2']; // Replace with actual course IDs
+        const courseIds = ['course1', 'course2'];
 
-        // Step 1: Get professor IDs
-        this.timetableService.getProfessorIds().subscribe(
+        // Fetch professor IDs
+        this.professorService.getProfessorIds().subscribe(
             (professorIds: string[]) => {
-                // Step 2: Get professor names by IDs
-                this.timetableService.getProfessorNames(professorIds).subscribe(
+                if (professorIds.length === 0) {
+                    this.toastr.warning('No professor IDs found.');
+                    return;
+                }
+                this.professorService.getAllProfessorNames(professorIds).subscribe(
                     (professors: Professor[]) => {
-                        // Map professors to names
+                        if (professors.length === 0) {
+                            this.toastr.warning('No professor names found.');
+                            return;
+                        }
+
                         const professorNames = professors.map(prof => prof.name);
 
-                        // Step 3: Generate the timetable with professor names
+                        // Generate the timetable with professor names
                         this.timetableService.generateTimetable(courseIds, professorNames).subscribe(
                             (data) => {
                                 this.timetable = [data];
@@ -54,16 +62,19 @@ export class TimetableComponent implements OnInit {
                             },
                             (error) => {
                                 console.error('Error generating timetable: ', error);
+                                this.toastr.error('Failed to generate timetable.');
                             }
                         );
                     },
                     (error) => {
                         console.error('Error fetching professor names: ', error);
+                        this.toastr.error('Failed to fetch professor names.');
                     }
                 );
             },
             (error) => {
                 console.error('Error fetching professor IDs: ', error);
+                this.toastr.error('Failed to fetch professor IDs.');
             }
         );
     }
@@ -73,13 +84,15 @@ export class TimetableComponent implements OnInit {
             this.newSlot = { dayOfWeek: '', period: '', courseName: '', professorName: '' }; // Reset form
         }
     }
-    loadProfessors(): void {
-        this.professorService.getAllProfessorNames().subscribe(
-            (data: Professor[]) => {
-                this.professors = data;
+    fetchProfessorNamesByIds(): void {
+        this.professorService.getAllProfessorNames(this.professorIds).subscribe(
+            (professors: Professor[]) => {
+                this.professors = professors;
+                console.log('Fetched Professor Names: ', this.professors);
             },
-            error => {
-                console.error('Error fetching professors:', error);
+            (error) => {
+                console.error('An error occurred while fetching professor names:', error);
+                this.toastr.error('Failed to load professor names');
             }
         );
     }

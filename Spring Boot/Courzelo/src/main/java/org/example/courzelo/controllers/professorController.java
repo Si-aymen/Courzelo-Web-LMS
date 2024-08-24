@@ -72,5 +72,10 @@ public class professorController {
         List<ProfessorDTO> professors = ProfessorService.getAllProfessorNames();
         return ResponseEntity.ok(professors);
     }
+    @GetMapping("/names1")
+    public ResponseEntity<List<ProfessorDTO>> getProfessorNamesByIds(@RequestParam List<String> ids) {
+        List<ProfessorDTO> professorNames = professorService.getProfessorNamesByIds(ids);
+        return ResponseEntity.ok(professorNames);
+    }
 
 }

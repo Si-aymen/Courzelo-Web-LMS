@@ -32,29 +32,47 @@ export enum Period {
   styleUrls: ['./professor-availability-component.component.scss']
 })
 export class ProfessorAvailabilityComponentComponent implements OnInit {
-  professorId = '66be6e4d5af0e46059a692c5'; // Directly set the ID
+  professorId: string | null = null; // Initialized to null
   unavailableTimeSlots: TimeSlot[] = [];
   dayOfWeekOptions = Object.values(DayOfWeek);
   periodOptions = Object.values(Period);
   selectedTimeSlot: TimeSlot = { dayOfWeek: DayOfWeek.MONDAY, period: Period.P1 };
-  private professors: Professor[] = [];
+  professors: Professor[] = [];
 
   constructor(
+      private route: ActivatedRoute,
       private professorService: ProfessorService,
       private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
-    /*this.professorService.getAllProfessors().subscribe(
-        professors => {
-          this.professors = professors;
+    this.route.paramMap.subscribe(params => {
+      this.professorId = params.get('id');
+
+      if (this.professorId) {
+        this.loadProfessorData(this.professorId);
+      } else {
+        this.toastr.error('Professor ID is not available');
+      }
+    });
+  }
+
+  loadProfessorData(professorId: string): void {
+    this.professorService.getProfessorById(professorId).subscribe(
+        professor => {
+          if (professor) {
+            this.professors = [professor]; // Store the single professor in an array if needed
+          } else {
+            this.toastr.warning('Professor not found.');
+          }
         },
         error => {
           console.error('An error occurred while fetching professor data:', error);
           this.toastr.error('Failed to load professor data');
         }
-    );*/
+    );
   }
+
 
   addTimeSlot(): void {
     if (this.professorId && !this.isTimeSlotAvailable(this.selectedTimeSlot)) {
@@ -88,6 +106,7 @@ export class ProfessorAvailabilityComponentComponent implements OnInit {
       this.toastr.error('Professor ID is not available');
     }
   }
+
 
   isTimeSlotAvailable(timeSlot: TimeSlot): boolean {
     return !this.unavailableTimeSlots.some(
