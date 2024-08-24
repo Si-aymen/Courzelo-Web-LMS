@@ -3,6 +3,7 @@ import {DayOfWeek, Period} from '../professor-availability-component/professor-a
 import {ToastrService} from 'ngx-toastr';
 import {TimetableService} from '../../../shared/services/timetable.service';
 import {Professor} from '../../../shared/models/Professor';
+import {ProfessorService} from '../../../shared/services/professor.service';
 export interface Timetable {
   dayOfWeek: DayOfWeek;
   period: Period;
@@ -15,39 +16,32 @@ export interface Timetable {
   styleUrls: ['./timetable.component.scss']
 })
 export class TimetableComponent implements OnInit {
-  timetable: Timetable[] = [];
-  daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  periods: string[] = ['P1', 'P2', 'P3', 'P4'];
-    public professors: Professor[] = []; // Make sure it's public
-    public selectedProfessorId = ''; // Make sure it's public
-
+    professors: Professor[] = [];
+    selectedProfessorId = '';
+    selectedProfessor: Professor | null = null;
+    timetable: Timetable[] = [];
+    daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    periods: string[] = ['P1', 'P2', 'P3', 'P4'];
     newSlot: any = {
         dayOfWeek: '',
         period: '',
         courseName: '',
         professorName: ''
     };
-  constructor(private timetableService: TimetableService, private toastr: ToastrService) { }
+    constructor(private timetableService: TimetableService, private toastr: ToastrService, private professorService: ProfessorService) { }
 
-  ngOnInit(): void {
-    //this.getTimetable();
-  }
-    loadProfessors(): void {
-        this.timetableService.getAllProfessorNames().subscribe(
-            (data: Professor[]) => {
-                this.professors = data;
-            },
-            error => {
-                console.error('Error fetching professors:', error);
-            }
-        );
+    ngOnInit(): void {
+        this.loadProfessors();
     }
 
     generateTimetable(): void {
         const courseIds = ['course1', 'course2']; // Replace with actual course IDs
+
+        // Step 1: Get professor IDs
         this.timetableService.getProfessorIds().subscribe(
             (professorIds: string[]) => {
-                this.timetableService.getAllProfessorNames().subscribe(
+                // Step 2: Get professor names by IDs
+                this.timetableService.getProfessorNames(professorIds).subscribe(
                     (professors: Professor[]) => {
                         // Map professors to names
                         const professorNames = professors.map(prof => prof.name);
@@ -73,14 +67,36 @@ export class TimetableComponent implements OnInit {
             }
         );
     }
-
     addTimetableSlot() {
         if (this.newSlot.dayOfWeek && this.newSlot.period && this.newSlot.courseName && this.newSlot.professorName) {
-            this.timetable.push({...this.newSlot});
-            this.newSlot = { dayOfWeek: '', period: '', courseName: '', professorName: '' };
+            this.timetable.push({...this.newSlot}); // Add a copy of the new slot to the timetable
+            this.newSlot = { dayOfWeek: '', period: '', courseName: '', professorName: '' }; // Reset form
         }
     }
-
+    loadProfessors(): void {
+        this.professorService.getAllProfessorNames().subscribe(
+            (data: Professor[]) => {
+                this.professors = data;
+            },
+            error => {
+                console.error('Error fetching professors:', error);
+            }
+        );
+    }
+    onProfessorChange(professorId: string): void {
+        if (professorId) {
+            this.professorService.getProfessorById(professorId).subscribe(
+                (professor: Professor) => {
+                    this.selectedProfessor = professor;
+                },
+                error => {
+                    console.error('Error fetching professor details:', error);
+                }
+            );
+        } else {
+            this.selectedProfessor = null;
+        }
+    }
   /*getTimetable(): void {
     this.timetableService.getTimetable().subscribe(
         (data: Timetable[]) => {

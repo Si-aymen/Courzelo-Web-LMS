@@ -9,7 +9,7 @@ import {Professor} from '../models/Professor';
 })
 export class TimetableService {
 
-  private baseUrl = 'http://localhost:8081/api/timetable';
+  private baseUrl = 'http://localhost:8080/api/timetable';
 
   constructor(private http: HttpClient) { }
 
@@ -28,9 +28,7 @@ export class TimetableService {
   }
 
   // Fetch professor names by IDs
-  getAllProfessorNames(): Observable<Professor[]> {
-    return this.http.get<Professor[]>(`${this.baseUrl}/names`);
-  }
+
 
   getProfessorById(professorId: string) {
     return this.http.get<Professor>(`${this.baseUrl}/professor/${professorId}`);

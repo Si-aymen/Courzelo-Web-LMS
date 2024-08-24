@@ -24,11 +24,12 @@
             </div>
             <div class="form-group col-md-3">
                 <label for="professorId">Professor</label>
-                <select id="professorId" class="form-control" [(ngModel)]="selectedProfessorId" name="professorId" required>
+                <select class="form-control" [(ngModel)]="selectedProfessorId" name="professorId" required>
                     <option *ngFor="let professor of professors" [value]="professor.id">
                         {{ professor.name }}
                     </option>
                 </select>
+
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Add Slot</button>
@@ -53,5 +54,42 @@
         </tbody>
     </table>
 </div>
+<!-- Your component template -->
+<form (ngSubmit)="addTimetableSlot()">
+    <div class="form-row">
+        <!-- Other form fields -->
+        <div class="form-group col-md-3">
+            <label for="professorId">Professor</label>
+            <select id="professorId" class="form-control" [(ngModel)]="selectedProfessorId" name="professorId" (change)="onProfessorChange($event.target.value)" required>
+                <option *ngFor="let professor of professors" [value]="professor.id">
+                    {{ professor.name }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <!-- Other form fields -->
+</form>
+
+<!-- Display unavailable time slots for selected professor -->
+<div *ngIf="selectedProfessor && selectedProfessor.unavailableTimeSlots.length > 0" class="mt-4">
+    <h3>Unavailable Time Slots for {{ selectedProfessor.name }}</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Day of Week</th>
+            <th>Period</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let slot of selectedProfessor.unavailableTimeSlots">
+            <td>{{ slot.dayOfWeek }}</td>
+            <td>{{ slot.period }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
 
 

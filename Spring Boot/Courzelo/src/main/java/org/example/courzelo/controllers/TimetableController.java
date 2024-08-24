@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/timetable")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TimetableController {
     @Autowired
     private TimetableService timetableService;
@@ -54,16 +55,7 @@ public class TimetableController {
         ProfessorDTO professor = timetableService.addProfessor(professorDTO);
         return ResponseEntity.ok(professor);
     }
-    @GetMapping("/names")
-    public ResponseEntity<List<ProfessorDTO>> getAllProfessorNames() {
-        List<ProfessorDTO> professors = timetableService.getAllProfessorNames();
-        return ResponseEntity.ok(professors);
-    }
-    @GetMapping("/professor")
-    public ResponseEntity<ProfessorDTO>GetProfessorByID(@RequestParam String professorId){
-        ProfessorDTO professor = timetableService.getProfessorById(professorId);
-        return ResponseEntity.ok(professor);
-    }
+
 
 }
 

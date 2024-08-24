@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {TimeSlot} from '../../views/forms/professor-availability-component/professor-availability-component.component';
+import {Professor} from '../models/Professor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfessorService {
 
-  private apiUrl = 'http://localhost:8081/professors';
+  private apiUrl = 'http://localhost:8080/professors';
 
   constructor(private http: HttpClient) {
   }
@@ -18,6 +19,10 @@ export class ProfessorService {
 
   getProfessorById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
+  }
+  getAllProfessorNames(): Observable<Professor[]> {
+    console.log('Fetching professor names');
+    return this.http.get<Professor[]>(`${this.apiUrl}/names`);
   }
 
   updateUnavailableTimeSlots(id: string, unavailableTimeSlots: TimeSlot[]): Observable<any> {

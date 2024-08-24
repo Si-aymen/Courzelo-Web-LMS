@@ -5,6 +5,7 @@ import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.Professor;
 import org.example.courzelo.models.Timeslot;
 import org.example.courzelo.repositories.ProfessorRepository;
+import org.example.courzelo.repositories.TimetableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 
 public class ProfessorService {
     @Autowired
-    private ProfessorRepository professorRepository;
-
+    private static ProfessorRepository professorRepository;
+    public ProfessorService( ProfessorRepository professorRepository) {
+        this.professorRepository = professorRepository;
+    }
     public List<ProfessorDTO> getAllProfessors() {
         return professorRepository.findAll().stream()
                 .map(this::mapToDTO)
@@ -43,17 +46,22 @@ public class ProfessorService {
 
     public Set<Timeslot> getUnavailableTimeSlots(String professorId) {
         Optional<Professor> professor = professorRepository.findById(professorId);
-        return professor.map(Professor::getUnavailableTimeSlots).orElse(null);
+        return (Set<Timeslot>) professor.map(Professor::getUnavailableTimeSlots).orElse(null);
     }
 
     public ProfessorDTO updateUnavailableTimeSlots(String professorId, Set<Timeslot> unavailableTimeSlots) {
         Optional<Professor> professorOptional = professorRepository.findById(professorId);
         if (professorOptional.isPresent()) {
             Professor professor = professorOptional.get();
-            professor.setUnavailableTimeSlots(unavailableTimeSlots);
+            professor.setUnavailableTimeSlots((List<Timeslot>) unavailableTimeSlots);
             return mapToDTO(professorRepository.save(professor));
         }
         return null;
+    }
+    public static List<ProfessorDTO> getAllProfessorNames() {
+        return professorRepository.findAll().stream()
+                .map(professor -> new ProfessorDTO(professor.getId(), professor.getName()))
+                .collect(Collectors.toList());
     }
     private ProfessorDTO mapToDTO(Professor professor) {
         ProfessorDTO dto = new ProfessorDTO();
@@ -69,4 +77,12 @@ public class ProfessorService {
         professor.setUnavailableTimeSlots(dto.getUnavailableTimeSlots());
         return professor;
     }
+    public List<ProfessorDTO> getProfessorNamesByIds(List<String> professorIds) {
+        return professorRepository.findAllById(professorIds)
+                .stream()
+                .map(professor -> new ProfessorDTO(professor.getId(), professor.getName()))
+                .collect(Collectors.toList());
+    }
+
+
 }

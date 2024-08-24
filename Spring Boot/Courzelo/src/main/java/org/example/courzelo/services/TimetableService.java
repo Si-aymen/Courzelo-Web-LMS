@@ -224,23 +224,5 @@ public class TimetableService {
         return dto;
     }
 
-    public List<ProfessorDTO> getProfessorNamesByIds(List<String> professorIds) {
-        return professorRepository.findAllById(professorIds)
-                .stream()
-                .map(professor -> new ProfessorDTO(professor.getId(), professor.getName()))
-                .collect(Collectors.toList());
-    }
 
-    public ProfessorDTO getProfessorById(String professorId) {
-        return professorRepository.findById(professorId)
-                .map(professor -> new ProfessorDTO(professor.getId(), professor.getName()))
-                .orElse(null);
-    }
-
-    public List<ProfessorDTO> getAllProfessorNames() {
-        return professorRepository.findAll()
-                .stream()
-                .map(professor -> new ProfessorDTO(professor.getId(), professor.getName()))
-                .collect(Collectors.toList());
-    }
 }

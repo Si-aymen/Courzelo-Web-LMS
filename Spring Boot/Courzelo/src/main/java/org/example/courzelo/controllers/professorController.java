@@ -14,6 +14,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/professors")
+@CrossOrigin(origins = "http://localhost:4200")
 public class professorController {
     @Autowired
     private ProfessorService professorService;
@@ -66,4 +67,10 @@ public class professorController {
         ProfessorDTO updatedProfessor = professorService.updateUnavailableTimeSlots(professorId, unavailableTimeSlots);
         return updatedProfessor != null ? ResponseEntity.ok(updatedProfessor) : ResponseEntity.notFound().build();
     }
+    @GetMapping("/names")
+    public ResponseEntity<List<ProfessorDTO>> getAllProfessorNames() {
+        List<ProfessorDTO> professors = ProfessorService.getAllProfessorNames();
+        return ResponseEntity.ok(professors);
+    }
+
 }
