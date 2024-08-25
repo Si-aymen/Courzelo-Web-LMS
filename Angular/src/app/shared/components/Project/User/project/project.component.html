@@ -2,23 +2,60 @@
     <h2 class="mb-4">My Projects</h2>
     
     <div class="row">
-      <div class="col-lg-6 col-md-6 mb-4" *ngFor="let project of projects">
-        <div class="card card-ecommerce-3 o-hidden">
-          <div class="d-flex">
-            <div><img src="./assets/images/project.jpg" alt="" class="card-img-left"></div>
-            <div class="flex-grow-1 p-4">
-              <h5 class="m-0 font-weight-bold text-muted">{{ project.name }}</h5>
-              <p class="m-0 text-small text-muted">By {{ project.createdBy }}</p>
-              <p class="m-0">Difficulty: {{ project.difficulty }}</p>
-              <p class="text-muted mt-3">Requirements: {{ project.specialities }}</p>
-              <p class="text-muted mt-3">Description: {{ project.description }}</p>
-              <div class="actions">
-                <button type="button" class="btn btn-primary btn-rounded m-1" (click)="navigateToProjectDetails(project.id)">Consult</button>
-              </div>
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card card-ecommerce-3 o-hidden">
+                <div class="d-flex">
+                    <div><img src="./assets/images/project.jpg" alt="" class="card-img-left"></div>
+                    <div class="flex-grow-1 p-4">
+                        <h5 class="m-0 font-weight-bold text-muted">E Commerce websites</h5>
+                        <p class="m-0 text-small text-muted">By Teacher Emna Bouzita</p>
+                        <p class="m-0">Difficulty: Easy</p>
+                        <p class="text-muted mt-3">Requirements: Full Stack Developer, Data Science, Security, DevOps</p>
+                        <p class="text-muted mt-3">Description: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt placeat esse tempore debitis.</p>
+                        <div class="actions">
+                            <button type="button" class="btn btn-primary btn-rounded m-1" (click)="navigateToProjectDetails()">Consult</button>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card card-ecommerce-3 o-hidden">
+                <div class="d-flex">
+                    <div><img src="./assets/images/project.jpg" alt="" class="card-img-left"></div>
+                    <div class="flex-grow-1 p-4">
+                        <h5 class="m-0 font-weight-bold text-muted">Data Project</h5>
+                        <p class="m-0 text-small text-muted">By Teacher Emna Bouzita</p>
+                        <p class="m-0">Difficulty: Medium</p>
+                        <p class="text-muted mt-3">Requirements: Full Stack Developer, Data Science, Security, DevOps</p>
+                        <p class="text-muted mt-3">Description: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt placeat esse tempore debitis.</p>
+                        <div class="actions">
+                            <button type="button" class="btn btn-primary btn-rounded m-1" (click)="navigateToProjectDetails()">Consult</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card card-ecommerce-3 o-hidden">
+                <div class="d-flex">
+                    <div><img src="./assets/images/project.jpg" alt="" class="card-img-left"></div>
+                    <div class="flex-grow-1 p-4">
+                        <h5 class="m-0 font-weight-bold text-muted">E Learning websites</h5>
+                        <p class="m-0 text-small text-muted">By Teacher Emna Bouzita</p>
+                        <p class="m-0">Difficulty: Hard</p>
+                        <p class="text-muted mt-3">Requirements: Full Stack Developer, Data Science, Security, DevOps</p>
+                        <p class="text-muted mt-3">Description: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt placeat esse tempore debitis.</p>
+                        <div class="actions">
+                            <button type="button" class="btn btn-primary btn-rounded m-1" (click)="navigateToProjectDetails()">Consult</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  
+</div>

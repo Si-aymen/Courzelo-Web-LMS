@@ -2,7 +2,7 @@ package org.example.courzelo.services.Project;
 
 
 
-import org.example.courzelo.models.ProjectEntities.project.GroupProject;
+import org.example.courzelo.models.ProjectEntities.GroupProject;
 
 import java.util.List;
 

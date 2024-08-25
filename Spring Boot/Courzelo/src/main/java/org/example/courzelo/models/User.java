@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private UserSecurity security = new UserSecurity();
     private UserActivity activity = new UserActivity();
     private UserProfile profile = new UserProfile();
+    private UserEducation education = new UserEducation();
 
     public User(String email, String name, String lastname, Date birthDate, String gender, String country, String encode, Role role) {
         this.email = email;

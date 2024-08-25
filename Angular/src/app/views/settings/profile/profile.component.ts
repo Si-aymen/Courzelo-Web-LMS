@@ -56,7 +56,7 @@ export class ProfileComponent implements OnInit {
                 console.log(this.countries);
             }
         );
-   this.connectedUser = this.sessionStorageService.getUser();
+   this.connectedUser = this.sessionStorageService.getUserFromSession();
    console.log(this.connectedUser);
       this.initializeFormWithUserData();
     const date = new Date(this.connectedUser.profile.birthDate);

@@ -8,7 +8,7 @@ import { BlankLayoutComponent } from './blank-layout/blank-layout.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { SharedPipesModule } from '../../pipes/shared-pipes.module';
-
+import { SearchModule } from '../search/search.module';
 import { SidebarLargeComponent } from './admin-layout-sidebar-large/sidebar-large/sidebar-large.component';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SidebarCompactComponent } from './admin-layout-sidebar-compact/sidebar-compact/sidebar-compact.component';
@@ -17,7 +17,6 @@ import { FooterComponent } from '../footer/footer.component';
 import { CustomizerComponent } from '../customizer/customizer.component';
 import { SharedDirectivesModule } from '../../directives/shared-directives.module';
 import { FormsModule } from '@angular/forms';
-import { SearchModule } from '../Revision/User/quizrevision/search/search.module';
 
 const components = [
     HeaderSidebarCompactComponent,

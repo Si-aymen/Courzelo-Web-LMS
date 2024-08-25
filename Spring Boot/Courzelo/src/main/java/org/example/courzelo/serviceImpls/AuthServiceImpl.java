@@ -1,19 +1,22 @@
 package org.example.courzelo.serviceImpls;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.requests.LoginRequest;
 import org.example.courzelo.dto.requests.SignupRequest;
-import org.example.courzelo.dto.responses.LoginResponse;
-import org.example.courzelo.dto.responses.StatusMessageResponse;
-import org.example.courzelo.dto.responses.UserResponse;
+import org.example.courzelo.dto.responses.*;
+import org.example.courzelo.dto.responses.institution.SimplifiedCourseResponse;
 import org.example.courzelo.models.CodeType;
 import org.example.courzelo.models.CodeVerification;
 import org.example.courzelo.models.Role;
 import org.example.courzelo.models.User;
+import org.example.courzelo.models.institution.Course;
+import org.example.courzelo.models.institution.Group;
+import org.example.courzelo.models.institution.Institution;
+import org.example.courzelo.repositories.CourseRepository;
+import org.example.courzelo.repositories.GroupRepository;
+import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.security.jwt.JWTUtils;
 import org.example.courzelo.services.*;
@@ -37,6 +40,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -51,6 +56,9 @@ public class AuthServiceImpl implements IAuthService {
     private final IUserService userService;
     private final IMailService mailService;
     private final ICodeVerificationService codeVerificationService;
+    private final InstitutionRepository institutionRepository;
+    private final CourseRepository courseRepository;
+    private final GroupRepository groupRepository;
     @Value("${Security.app.jwtExpirationMs}")
     private long jwtExpirationMs;
     @Value("${Security.app.refreshExpirationMs}")
@@ -58,7 +66,7 @@ public class AuthServiceImpl implements IAuthService {
     @Value("${Security.app.refreshRememberMeExpirationMs}")
     private long refreshRememberMeExpirationMs;
 
-    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService) {
+    public AuthServiceImpl(UserRepository userRepository, IRefreshTokenService iRefreshTokenService, JWTUtils jwtUtils, PasswordEncoder encoder, CookieUtil cookieUtil, AuthenticationManager authenticationManager, IUserService userService, IMailService mailService, ICodeVerificationService codeVerificationService, InstitutionRepository institutionRepository, CourseRepository courseRepository, GroupRepository groupRepository) {
         this.userRepository = userRepository;
         this.iRefreshTokenService = iRefreshTokenService;
         this.jwtUtils = jwtUtils;
@@ -68,6 +76,9 @@ public class AuthServiceImpl implements IAuthService {
         this.userService = userService;
         this.mailService = mailService;
         this.codeVerificationService = codeVerificationService;
+        this.institutionRepository = institutionRepository;
+        this.courseRepository = courseRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -102,7 +113,7 @@ public class AuthServiceImpl implements IAuthService {
         return ResponseEntity.ok(new StatusMessageResponse("success","User logged out successfully"));
     }
 
-    boolean isUserAuthenticated(){
+    public boolean isUserAuthenticated(){
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -140,8 +151,56 @@ public class AuthServiceImpl implements IAuthService {
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
+            Institution institution = null;
+            if (userDetails.getEducation() != null && userDetails.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(userDetails.getEducation().getInstitutionID()).orElse(null);
+            }
+            List<String> courses;
+            if( userDetails.getEducation()!= null &&userDetails.getEducation().getGroupID()!=null)
+            {
+                log.info("User has group");
+                Group group = groupRepository.findById(userDetails.getEducation().getGroupID()).orElse(null);
+                if(group!=null && group.getCourses()!=null)
+                {
+                   courses = group.getCourses();
+                   log.info("Courses: "+courses);
+                } else {
+                    courses = new ArrayList<>();
+                }
+            } else {
+                courses = new ArrayList<>();
+            }
+            if(userDetails.getEducation()!= null&&userDetails.getEducation().getCoursesID() != null){
+                userDetails.getEducation().getCoursesID().forEach(
+                        courseID -> {
+                            if(!courses.contains(courseID)){
+                                log.info("user has course teaching");
+                                courses.add(courseID);
+                            }
+                        }
+                );
+            }
+
             log.info("User authenticated successfully");
-            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
+            return ResponseEntity.ok(new LoginResponse("success","Login successful",
+                    UserResponse.builder()
+                            .email(userDetails.getEmail())
+                            .profile(new UserProfileResponse(userDetails.getProfile()))
+                            .roles(userDetails.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(userDetails.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(userDetails.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .groupID(userDetails.getEducation().getGroupID() != null ? userDetails.getEducation().getGroupID() : null)
+                                    .courses(!courses.isEmpty() ? courses.stream().map(
+                                            courseID -> {
+                                                log.info("Course ID: "+courseID);
+                                                Course course = courseRepository.findById(courseID).orElseThrow();
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         } catch (DisabledException e) {
             log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
@@ -203,8 +262,56 @@ public class AuthServiceImpl implements IAuthService {
             userDetails.getActivity().setLastLogin(Instant.now());
             userDetails.getSecurity().setRememberMe(loginRequest.isRememberMe());
             userRepository.save(userDetails);
+            Institution institution = null;
+            if (userDetails.getEducation() != null && userDetails.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(userDetails.getEducation().getInstitutionID()).orElse(null);
+            }
+            List<String> courses;
+            if( userDetails.getEducation()!= null &&userDetails.getEducation().getGroupID()!=null)
+            {
+                log.info("User has group");
+                Group group = groupRepository.findById(userDetails.getEducation().getGroupID()).orElse(null);
+                if(group!=null && group.getCourses()!=null)
+                {
+                    courses = group.getCourses();
+                    log.info("Courses: "+courses);
+                } else {
+                    courses = new ArrayList<>();
+                }
+            } else {
+                courses = new ArrayList<>();
+            }
+            if(userDetails.getEducation()!= null&&userDetails.getEducation().getCoursesID() != null){
+                userDetails.getEducation().getCoursesID().forEach(
+                        courseID -> {
+                            if(!courses.contains(courseID)){
+                                log.info("user has course teaching");
+                                courses.add(courseID);
+                            }
+                        }
+                );
+            }
+
             log.info("User authenticated successfully");
-            return ResponseEntity.ok(new LoginResponse("success","Login successful", new UserResponse(userDetails) ));
+            return ResponseEntity.ok(new LoginResponse("success","Login successful",
+                    UserResponse.builder()
+                            .email(userDetails.getEmail())
+                            .profile(new UserProfileResponse(userDetails.getProfile()))
+                            .roles(userDetails.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(userDetails.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(userDetails.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .groupID(userDetails.getEducation().getGroupID() != null ? userDetails.getEducation().getGroupID() : null)
+                                    .courses(!courses.isEmpty() ? courses.stream().map(
+                                            courseID -> {
+                                                log.info("Course ID: "+courseID);
+                                                Course course = courseRepository.findById(courseID).orElseThrow();
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         } catch (DisabledException e) {
             log.error("User not verified");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("error","Please verify your email first"));
@@ -251,13 +358,13 @@ public class AuthServiceImpl implements IAuthService {
     public ResponseEntity<StatusMessageResponse> verifyEmail(String code) {
         log.info("Verifying email");
         log.info("Code: "+code);
-        String email = codeVerificationService.verifyCode(code);
-        if(email!= null){
+        CodeVerification codeVerification = codeVerificationService.verifyCode(code);
+        if(codeVerification.getEmail()!= null){
             log.info("Email verified");
-            User user = userRepository.findUserByEmail(email);
+            User user = userRepository.findUserByEmail(codeVerification.getEmail());
             user.getSecurity().setEnabled(true);
             userRepository.save(user);
-            codeVerificationService.deleteCode(email,CodeType.EMAIL_VERIFICATION);
+            codeVerificationService.deleteCode(codeVerification.getEmail(),CodeType.EMAIL_VERIFICATION);
             return ResponseEntity.ok(new StatusMessageResponse("success","Email verified successfully"));
         }
         log.info("Invalid verification code");
@@ -268,7 +375,56 @@ public class AuthServiceImpl implements IAuthService {
     public ResponseEntity<LoginResponse> checkAuth(Principal principal) {
         if(isUserAuthenticated()){
             User user = userRepository.findUserByEmail(principal.getName());
-            return ResponseEntity.ok(new LoginResponse("success","User authenticated", new UserResponse(user)));
+            Institution institution = null;
+            if (user.getEducation() != null && user.getEducation().getInstitutionID() != null) {
+                institution = institutionRepository.findById(user.getEducation().getInstitutionID()).orElse(null);
+            }
+            List<String> courses;
+            if( user.getEducation()!= null &&user.getEducation().getGroupID()!=null)
+            {
+                log.info("User has group");
+                Group group = groupRepository.findById(user.getEducation().getGroupID()).orElse(null);
+                if(group!=null && group.getCourses()!=null)
+                {
+                    courses = group.getCourses();
+                    log.info("Courses: "+courses);
+                } else {
+                    courses = new ArrayList<>();
+                }
+            } else {
+                courses = new ArrayList<>();
+            }
+            if(user.getEducation()!= null&&user.getEducation().getCoursesID() != null){
+                user.getEducation().getCoursesID().forEach(
+                        courseID -> {
+                            if(!courses.contains(courseID)){
+                                log.info("user has course teaching");
+                                courses.add(courseID);
+                            }
+                        }
+                );
+            }
+
+            log.info("User authenticated successfully");
+            return ResponseEntity.ok(new LoginResponse("success","Login successful",
+                    UserResponse.builder()
+                            .email(user.getEmail())
+                            .profile(new UserProfileResponse(user.getProfile()))
+                            .roles(user.getRoles().stream().map(Role::name).toList())
+                            .security(new UserSecurityResponse(user.getSecurity()))
+                            .education(UserEducationResponse.builder()
+                                    .institutionID(user.getEducation().getInstitutionID())
+                                    .institutionName(institution != null ? institution.getName() : null)
+                                    .groupID(user.getEducation().getGroupID() != null ? user.getEducation().getGroupID() : null)
+                                    .courses(!courses.isEmpty() ? courses.stream().map(
+                                            courseID -> {
+                                                log.info("Course ID: "+courseID);
+                                                Course course = courseRepository.findById(courseID).orElseThrow();
+                                                return SimplifiedCourseResponse.builder().courseID(course.getId()).courseName(course.getName()).build();
+                                            }
+                                    ).toList() : null)
+                                    .build())
+                            .build()));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse("error","User not authenticated"));
     }

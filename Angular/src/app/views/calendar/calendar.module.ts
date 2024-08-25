@@ -9,7 +9,6 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { CalendarFormDialogComponent } from './calendar-form-dialog/calendar-form-dialog.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProjectCalendarComponent } from 'src/app/shared/components/Project/User/project-calendar/project-calendar.component';
 
 @NgModule({
   imports: [

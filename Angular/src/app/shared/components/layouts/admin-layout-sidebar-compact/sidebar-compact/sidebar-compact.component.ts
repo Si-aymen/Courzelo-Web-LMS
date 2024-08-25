@@ -1,41 +1,56 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import {Component, OnInit, HostListener, ChangeDetectorRef} from '@angular/core';
 import {
   NavigationService,
   IMenuItem,
   IChildItem
-} from "../../../../services/navigation.service";
-import { Router, NavigationEnd } from "@angular/router";
-import { filter } from "rxjs/operators";
-import { Utils } from "../../../../utils";
+} from '../../../../services/navigation.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Utils } from '../../../../utils';
+import {SessionStorageService} from '../../../../services/user/session-storage.service';
+import {Observable} from 'rxjs';
+import {UserResponse} from '../../../../models/user/UserResponse';
 
 @Component({
-  selector: "app-sidebar-compact",
-  templateUrl: "./sidebar-compact.component.html",
-  styleUrls: ["./sidebar-compact.component.scss"]
+  selector: 'app-sidebar-compact',
+  templateUrl: './sidebar-compact.component.html',
+  styleUrls: ['./sidebar-compact.component.scss']
 })
 export class SidebarCompactComponent implements OnInit {
   selectedItem: IMenuItem;
 
   nav: IMenuItem[];
 
-  constructor(public router: Router, public navService: NavigationService) {}
-
+  constructor(public router: Router, public navService: NavigationService,
+              private cdr: ChangeDetectorRef,
+  private sessionService: SessionStorageService) {}
+  user$: Observable<UserResponse | null>;
   ngOnInit() {
+    this.user$ = this.sessionService.getUser();
     this.updateSidebar();
     // CLOSE SIDENAV ON ROUTE CHANGE
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(routeChange => {
-        this.closeChildNav();
-        if (Utils.isMobile()) {
-          this.navService.sidebarState.sidenavOpen = false;
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(routeChange => {
+          this.closeChildNav();
+          if (Utils.isMobile()) {
+            this.navService.sidebarState.sidenavOpen = false;
+          }
+        });
+    this.user$.subscribe(
+        user => {
+          this.navService.menuItems$.subscribe(items => {
+            this.nav = items;
+            console.log(user);
+            console.log(this.nav);
+            if (user) {
+              console.log('user');
+              this.cdr.markForCheck();
+            }
+            this.setActiveFlag();
+          });
         }
-      });
-
-    this.navService.menuItems$.subscribe(items => {
-      this.nav = items;
-      this.setActiveFlag();
-    });
+    );
   }
 
   selectItem(item) {
@@ -105,7 +120,7 @@ export class SidebarCompactComponent implements OnInit {
     state.childnavOpen = !state.childnavOpen;
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.updateSidebar();
   }

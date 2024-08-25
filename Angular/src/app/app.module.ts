@@ -8,20 +8,22 @@ import { SharedModule } from './shared/shared.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
 
-
+import {CreateQuizComponent} from './views/forms/Quiz/create-quiz/create-quiz.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddProjectComponent } from './shared/components/Project/Admin/add-project/add-project.component';
 import { DashboardProjectComponent } from './shared/components/Project/Admin/dashboard-project/dashboard-project.component';
 import { ViewdetailsComponent } from './shared/components/Project/Admin/viewdetails/viewdetails.component';
 import { PdfComponent } from './shared/components/Project/User/pdf/pdf.component';
-import { ProjectComponent } from './shared/components/Project/User/project/project.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { ProjectDetailsComponent } from './shared/components/Project/User/projectdetails/projectdetails.component';
-import { ProgressDashboardComponent } from './shared/components/Project/User/progress-dashboard/progress-dashboard.component';
 
+
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { TicketsRoutingModule } from './views/tickets/tickets-routing.module';
+import { MatDialogModule } from '@angular/material/dialog';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {Interceptor} from './shared/services/user/Interceptor';
+
 import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -48,6 +50,7 @@ import { QuizrevisionComponent } from './shared/components/Revision/User/quizrev
 import { PublicationService } from './shared/services/Project/publication.service';
 import { RevisionService } from './shared/services/Revision/revision.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,9 +73,11 @@ import { RevisionService } from './shared/services/Revision/revision.service';
    AddpublicationComponent,
    QuizrevisionComponent,
    
- 
+
   ],
   imports: [
+    NgxPaginationModule,
+    NgxDatatableModule,
     BrowserModule,
     SharedModule,
     HttpClientModule,
@@ -83,6 +88,7 @@ import { RevisionService } from './shared/services/Revision/revision.service';
     CommonModule,
     ReactiveFormsModule ,
     BrowserAnimationsModule,
+
    DragDropModule ,
    RouterModule.forRoot([]),
    ColorPickerModule,
@@ -103,20 +109,24 @@ import { RevisionService } from './shared/services/Revision/revision.service';
    DataTablesRoutingModule,
    
  
+    AppRoutingModule,
+    FormsModule,
+    TicketsRoutingModule,
+    MatDialogModule,
+
   ],
-  providers: [
-    DatePipe,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: Interceptor,
-      multi: true
-    }
-  ],
+
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
-
-
-
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+     {
+      provide: HTTP_INTERCEPTORS,
+       useClass: Interceptor,
+       multi: true
+     },
+    {
+        provide: DatePipe
+    }
+  ]
 })
 export class AppModule { }
