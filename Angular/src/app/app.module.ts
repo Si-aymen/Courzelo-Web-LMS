@@ -24,32 +24,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {Interceptor} from './shared/services/user/Interceptor';
 
-import { ProjectCalendarComponent } from './shared/components/Project/User/project-calendar/project-calendar.component';
-import { ColorPickerModule } from 'ngx-color-picker';
-import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { CalendarRoutingModule } from './views/calendar/calendar-routing.module';
-import { CalendarFormProjectComponent } from './shared/components/Project/User/calendar-form-project/calendar-form-project.component';
-import { NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { PublicationComponent } from './shared/components/Project/User/publication/publication.component';
-import { AddpublicationComponent } from './shared/components/Project/User/addpublication/addpublication.component';
-import { SharedDirectivesModule } from './shared/directives/shared-directives.module';
-import { SharedPipesModule } from './shared/pipes/shared-pipes.module';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { ChatRoutingModule } from './views/chat/chat-routing.module';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { DataTablesRoutingModule } from './views/data-tables/data-tables-routing.module';
-import { AddRevisionComponent } from './shared/components/Revision/Teacher/add-revision/add-revision.component';
-import { RevisionComponent } from './shared/components/Revision/Teacher/revision/revision.component';
-import { ModifyRevisionComponent } from './shared/components/Revision/Teacher/modify-revision/modify-revision.component';
-import { ConsultRevisionComponent } from './shared/components/Revision/Teacher/consult-revision/consult-revision.component';
-import { ClientRevisionComponent } from './shared/components/Revision/User/client-revision/client-revision.component';
-import { ParticipateRevisionComponent } from './shared/components/Revision/User/participate-revision/participate-revision.component';
-import { QuizrevisionComponent } from './shared/components/Revision/User/quizrevision/quizrevision.component';
-import { PublicationService } from './shared/services/Project/publication.service';
-import { RevisionService } from './shared/services/Revision/revision.service';
-
 
 @NgModule({
   declarations: [
@@ -57,23 +31,7 @@ import { RevisionService } from './shared/services/Revision/revision.service';
     AddProjectComponent,
     DashboardProjectComponent,
     ViewdetailsComponent ,
-    PdfComponent ,
-    ProjectComponent,
-    ProjectDetailsComponent,
-    ProgressDashboardComponent,
-   ProjectCalendarComponent ,
-   CalendarFormProjectComponent,
-   PublicationComponent,
-  RevisionComponent,
-   AddRevisionComponent,
-   ModifyRevisionComponent,
-   ConsultRevisionComponent,
-   ClientRevisionComponent,
-   ParticipateRevisionComponent,
-   AddpublicationComponent,
-   QuizrevisionComponent,
-   
-
+    PdfComponent
   ],
   imports: [
     NgxPaginationModule,
@@ -88,32 +46,10 @@ import { RevisionService } from './shared/services/Revision/revision.service';
     CommonModule,
     ReactiveFormsModule ,
     BrowserAnimationsModule,
-
-   DragDropModule ,
-   RouterModule.forRoot([]),
-   ColorPickerModule,
-   CalendarModule.forRoot({
-     provide: DateAdapter,
-     useFactory: adapterFactory
-   }),
-   CalendarRoutingModule ,
-   ColorPickerModule ,
-   NgbDatepickerModule,
-   NgbModule,
-   SharedDirectivesModule,
-   SharedPipesModule,
-   PerfectScrollbarModule,
-   ChatRoutingModule,
-   NgxPaginationModule,
-   NgxDatatableModule,
-   DataTablesRoutingModule,
-   
- 
     AppRoutingModule,
     FormsModule,
     TicketsRoutingModule,
     MatDialogModule,
-
   ],
 
   bootstrap: [AppComponent],
