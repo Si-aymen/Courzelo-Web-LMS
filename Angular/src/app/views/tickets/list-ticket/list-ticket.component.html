@@ -1,0 +1,97 @@
+<div>
+  <div class="breadcrumb">
+    <h1>Tickets :</h1>
+    <ul>
+     <button
+        _ngcontent-hdd-c88=""
+        type="button"
+        class="btn btn-info btn-rounded m-1"
+        [routerLink]="['/tickets/listtype']">
+        All Types
+      </button>
+      <button
+        _ngcontent-hdd-c88=""
+        type="button"
+        class="btn btn-info btn-rounded m-1"
+        [routerLink]="['/tickets/typeticket']">
+        Add Type
+      </button>
+    </ul>
+  </div>
+  
+
+  <div class="separator-breadcrumb border-top"></div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card o-hidden">
+        <ngx-datatable
+          style="height: calc(100vh - 270px); box-shadow: none"
+          class="material fullscreen"
+          [columnMode]="'force'"
+          [headerHeight]="50"
+          [footerHeight]="0"
+          [rowHeight]="60"
+          [scrollbarV]="true"
+          [scrollbarH]="true"
+          [rows]="tickets$ | async">
+          
+          <ngx-datatable-column name="id" [maxWidth]="1000">
+            <ng-template ngx-datatable-header-template>
+              ID
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.id }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="type" [width]="150">
+            <ng-template ngx-datatable-header-template>
+              Type
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.type.type }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="sujet" [width]="200">
+            <ng-template ngx-datatable-header-template>
+              Sujet
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.sujet }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="dateCreation" [width]="150">
+            <ng-template ngx-datatable-header-template>
+              Date
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.dateCreation }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="status" [width]="100">
+            <ng-template ngx-datatable-header-template>
+              Status
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.status }}
+            </ng-template>
+          </ngx-datatable-column>
+          
+          <!-- New Column for Button -->
+          <ngx-datatable-column name="Details" [width]="100">
+            <ng-template ngx-datatable-header-template>
+              Forward to Trello
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button *ngIf="row.status !== 'FINIE'" class="btn btn-primary btn-sm" (click)="onButtonClick(row)">Forward</button>
+            </ng-template>
+          </ngx-datatable-column>
+          
+        </ngx-datatable>
+      </div>
+    </div>
+  </div>
+</div>

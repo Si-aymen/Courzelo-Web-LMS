@@ -1,0 +1,87 @@
+<div class="breadcrumb">
+    <h1>List</h1>
+    <ul>
+        <li><a href="">Quiz Table</a></li>
+        <li>List</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row mb-4">
+    <div class="col-6">
+        <button class="btn btn-sm btn-rounded btn-outline-light btn-svg mr-2"
+                [ngClass]="{active: viewMode === 'grid'}" (click)="viewMode = 'grid'">
+            <!-- SVG for Grid View -->
+        </button>
+        <button class="btn btn-sm btn-rounded btn-outline-light btn-svg"
+                [ngClass]="{active: viewMode === 'list'}" (click)="viewMode = 'list'">
+            <!-- SVG for List View -->
+        </button>
+    </div>
+    <div class="col-6">
+        <div class="btn-group float-right">
+            <button type="button" class="btn btn-outline-light btn-rounded btn-checkbox">
+                <label class="checkbox checkbox-outline-light">
+                    <input type="checkbox" [(ngModel)]="allSelected" (change)="selectAll($event)">
+                    <span></span>
+                    <span class="checkmark"></span>
+                </label>
+            </button>
+            <div class="btn-group" ngbDropdown role="group" aria-label="Select all" placement="left">
+                <button class="btn btn-outline-light btn-rounded" ngbDropdownToggle></button>
+                <div class="dropdown-menu" ngbDropdownMenu>
+                    <button class="dropdown-item" (click)="deleteSelectedQuizzes()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" [ngClass]="{'list-horizontal': viewMode === 'list', 'list-grid': viewMode === 'grid'}">
+    <div *ngFor="let quiz of quizzes | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index"
+         class="list-item"
+         [ngClass]="{'col-md-12': viewMode === 'list', 'col-md-3': viewMode === 'grid'}"
+         [@animate]="{value:'*',params:{delay: (i*100)+'ms', y:'50px'}}">
+        <div class="card o-hidden mb-4 d-flex" [ngClass]="{'flex-row': viewMode === 'list', 'flex-column': viewMode === 'grid'}">
+            <div class="flex-grow-1">
+                <div class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center"
+                     [ngClass]="{'flex-lg-row': viewMode === 'list'}">
+                    <div class="w-40 w-sm-100">
+                        <div class="item-title">{{ quiz.userEmail || "None" }}</div>
+                        <div class="item-title">{{ quiz.title }}</div>
+                        <div class="text-muted">{{ quiz.description }}</div>
+                        <div class="text-muted">Duration: {{ quiz.duration }} minutes</div>
+                        <div class="text-muted">Max Attempts: {{ quiz.maxAttempts }}</div>
+                        <div class="text-muted">Status: {{ quiz.status }}</div>
+                    </div>
+                    <div class="w-15 w-sm-100 item-actions">
+                        <button class="btn btn-icon bg-transparent" (click)="selectQuizToEdit(quiz)">
+                            <i class="i-File-Edit text-16 text-primary"></i>
+                        </button>
+                        <button class="btn btn-icon bg-transparent" (click)="deleteQuiz(quiz.id)">
+                            <i class="i-File-Trash text-16 text-danger"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="align-self-center pl-4 pr-4 pb-3 mb-3 item-select">
+                    <label class="checkbox checkbox-outline-light">
+                        <input type="checkbox" [(ngModel)]="quiz.isSelected">
+                        <span></span>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 mt-3" *ngIf="quizzes?.length">
+        <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
+    </div>
+</div>
+
+<!-- Edit Quiz Form -->
+<div *ngIf="selectedQuiz" class="modal-overlay">
+    <div class="modal-container">
+        <app-edit-quiz [quiz]="selectedQuiz" (quizUpdated)="onQuizUpdated($event)"></app-edit-quiz>
+    </div>
+</div>
