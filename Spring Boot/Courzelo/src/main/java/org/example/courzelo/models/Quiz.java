@@ -23,4 +23,5 @@ public class Quiz {
     private int maxAttempts;
     private String category;
     private String user;
+    private String course;
 }

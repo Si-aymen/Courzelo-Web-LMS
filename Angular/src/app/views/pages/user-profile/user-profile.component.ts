@@ -28,7 +28,7 @@ export class UserProfileComponent implements OnInit {
       this.route.paramMap.subscribe(params => {
           let userEmail = params.get('email');
           if (userEmail === null || userEmail === undefined) {
-               userEmail =  this.sessionStorageService.getUser().email;
+               userEmail =  this.sessionStorageService.getUserFromSession().email;
           }
           this.userService.getUserProfileByEmail(userEmail).subscribe((user: LoginResponse) => {
                 this.user = user.user;

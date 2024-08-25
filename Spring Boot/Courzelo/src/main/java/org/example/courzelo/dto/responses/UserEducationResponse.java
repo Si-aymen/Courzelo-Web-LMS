@@ -1,16 +1,18 @@
 package org.example.courzelo.dto.responses;
 
+import lombok.Builder;
 import lombok.Data;
-import org.example.courzelo.models.UserEducation;
+import org.example.courzelo.dto.responses.institution.SimplifiedCourseResponse;
+
+import java.util.List;
 
 
 @Data
+@Builder
 public class UserEducationResponse {
     private String institutionID;
     private String institutionName;
+    private List<SimplifiedCourseResponse> courses;
+    private String groupID;
 
-    public UserEducationResponse(UserEducation userEducation) {
-        this.institutionID = userEducation.getInstitution()!= null ? userEducation.getInstitution().getId() : null;
-        this.institutionName = userEducation.getInstitution()!= null ? userEducation.getInstitution().getName() : null;
-    }
 }

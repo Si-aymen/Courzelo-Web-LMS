@@ -22,4 +22,5 @@ public class QuizDTO {
     private int duration; // in minutes
     private int maxAttempts;
     private String category;
+    private String course;
 }

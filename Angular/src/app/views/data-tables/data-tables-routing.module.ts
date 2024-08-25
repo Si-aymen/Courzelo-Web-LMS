@@ -7,6 +7,7 @@ import { ListPaginationComponent } from './list-pagination/list-pagination.compo
 import {QuizTableComponent} from './Quiz/quiz-table/quiz-table.component';
 import {QuizListComponent} from './Quiz/quiz-list/quiz-list.component';
 import {AuthGuard} from '../../shared/services/auth-guard.service';
+import {EditQuizComponent} from '../forms/Quiz/edit-quiz/edit-quiz.component';
 
 const routes: Routes = [
   {
@@ -31,12 +32,17 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['TEACHER', 'ADMIN'] }
   },
+  { path: 'EditQuiz',
+    component: EditQuizComponent
+  },
   {
     path: 'QuizList',
     component: QuizListComponent,
     canActivate:  [AuthGuard],
   },
+
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

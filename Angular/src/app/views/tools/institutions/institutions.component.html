@@ -44,7 +44,6 @@
                             <button class=" btn btn-danger m-1" (click)="deleteInstitutionModal(modalConfirm,row)">Delete</button>
                             <button class=" btn btn-primary m-1" (click)="editInstitutionModel(edit,row)">Edit</button>
                             <button class=" btn btn-primary m-1" (click)="toggleInstitutionUsersTable(row)">Users List</button>
-
                         </ng-template>
                     </ngx-datatable>
                 </div>
@@ -152,7 +151,7 @@
     </ng-template>
     <ng-template #addUser let-modal>
         <div class="modal-header">
-            <h4 class="modal-title" id="modal-basic-title-user">Invite user</h4>
+            <h4 class="modal-title" id="modal-basic-title-user-add">Invite user</h4>
             <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                 <span aria-hidden="true">&times;</span>
             </button>

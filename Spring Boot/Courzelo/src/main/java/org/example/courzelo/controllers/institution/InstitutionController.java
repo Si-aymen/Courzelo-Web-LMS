@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.example.courzelo.dto.requests.CalendarEventRequest;
 import org.example.courzelo.dto.requests.InstitutionMapRequest;
 import org.example.courzelo.dto.requests.InstitutionRequest;
+import org.example.courzelo.dto.responses.GroupResponse;
+import org.example.courzelo.dto.responses.PaginatedGroupsResponse;
 import org.example.courzelo.dto.responses.StatusMessageResponse;
 import org.example.courzelo.dto.responses.institution.InstitutionResponse;
 import org.example.courzelo.dto.responses.institution.PaginatedInstitutionUsersResponse;
@@ -37,6 +39,22 @@ public class InstitutionController {
                                                                          @RequestParam(required = false) String keyword) {
         return iInstitutionService.getInstitutions(page, sizePerPage, keyword);
     }
+    @GetMapping("/{institutionID}/students")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<List<String>> getInstitutionStudents(@PathVariable @NotNull String institutionID) {
+        return iInstitutionService.getInstitutionStudents(institutionID);
+    }
+    @GetMapping("/{institutionID}/teachers")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<List<String>> getInstitutionTeachers(@PathVariable @NotNull String institutionID) {
+        return iInstitutionService.getInstitutionTeachers(institutionID);
+    }
+    @GetMapping("/{institutionID}/groups")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')&&@customAuthorization.canAccessInstitution(#institutionID)")
+    public ResponseEntity<List<GroupResponse>> getInstitutionGroups(@PathVariable @NotNull String institutionID) {
+        return iInstitutionService.getInstitutionGroups(institutionID);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<StatusMessageResponse> addInstitution(@RequestBody @Valid InstitutionRequest institutionRequest) {
         return iInstitutionService.addInstitution(institutionRequest);

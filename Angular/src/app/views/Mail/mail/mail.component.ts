@@ -48,7 +48,7 @@ export class MailComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.connectedUser = this.sessionStorageService.getUser();
+    this.connectedUser = this.sessionStorageService.getUserFromSession();
     this.loadToMe();
     this.userService.getProfileImageBlobUrl(this.connectedUser.email).subscribe((blob: Blob) => {
       const objectURL = URL.createObjectURL(blob);

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import {Component, OnInit, HostListener, ChangeDetectorRef} from '@angular/core';
 import {
   NavigationService,
   IMenuItem,
@@ -8,6 +8,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Utils } from '../../../../utils';
 import {SessionStorageService} from '../../../../services/user/session-storage.service';
+import {Observable} from 'rxjs';
+import {UserResponse} from '../../../../models/user/UserResponse';
 
 @Component({
   selector: 'app-sidebar-compact',
@@ -19,9 +21,12 @@ export class SidebarCompactComponent implements OnInit {
 
   nav: IMenuItem[];
 
-  constructor(public router: Router, public navService: NavigationService,  private sessionService: SessionStorageService) {}
-
+  constructor(public router: Router, public navService: NavigationService,
+              private cdr: ChangeDetectorRef,
+  private sessionService: SessionStorageService) {}
+  user$: Observable<UserResponse | null>;
   ngOnInit() {
+    this.user$ = this.sessionService.getUser();
     this.updateSidebar();
     // CLOSE SIDENAV ON ROUTE CHANGE
     this.router.events
@@ -32,15 +37,20 @@ export class SidebarCompactComponent implements OnInit {
             this.navService.sidebarState.sidenavOpen = false;
           }
         });
-
-    const currentUser = this.sessionService.getUser(); // Implement this method as needed
-
-    this.navService.menuItems$.subscribe(items => {
-      // Filter items based on the current user's role before setting them to this.nav
-        this.nav = this.navService.filterMenuItemsByUser(items, currentUser);
-      console.log(this.nav);
-      this.setActiveFlag();
-    });
+    this.user$.subscribe(
+        user => {
+          this.navService.menuItems$.subscribe(items => {
+            this.nav = items;
+            console.log(user);
+            console.log(this.nav);
+            if (user) {
+              console.log('user');
+              this.cdr.markForCheck();
+            }
+            this.setActiveFlag();
+          });
+        }
+    );
   }
 
   selectItem(item) {

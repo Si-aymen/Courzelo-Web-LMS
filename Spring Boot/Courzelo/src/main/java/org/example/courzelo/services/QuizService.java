@@ -3,16 +3,21 @@ package org.example.courzelo.services;
 import lombok.extern.slf4j.Slf4j;
 import org.example.courzelo.dto.QuestionDTO;
 import org.example.courzelo.dto.QuizDTO;
+import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.*;
+import org.example.courzelo.models.institution.Course;
 import org.example.courzelo.repositories.AnswerRepository;
+import org.example.courzelo.repositories.CourseRepository;
 import org.example.courzelo.repositories.QuestionRepository;
 import org.example.courzelo.repositories.QuizRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,15 +28,17 @@ public class QuizService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionService questionService;
+    private final CourseRepository courseRepository;
     private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
 
     @Autowired
-    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, QuestionService questionService) {
+    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, QuestionService questionService, CourseRepository courseRepository) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.questionService = questionService;
+        this.courseRepository = courseRepository;
     }
 
     public List<QuizDTO> getAllQuizzes() {
@@ -45,12 +52,19 @@ public class QuizService {
         quiz = quizRepository.save(quiz);
         return mapToDTO(quiz);
     }*/
+   @Transactional
+   public Quiz updateQuiz1(String id, Quiz updatedQuiz) {
+       if (quizRepository.existsById(id)) {
+           updatedQuiz.setId(id);
+           return quizRepository.save(updatedQuiz);
+       } else {
+           throw new ResourceNotFoundException("Quiz not found with id " + id);
+       }
+   }
 
     public QuizDTO updateQuiz(String id, Quiz quizDTO) {
         Quiz existingQuiz = quizRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + id));
-
-        // Update the existing quiz entity with values from the provided quizDTO
         updateQuizEntity(existingQuiz, quizDTO);
 
         Quiz savedQuiz = quizRepository.save(existingQuiz);
@@ -67,23 +81,39 @@ public class QuizService {
         if (quizDTO.getQuestions() != null) {
             existingQuiz.setQuestions(quizDTO.getQuestions());
         }
-        // Add other properties as needed
+    if (quizDTO.getDuration() != 0) {
+        existingQuiz.setDuration(quizDTO.getDuration());
+
     }
+    if (quizDTO.getMaxAttempts() != 0) {
+        existingQuiz.setMaxAttempts(quizDTO.getMaxAttempts());
+    }
+    if (quizDTO.getScore() != 0) {
+        existingQuiz.setScore(quizDTO.getScore());
+    }
+    if (quizDTO.getStatus() != null) {
+        existingQuiz.setStatus(quizDTO.getStatus());
+    }
+    if (quizDTO.getCategory() != null) {
+        existingQuiz.setCategory(quizDTO.getCategory());
+    }
+    }
+
     public QuizDTO updateQuizState(String QuizID ,Quiz updatedQuiz) {
         Quiz existingQuiz = quizRepository.findById(updatedQuiz.getId())
                 .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + updatedQuiz.getId()));
-
-        // Update the existing quiz entity with values from the updatedQuiz DTO
         existingQuiz.setTitle(updatedQuiz.getTitle());
         existingQuiz.setDescription(updatedQuiz.getDescription());
         existingQuiz.setQuestions(updatedQuiz.getQuestions());
-        // Add other properties as needed
-
         Quiz savedQuiz = quizRepository.save(existingQuiz);
         return mapToDTO(savedQuiz);
     }
 
     public void deleteQuiz(String id) {
+       Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Quiz not found"));
+         if(quiz.getCourse() != null) {
+                removeQuizFromCourse(quiz);
+         }
         quizRepository.deleteById(id);
     }
 
@@ -119,10 +149,17 @@ public class QuizService {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz.setStatus(quizDTO.getStatus()); // explicitly set the status
         quiz.setUser(email);
+        if(quizDTO.getCourse() != null) {
+            quiz.setCourse(quizDTO.getCourse());
+        }
         quiz = quizRepository.save(quiz);
-        logger.info("Quiz ID after save: {}", quiz.getId());
-        List<Question> questions = quiz.getQuestions().stream()
-                .map(question -> {
+        addQuizToCourse(quiz, quizDTO.getCourse());
+        logger.info("Quiz ID after save: {}, Status: {}", quiz.getId(), quiz.getStatus());
+        final String quizId = quiz.getId();
+        List<Question> questions = quizDTO.getQuestions().stream()
+                .map(questionDTO -> {
+                    Question question = mapToQuestionEntity(questionDTO);
+                    question.setQuizID(quizId);
                     question = questionRepository.save(question);
                     logger.info("Question ID after save: {}", question.getId());
                     return question;
@@ -130,14 +167,37 @@ public class QuizService {
                 .collect(Collectors.toList());
         quiz.setQuestions(questions);
         quiz = quizRepository.save(quiz);
-        logger.info("Final Quiz ID: {}", quiz.getId());
+        logger.info("Final Quiz ID: {}, Status: {}", quiz.getId(), quiz.getStatus());
         return mapToDTO(quiz);
+    }
+    public void addQuizToCourse(Quiz quiz, String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new NoSuchElementException("Course not found"));
+        if(course.getQuizzes() == null) {
+            log.info("Course quizzes is null");
+            course.setQuizzes(List.of(quiz.getId()));
+        } else {
+            log.info("Course quizzes is not null");
+            log.info("QUIZ ID: {}", quiz.getId());
+            course.getQuizzes().add(quiz.getId());
+        }
+        courseRepository.save(course);
+    }
+    public void removeQuizFromCourse(Quiz quiz) {
+        Course course = courseRepository.findById(quiz.getCourse()).orElseThrow(() -> new NoSuchElementException("Course not found"));
+        course.getQuizzes().remove(quiz.getId());
+        courseRepository.save(course);
     }
 
     public QuizDTO createQuizWithAnswers(QuizDTO quizDTO,String email) {
         Quiz quiz = mapToEntity(quizDTO, new Quiz());
         quiz.setUser(email);
+        if(quizDTO.getCourse() != null) {
+            quiz.setCourse(quizDTO.getCourse());
+        }
         Quiz savedQuiz = quizRepository.save(quiz);
+        if(quizDTO.getCourse() != null) {
+            addQuizToCourse(savedQuiz, quizDTO.getCourse());
+        }
         for (Question question : quiz.getQuestions()) {
             question.setQuizID(savedQuiz.getId());
             questionRepository.save(question);
@@ -163,6 +223,9 @@ public class QuizService {
     }
 
     private QuizDTO mapToDTO(final Quiz quiz, final QuizDTO quizDTO) {
+        if (quiz.getId() != null) {
+            quizDTO.setId(quiz.getId());
+        }
         quizDTO.setUserEmail(quiz.getUser());
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
@@ -175,9 +238,12 @@ public class QuizService {
         quizDTO.setStatus(quiz.getStatus());
         quizDTO.setCategory(quiz.getCategory());
         quizDTO.setSelected(quiz.isSelected());
+        quizDTO.setCourse(quiz.getCourse() != null ? quiz.getCourse() : null);
         return quizDTO;
     }
     public Quiz mapToEntity(final QuizDTO quizDTO, final Quiz quiz) {
+       log.info("QuizDTO: {}", quizDTO);
+       // quiz.setId(quizDTO.getId());
         quiz.setTitle(quizDTO.getTitle());
         quiz.setDescription(quizDTO.getDescription());
         quiz.setQuestions(quizDTO.getQuestions().stream()
@@ -189,6 +255,8 @@ public class QuizService {
         quiz.setStatus(quizDTO.getStatus());
         quiz.setCategory(quizDTO.getCategory());
         quiz.setSelected(quizDTO.isSelected());
+        quiz.setCourse(quizDTO.getCourse()!= null ? quizDTO.getCourse() : null);
+        log.info("Quiz: {}", quiz);
         return quiz;
     }
     public QuizDTO getQuizStatus(String id) {
@@ -198,6 +266,9 @@ public class QuizService {
 
     private QuestionDTO mapToQuestionDTO(Question question) {
         QuestionDTO questionDTO = new QuestionDTO();
+        if(question.getId() != null) {
+            questionDTO.setId(question.getId());
+        }
         questionDTO.setText(question.getText());
         questionDTO.setOptions(question.getOptions());
         questionDTO.setCorrectAnswer(question.getCorrectAnswer());

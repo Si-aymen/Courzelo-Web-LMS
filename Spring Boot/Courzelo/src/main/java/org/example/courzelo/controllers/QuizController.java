@@ -1,11 +1,10 @@
 package org.example.courzelo.controllers;
 
-import jakarta.validation.Valid;
 import org.example.courzelo.dto.QuizDTO;
+import org.example.courzelo.exceptions.ResourceNotFoundException;
 import org.example.courzelo.models.Quiz;
 import org.example.courzelo.models.QuizSubmission;
 import org.example.courzelo.models.QuizSubmissionResult;
-import org.example.courzelo.repositories.QuizRepository;
 import org.example.courzelo.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quizzes")
 @CrossOrigin(origins = "http://localhost:4200/", maxAge = 3600, allowedHeaders = "*", allowCredentials = "true")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("isAuthenticated()")
 public class QuizController {
     private final QuizService quizService;
 
@@ -52,7 +51,10 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-   @PutMapping("/{id}")
+    
+
+    
+   @PutMapping("/state/{id}")
    @PreAuthorize("isAuthenticated()")
    public ResponseEntity<QuizDTO> updateQuizState(@PathVariable String id, @RequestBody Quiz updatedQuiz) {
        try {
@@ -62,6 +64,18 @@ public class QuizController {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
        }
    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Quiz> updateQuiz1(
+            @PathVariable String id,
+            @RequestBody Quiz quiz
+    ) {
+        try {
+            Quiz updated = quizService.updateQuiz1(id, quiz);
+            return ResponseEntity.ok(updated);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public ResponseEntity<QuizDTO> deleteQuiz(@PathVariable String id) {
@@ -94,6 +108,7 @@ public class QuizController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<QuizDTO> createQuizWithQuestions(@RequestBody QuizDTO quizDTO, Principal principal) {
         QuizDTO createdQuiz = quizService.createQuizWithQuestions(quizDTO,principal.getName());
         return ResponseEntity.ok(createdQuiz);
@@ -116,4 +131,6 @@ public class QuizController {
         QuizDTO quiz = quizService.getQuizWithAnswersById(id);
         return ResponseEntity.ok(quiz);
     }
+
+
 }

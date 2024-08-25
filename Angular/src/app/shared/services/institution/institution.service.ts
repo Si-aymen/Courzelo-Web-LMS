@@ -9,6 +9,7 @@ import {PaginatedInstitutionUsersResponse} from '../../models/institution/Pagina
 import {InstitutionMapRequest} from '../../models/institution/InstitutionMapRequest';
 import {CalendarEventRequest} from '../../models/institution/CalendarEventRequest';
 import {map} from 'rxjs/operators';
+import {GroupResponse} from "../../models/institution/GroupResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,15 @@ export class InstitutionService {
 
   addInstitution(institutionRequest: InstitutionRequest): Observable<StatusMessageResponse> {
     return this.http.post<StatusMessageResponse>(`${this.baseUrl}/add`, institutionRequest);
+  }
+  getInstitutionStudents(institutionID: string) {
+    return this.http.get(`${this.baseUrl}/${institutionID}/students`);
+  }
+  getInstitutionTeachers(institutionID: string) {
+    return this.http.get(`${this.baseUrl}/${institutionID}/teachers`);
+  }
+  getInstitutionGroups(institutionID: string) {
+    return this.http.get<GroupResponse[]>(`${this.baseUrl}/${institutionID}/groups`);
   }
 
   updateInstitution(institutionID: string, institutionRequest: InstitutionRequest) {

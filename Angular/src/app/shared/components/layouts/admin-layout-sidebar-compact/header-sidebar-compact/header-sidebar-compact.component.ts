@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationService } from 'src/app/shared/services/navigation.service';
 import { SearchService } from 'src/app/shared/services/search.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
 import {AuthenticationService} from '../../../../services/user/authentication.service';
 import {SessionStorageService} from '../../../../services/user/session-storage.service';
 import {UserResponse} from '../../../../models/user/UserResponse';
 import {UserService} from '../../../../services/user/user.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-header-sidebar-compact',
@@ -72,12 +72,16 @@ export class HeaderSidebarCompactComponent implements OnInit {
     ];
   }
   imageSrc: any;
-  user: UserResponse;
+  user$: Observable<UserResponse | null>;
   ngOnInit() {
-    this.user = this.sessionStorageService.getUser();
-    this.userService.getProfileImageBlobUrl(this.user.email).subscribe((blob: Blob) => {
-      const objectURL = URL.createObjectURL(blob);
-      this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    this.user$ = this.sessionStorageService.getUser();
+    this.user$.subscribe(user => {
+      if (user && user.email) {
+        this.userService.getProfileImageBlobUrl(user.email).subscribe((blob: Blob) => {
+          const objectURL = URL.createObjectURL(blob);
+          this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        });
+      }
     });
   }
 
