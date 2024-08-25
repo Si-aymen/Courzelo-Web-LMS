@@ -45,6 +45,8 @@ import { ConsultRevisionComponent } from './shared/components/Revision/Teacher/c
 import { ClientRevisionComponent } from './shared/components/Revision/User/client-revision/client-revision.component';
 import { ParticipateRevisionComponent } from './shared/components/Revision/User/participate-revision/participate-revision.component';
 import { QuizrevisionComponent } from './shared/components/Revision/User/quizrevision/quizrevision.component';
+import { PublicationService } from './shared/services/Project/publication.service';
+import { RevisionService } from './shared/services/Revision/revision.service';
 
 @NgModule({
   declarations: [
@@ -59,14 +61,16 @@ import { QuizrevisionComponent } from './shared/components/Revision/User/quizrev
    ProjectCalendarComponent ,
    CalendarFormProjectComponent,
    PublicationComponent,
-   AddpublicationComponent,
   RevisionComponent,
    AddRevisionComponent,
    ModifyRevisionComponent,
    ConsultRevisionComponent,
    ClientRevisionComponent,
    ParticipateRevisionComponent,
-   QuizrevisionComponent
+   AddpublicationComponent,
+   QuizrevisionComponent,
+   
+ 
   ],
   imports: [
     BrowserModule,
@@ -97,6 +101,7 @@ import { QuizrevisionComponent } from './shared/components/Revision/User/quizrev
    NgxPaginationModule,
    NgxDatatableModule,
    DataTablesRoutingModule,
+   
  
   ],
   providers: [
