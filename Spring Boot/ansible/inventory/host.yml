@@ -1,0 +1,4 @@
+[webservers]
+ansible_user=root ansible_host=194.146.13.51 ansible_port=50000
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

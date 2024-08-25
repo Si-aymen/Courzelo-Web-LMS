@@ -1,0 +1,53 @@
+- name: Deploy application on Kubernetes
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Create deployment
+      k8s:
+        api_version: apps/v1
+        kind: Deployment
+        name: deployment-courzelo-front
+        namespace: courzelo
+        definition:
+          metadata:
+            labels:
+              app: courzelo-front
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: courzelo-front
+            template:
+              metadata:
+                labels:
+                  app: courzelo-front
+              spec:
+                containers:
+                  - name: courzelo-front-webapp
+                    image: hamdiiala/courzelo-front-webapp:v1.1.7-dev
+                    imagePullPolicy: Always
+                    ports:
+                      - containerPort: 80
+        context: "kubernetes-admin@kubernetes"
+        verify_ssl: false
+        
+    - name: Create service
+      k8s:
+        api_version: v1
+        kind: Service
+        name: service-courzelo-front
+        namespace: courzelo
+        definition:
+          metadata:
+            labels:
+              app: courzelo-front
+          spec:
+            selector:
+              app: courzelo-front
+            ports:
+              - protocol: TCP
+                port: 4225
+                targetPort: 80
+                nodePort : 31411
+            type: NodePort
