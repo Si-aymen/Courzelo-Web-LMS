@@ -1,14 +1,1 @@
-/* Ensure the dialog has a higher z-index than other elements */
-  
-  /* Ensure the dialog container is correctly positioned */
-  /* Global styles */
-.mdc-dialog__container {
-    pointer-events: auto; /* Allow interactions */
-    position: fixed; /* Fixed positioning */
-    top: 10%; /* Adjust top position */
-    left: 30%;
-    width: var(--dialog-width) !important;
-    height: var(--dialog-height) !important;
-    }
-  
-  
+/* You can add global styles to this file, and also import other style files */

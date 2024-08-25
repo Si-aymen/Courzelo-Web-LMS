@@ -10,12 +10,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardV3Component } from './dashboard-v3/dashboard-v3.component';
 import { DashboardV4Component } from './dashboard-v4/dashboard-v4.component';
-import { TransportsComponent } from './transports/transports.component';
-import { AppFormsModule } from '../forms/forms.module';
-import { ReactiveFormsModule } from '@angular/forms';
-import { StagesComponent } from './stages/stages.component';
-
-import {CreateQuizComponent} from '../forms/Quiz/create-quiz/create-quiz.component';
 
 @NgModule({
   imports: [
@@ -24,10 +18,8 @@ import {CreateQuizComponent} from '../forms/Quiz/create-quiz/create-quiz.compone
     NgxEchartsModule,
     NgxDatatableModule,
     NgbModule,
-    DashboardRoutingModule,
-    AppFormsModule,
-    ReactiveFormsModule
+    DashboardRoutingModule
   ],
-  declarations: [StagesComponent, TransportsComponent, DashboadDefaultComponent, DashboardV2Component, DashboardV3Component, DashboardV4Component]
+  declarations: [DashboadDefaultComponent, DashboardV2Component, DashboardV3Component, DashboardV4Component]
 })
 export class DashboardModule { }

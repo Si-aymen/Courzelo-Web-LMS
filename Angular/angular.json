@@ -44,7 +44,7 @@
             ],
             "scripts": [
               "node_modules/echarts/dist/echarts.min.js"
-                   ],
+            ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
@@ -80,8 +80,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "gull:build",
-            "proxyConfig": "src/proxy.conf.json"
+            "browserTarget": "gull:build"
           },
           "configurations": {
             "production": {
