@@ -2,10 +2,12 @@ package org.example.courzelo.serviceImpls;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.courzelo.dto.QuizDTO;
 import org.example.courzelo.dto.requests.CoursePostRequest;
 import org.example.courzelo.dto.requests.CourseRequest;
 import org.example.courzelo.dto.responses.CoursePostResponse;
 import org.example.courzelo.dto.responses.CourseResponse;
+import org.example.courzelo.models.Quiz;
 import org.example.courzelo.models.User;
 import org.example.courzelo.models.institution.Course;
 import org.example.courzelo.models.institution.CoursePost;
@@ -16,6 +18,7 @@ import org.example.courzelo.repositories.GroupRepository;
 import org.example.courzelo.repositories.InstitutionRepository;
 import org.example.courzelo.repositories.UserRepository;
 import org.example.courzelo.services.ICourseService;
+import org.example.courzelo.services.QuizService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ public class CourseServiceImpl implements ICourseService {
     private final InstitutionRepository institutionRepository;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
+    private final QuizService quizService;
     @Override
     public ResponseEntity<HttpStatus> createCourse(String institutionID, CourseRequest courseRequest,Principal principal) {
         log.info("Creating course");
@@ -108,7 +112,13 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ResponseEntity<CourseResponse> getCourse(String courseID) {
         Course course = courseRepository.findById(courseID).orElseThrow(() -> new NoSuchElementException("Course not found"));
-
+        List<QuizDTO> quizzes = new ArrayList<>();
+        if(course.getQuizzes()!= null){
+            course.getQuizzes().forEach(quizID -> {
+                QuizDTO quiz = quizService.getQuizById(quizID);
+                quizzes.add(quiz);
+            });
+            }
         return ResponseEntity.ok(CourseResponse.builder()
                 .id(course.getId())
                 .name(course.getName())
@@ -124,6 +134,7 @@ public class CourseServiceImpl implements ICourseService {
                         .files(coursePost.getFiles() != null ? returnOnlyFileName(coursePost.getFiles()) : null)
                         .build()).toList() : List.of())
                         .institutionID(course.getInstitutionID())
+                        .quizzes(quizzes)
                 .build());
     }
 

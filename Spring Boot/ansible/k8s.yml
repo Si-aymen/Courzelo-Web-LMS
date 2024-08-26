@@ -1,0 +1,59 @@
+- name: Deploy application on Kubernetes
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Create deployment
+      k8s:
+        api_version: apps/v1
+        kind: Deployment
+        name: deployment-courzelo-back
+        namespace: courzelo
+        definition:
+          metadata:
+            labels:
+              app: courzelo-back
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: courzelo-back
+            template:
+              metadata:
+                labels:
+                  app: courzelo-back
+              spec:
+                containers:
+                  - name: courzelo-back
+                    image: oussemaouakad/courzelo:v1.1.3-dev
+                    imagePullPolicy: Always
+                    ports:
+                      - containerPort: 8080
+                nodeSelector:
+                    kubernetes.io/hostname: worker1
+        context: "kubernetes-admin@kubernetes"
+        verify_ssl: false
+              
+
+    - name: Create service
+      k8s:
+        api_version: v1
+        kind: Service
+        name: courzelo-back
+        namespace: courzelo
+        definition:
+          metadata:
+            name: courzelo-back
+            labels:
+              app: courzelo-back
+          spec:
+            selector:
+              app: courzelo-back
+            ports:
+              - protocol: TCP
+                port: 8998
+                targetPort: 8080
+                nodePort: 31412 
+            type: NodePort
+            # externalIPs:
+            #   - 185.192.96.18

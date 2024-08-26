@@ -1,0 +1,255 @@
+def getGitBranchName() {
+                return scm.branches[0].name
+            }
+def branchName
+def targetBranch
+
+pipeline {
+  agent any
+  environment {
+       DOCKERHUB_USERNAME = "oussemaouakad"
+       DEV_TAG = "${DOCKERHUB_USERNAME}/courzelo:v1.1.3-dev"
+       STAGING_TAG = "${DOCKERHUB_USERNAME}/courzelo:v1.0.0-staging"
+       PROD_TAG = "${DOCKERHUB_USERNAME}/courzelo:v1.0.0-prod"
+
+	JMETER_VERSION = '5.6.3'
+        JMETER_HOME = "/path/to/apache-jmeter-${JMETER_VERSION}"
+        PERFORMANCE_JMX = 'addCourse.jmx'
+  }
+  parameters {
+       string(name: 'BRANCH_NAME', defaultValue: "${scm.branches[0].name}", description: 'Git branch name')
+       string(name: 'CHANGE_ID', defaultValue: '', description: 'Git change ID for merge requests')
+  	   string(name: 'CHANGE_TARGET', defaultValue: '', description: 'Git change ID for the target merge requests')
+  }
+  stages {
+    stage('branch name') {
+      steps {
+    	script {
+    	  branchName = params.BRANCH_NAME
+    	  echo "Current branch name: ${branchName}"
+    	}
+      }
+    }
+
+    stage('target branch') {
+        steps {
+    	  script {
+    	     targetBranch = branchName
+    		 echo "Current branch name: ${targetBranch}"
+    	  }
+        }
+    }
+
+    stage('Github') {
+      steps {
+        git branch : branchName,
+        url: 'https://github.com/Godyrex/Courzelo-Web-LMS.git',
+        credentialsId: 'AlaGitH';
+        echo "Current branch name: ${branchName}"
+        echo "Current branch name: ${targetBranch}"
+      }
+    }
+
+    stage ('MVN BUILD') {
+      when {
+        expression {
+           (params.CHANGE_ID != null)  && ((targetBranch == 'develop') || (targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == '2024devops'))
+        }
+      }
+      steps {
+        sh 'mvn clean install'
+        echo 'Build stage done'
+      }
+    }
+
+    stage ('MVN COMPILE') {
+      when {
+        expression {
+          (params.CHANGE_ID != null)  && ((targetBranch == 'develop') || (targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == '2024devops'))
+        }
+      }
+      steps {
+        sh 'mvn compile'
+        echo 'compile stage done'
+      }
+    }
+
+    stage ('JUNIT TEST') {
+      when {
+        expression {
+          (params.CHANGE_ID != null)  && ((targetBranch == 'develop') || (targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == '2024devops'))
+        }
+      }
+      steps {
+        sh 'mvn test'
+        echo 'test stage done'
+      }
+    }
+
+    stage ('INTEGRATION TEST') {
+                	when {
+                         expression {
+                         (params.CHANGE_ID != null)  && ((targetBranch == 'develop') || (targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == '2024devops'))
+                            }
+                	   }
+                      steps {
+                        sh 'mvn failsafe:integration-test'
+                        echo 'integration test stage done'
+                      }
+              }
+
+	 /*  stage('Performance Test') {
+            steps {
+                script {
+
+                    def workspaceDir = pwd()
+
+              //    sh "wget -P ${workspaceDir} https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz"
+              //    sh "tar -xzf ${workspaceDir}/apache-jmeter-${JMETER_VERSION}.tgz -C ${workspaceDir}"
+			sh "mvn clean package"
+sh "java -jar target/app-0.0.1-SNAPSHOT.jar &"
+
+            sleep(time: 60, unit: 'SECONDS') // Adjust the sleep time based on your server startup time
+                    sh "chmod +x apache-jmeter-${JMETER_VERSION}/bin/jmeter"
+                    sh "apache-jmeter-${JMETER_VERSION}/bin/jmeter -n -t ${PERFORMANCE_JMX} -l results.jtl"
+
+archiveArtifacts artifacts: 'results.jtl', onlyIfSuccessful: false
+
+		 }
+		 }
+        }*/
+
+// 	  stage('Jmeter Publish Results') {
+//             steps {
+//                 // Publish performance test results
+//                 perfReport percentiles: '0,50,90,95,99',
+//                            sourceDataFiles: 'results.jtl'
+//             }
+//         }
+    stage('SonarQube Analysis') {
+             when {
+                 expression {
+                     (params.CHANGE_ID != null) && ((targetBranch == 'develop') || (targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == 'devops2024'))
+                 }
+             }
+            steps {
+          // withSonarQubeEnv('sq1') {
+          //        sh 'mvn sonar:sonar'
+          // }
+		    echo 'test stage done'
+        }
+    }
+
+    stage ('NEXUS DEPLOY') {
+       when {
+         expression {
+           (params.CHANGE_ID != null)  && ((targetBranch == 'main') || (targetBranch == 'staging') || (targetBranch == 'develop'))
+       	 }
+       }
+       steps {
+	       echo 'test stage done'
+         //sh 'mvn deploy -DskipTests'
+       }
+    }
+
+    stage('Build Docker'){
+        when {
+          expression {
+            params.CHANGE_ID != null
+          }
+        }
+        steps{
+            script {
+                if (targetBranch == 'staging') {
+                    sh "docker build -t ${STAGING_TAG} ."
+                } else if (targetBranch == 'main') {
+                    sh "docker build -t ${PROD_TAG} ."
+                } else if (targetBranch == 'develop') {
+                    sh "docker build -t ${DEV_TAG} ."
+                } else if (targetBranch == '2024devops') {
+                    sh "docker build -t ${DEV_TAG} ."
+                }
+            }
+        }
+    }
+
+	stage('Docker Login'){
+        steps{
+            withCredentials([usernamePassword(credentialsId: 'Ala_dockerHub',usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+            sh "docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}"
+            }
+        }
+    }
+
+	stage('Docker Push'){
+            steps{
+                sh 'docker push $DOCKERHUB_USERNAME/courzelo --all-tags'
+            }
+    }
+
+	// stage('Remove Containers') {
+ //        steps {
+ //            sh '''
+ //            container_ids=$(docker ps -q --filter "publish=8000/tcp")
+ //            if [ -n "$container_ids" ]; then
+ //                echo "Stopping and removing containers..."
+ //                docker stop $container_ids
+ //                docker rm $container_ids
+ //            else
+ //                echo "No containers found using port 8000."
+ //            fi
+ //            '''
+ //        }
+ //    }
+//
+//     stage('Deploy to Prod') {
+//        when {
+//           expression {
+//     	    (params.CHANGE_ID != null)  && (targetBranch == 'main')
+//     	  }
+//        }
+//        steps {
+//     		sh "docker pull ${PROD_TAG}"
+//        		sh "docker run -d --name courzelo-prod -p 8000:8000 ${PROD_TAG}"
+//        }
+//     }
+
+	   stage('Deploy to Prod') {
+      when {
+        expression {
+          (params.CHANGE_ID != null) && (targetBranch == 'develop')
+        }
+      }
+      steps {
+        //sh "docker pull ${PROD_TAG}"
+        //sh "docker run -d --name courzelo-prod -p 8998:8000 ${PROD_TAG}"
+
+        sh "sudo ansible-playbook ansible/k8s.yml -i ansible/inventory/host.yml"
+      }
+    }
+//
+//     stage('Deploy to Dev') {
+//        when {
+//            expression {
+//     	      (params.CHANGE_ID != null)  && (targetBranch == 'develop')
+//     	   }
+//        }
+//        steps {
+//     		sh "docker pull ${DEV_TAG}"
+//             sh "docker run -d --name courzelo-dev -p 8000:8000 ${DEV_TAG}"
+//        }
+//     }
+//
+//     stage('Deploy to Staging') {
+//        when {
+//           expression {
+//     	    (params.CHANGE_ID != null)  && (targetBranch == 'staging')
+//     	  }
+//        }
+//        steps {
+//     	  sh "docker pull ${STAGING_TAG}"
+//           sh "docker run -d --name courzelo-staging -p 8000:8000 ${STAGING_TAG}"
+//        }
+//     }
+   }
+}

@@ -16,11 +16,10 @@ import {of} from 'rxjs';
 export class TakeQuizComponent implements OnInit {
     quizzes: Quiz[] = [];
     currentQuizIndex = 0;
-    selectedAnswers: { [key: string]: string[] } = {}; // Object to store selected answers per question
-    quizSubmissionStatus: { [key: string]: boolean } = {}; // Object to track submission status of each quiz
-    showSummary = false; // Flag to display summary
-    remainingTime: number; // Remaining time for the current quiz in seconds
-    quizTimer: any; // Timer reference
+    selectedAnswers: { [quizIndex: number]: { [questionId: string]: string[] | string } } = {};
+    quizSubmissionStatus: { [key: string]: boolean } = {};
+    showSummary = false;
+
     finalScore = 0;
 
     constructor(
@@ -32,51 +31,48 @@ export class TakeQuizComponent implements OnInit {
     ngOnInit(): void {
         // Fetch all quizzes initially
         this.fetchAllQuizzes();
+        this.initializeSelectedAnswers();
     }
+    initializeSelectedAnswers(): void {
+        this.quizzes.forEach((quiz, quizIndex) => {
+            this.selectedAnswers[quizIndex] = {};
+            quiz.questions.forEach(question => {
+                this.selectedAnswers[quizIndex][question.id] =
+                    question.type === 'MULTIPLE_CHOICE' ? [] : '';
+            });
+        });
+    }
+    validateQuizAnswers(): boolean {
+        const currentQuiz = this.quizzes[this.currentQuizIndex];
+        if (!currentQuiz) { return false; }
+
+        return currentQuiz.questions.every(question => {
+            const answer = this.selectedAnswers[this.currentQuizIndex]?.[question.id];
+            console.log('Validating answer for question:', question);
+            if (question.type === 'MULTIPLE_CHOICE') {
+                return Array.isArray(answer) && answer.length > 0;
+            } else {
+                return typeof answer === 'string' && answer.trim().length > 0;
+            }
+        });
+    }
+
+
+
     fetchAllQuizzes(): void {
-        console.log('Fetching all quizzes...');
         this.quizService.getAllQuizzes().subscribe(
             (quizzes: Quiz[]) => {
                 if (quizzes && quizzes.length > 0) {
                     this.quizzes = quizzes;
-                    console.log('Quizzes fetched:', this.quizzes);
-                    this.quizzes.forEach(quiz => {
-                        quiz.questions.forEach(question => {
-                            this.selectedAnswers[question.id] = []; // Initialize selected answer as an empty array
-                        });
-                        this.quizSubmissionStatus[quiz.id] = false;
-                    });
-                    // Start timer for the first quiz
-                    this.startQuizTimer();
+                    this.initializeSelectedAnswers();
                 } else {
-                    console.error('No quizzes found');
                     this.toastr.error('No quizzes found', 'Error');
                 }
             },
             error => {
-                console.error('Error fetching quizzes', error);
                 this.toastr.error('Failed to load quizzes', 'Error');
             }
         );
-    }
-
-    startQuizTimer(): void {
-        if (this.quizzes.length > 0) {
-            this.remainingTime = this.quizzes[this.currentQuizIndex].duration * 60; // Convert minutes to seconds
-            this.quizTimer = setInterval(() => {
-                if (this.remainingTime > 0) {
-                    this.remainingTime--;
-                } else {
-                    clearInterval(this.quizTimer);
-                    this.toastr.info('Time is up!', 'Info');
-                    this.submitQuiz();
-                }
-            }, 1000); // Update every second
-        }
-    }
-
-    clearQuizTimer(): void {
-        clearInterval(this.quizTimer); // Clear the quiz timer
     }
 
     /*selectMultipleChoiceAnswer(questionId: string, answer: string): void {
@@ -87,84 +83,65 @@ export class TakeQuizComponent implements OnInit {
         this.selectedAnswers[questionId] = selectedOption;
     }
 
-
-    submitShortAnswer(questionId: string): void {
-        console.log(`Submitting short answer for question ID ${questionId}: ${this.selectedAnswers[questionId]}`);
-
-        // Optionally, you can perform additional actions like saving to backend here
-
-        this.toastr.success('Short answer submitted successfully', 'Success');
-    }
-
-    submitLongAnswer(questionId: string): void {
-        console.log(`Submitting long answer for question ID ${questionId}: ${this.selectedAnswers[questionId]}`);
-
-        // Optionally, you can perform additional actions like saving to backend here
-
-        this.toastr.success('Long answer submitted successfully', 'Success');
-    }
-
     submitQuiz(): void {
+        if (!this.validateQuizAnswers()) {
+            this.toastr.error('Please answer all questions before submitting the quiz.', 'Validation Error');
+            return;
+        }
+
         const currentQuiz = this.quizzes[this.currentQuizIndex];
         if (currentQuiz && currentQuiz.questions) {
-            // Submit answers for the current quiz
             console.log('Submitting quiz:', currentQuiz);
             console.log('Selected answers:', this.selectedAnswers);
-
-            // Mark quiz as submitted
             this.quizSubmissionStatus[currentQuiz.id] = true;
             this.toastr.success('Quiz submitted successfully', 'Success');
 
-            // If it's the last quiz, show summary
             if (this.currentQuizIndex === this.quizzes.length - 1) {
                 this.showSummary = true;
-                this.clearQuizTimer(); // Stop the timer if it's the last quiz
+                this.calculateScore();
             } else {
-                // Move to the next quiz and start timer
                 this.currentQuizIndex++;
-                this.startQuizTimer();
             }
         }
-        this.showSummary = true;
-        this.calculateScore();
     }
+
     loadQuizzes(): void {
-        // Load quizzes from your data source
-        // Example:
         this.quizzes = [ /* Your quizzes data here */ ];
     }
     resetQuiz(): void {
-        this.selectedAnswers = {}; // Reset selected answers
-        this.quizSubmissionStatus = {}; // Reset submission status
-        this.currentQuizIndex = 0; // Reset to the first quiz
-        this.showSummary = false; // Reset showSummary flag
-        this.clearQuizTimer(); // Stop the timer
-        this.startQuizTimer(); // Start timer for the first quiz
+        this.selectedAnswers = {};
+        this.quizSubmissionStatus = {};
+        this.currentQuizIndex = 0;
+        this.showSummary = false;
         this.finalScore = 0;
     }
 
     calculateScore(): void {
-        let score = 0;
-        this.quizzes.forEach(quiz => {
+        let totalScore = 0;
+        this.quizzes.forEach((quiz, quizIndex) => {
             quiz.questions.forEach(question => {
-                if (question.type === 'MULTIPLE_CHOICE' && this.selectedAnswers[question.id].includes(question.correctAnswer)) {
-                    score++;
-                } else if (question.type === 'SHORT_ANSWER' && this.selectedAnswers[question.id].includes(question.correctAnswer)) {
-                    score++;
-                } else if (question.type === 'LONG_ANSWER' && this.selectedAnswers[question.id].includes(question.correctAnswer)) {
-                    score++;
+                const studentAnswer = this.selectedAnswers[quizIndex][question.id];
+                if (question.type === 'MULTIPLE_CHOICE' && (studentAnswer as string[]).includes(question.correctAnswer)) {
+                    totalScore++;
+                } else if ((question.type === 'SHORT_ANSWER' || question.type === 'LONG_ANSWER') &&
+                    (studentAnswer as string).trim().toLowerCase() === question.correctAnswer.trim().toLowerCase()) {
+                    totalScore++;
                 }
             });
         });
-        this.quizzes[this.currentQuizIndex].score = score;
-        this.finalScore = score; // Add this line to assign the final score
+        this.finalScore = totalScore;
+        this.toastr.success(`Your final score: ${this.finalScore}`, 'Score');
     }
+
+
+
     nextQuiz(): void {
         if (this.currentQuizIndex < this.quizzes.length - 1) {
-            this.currentQuizIndex++;
-            console.log('Moving to next quiz:', this.currentQuizIndex);
-            this.clearQuizTimer(); // Stop current timer
-            this.startQuizTimer(); // Start timer for the next quiz
+            if (this.validateQuizAnswers()) {
+                this.currentQuizIndex++;
+            } else {
+                this.toastr.error('Please answer all questions before moving to the next quiz.', 'Validation Error');
+            }
         } else {
             this.toastr.info('You have reached the last quiz', 'Info');
         }
@@ -173,13 +150,11 @@ export class TakeQuizComponent implements OnInit {
     previousQuiz(): void {
         if (this.currentQuizIndex > 0) {
             this.currentQuizIndex--;
-            console.log('Moving to previous quiz:', this.currentQuizIndex);
-            this.clearQuizTimer(); // Stop current timer
-            this.startQuizTimer(); // Start timer for the previous quiz
         } else {
             this.toastr.info('You are already on the first quiz', 'Info');
         }
     }
+
 
     formatTime(seconds: number): string {
         const minutes: number = Math.floor(seconds / 60);
@@ -187,17 +162,39 @@ export class TakeQuizComponent implements OnInit {
         return `${minutes} min ${remainingSeconds} sec`;
     }
 
-    toggleOptionSelection(questionId: string, option: string) {
-        if (!this.selectedAnswers[questionId]) {
-            this.selectedAnswers[questionId] = []; // Initialize if not exists
+    toggleOptionSelection(quizIndex: number, questionId: string, option: string): void {
+        if (!this.selectedAnswers[quizIndex]) {
+            this.selectedAnswers[quizIndex] = {};
+        }
+        if (!this.selectedAnswers[quizIndex][questionId]) {
+            this.selectedAnswers[quizIndex][questionId] = [];  // Initialize as an array for multiple-choice
         }
 
-        const index = this.selectedAnswers[questionId].indexOf(option);
+        const selectedOptions = this.selectedAnswers[quizIndex][questionId] as string[];
+        const index = selectedOptions.indexOf(option);
         if (index === -1) {
-            this.selectedAnswers[questionId].push(option); // Add option if not already selected
+            selectedOptions.push(option);
         } else {
-            this.selectedAnswers[questionId].splice(index, 1); // Remove option if already selected
+            selectedOptions.splice(index, 1);
         }
+    }
+
+// Submit short answer
+    submitShortAnswer(quizIndex: number, questionId: string): void {
+        if (!this.selectedAnswers[quizIndex]) {
+            this.selectedAnswers[quizIndex] = {};
+        }
+        // No additional action required, as [(ngModel)] in the template handles updating the answer.
+        this.toastr.success('Short answer submitted', 'Success');
+    }
+
+// Submit long answer
+    submitLongAnswer(quizIndex: number, questionId: string): void {
+        if (!this.selectedAnswers[quizIndex]) {
+            this.selectedAnswers[quizIndex] = {};
+        }
+        // No additional action required, as [(ngModel)] in the template handles updating the answer.
+        this.toastr.success('Long answer submitted', 'Success');
     }
 
 }

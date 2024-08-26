@@ -19,5 +19,4 @@ public interface IStagesService {
     public Stages modifyStage(Stages Stage);
 
     public  Long GetNumberOfStage();
-    public void AssignStudentToInternship(String StudentID , String InternshipID );
 }

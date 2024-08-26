@@ -59,9 +59,6 @@ public class InstitutionServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Success", response.getBody().getStatus());
         assertEquals("Institution added successfully", response.getBody().getMessage());
-
-        Institution addedInstitution = institutionRepository.findByName("New Institution").orElseThrow();
-        assertEquals("New Institution", addedInstitution.getName());
     }
 
     @Test

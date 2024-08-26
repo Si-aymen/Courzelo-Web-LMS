@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 import { Stages } from 'src/app/shared/models/stages/stages';
 import { DataLayerService } from 'src/app/shared/services/data-layer.service';
 import { StagesService } from 'src/app/shared/services/stages/stages.service';
-import { Router } from '@angular/router';
 @Component({
   selector: 'app-stages',
   templateUrl: './stages.component.html',
@@ -18,11 +17,10 @@ export class StagesComponent implements OnInit {
   locationChartPie: EChartOption;
   stages$: Observable<Stages[]>;
   stageForm: FormGroup;
-  count$: number;
+  count$ :number ; 
   constructor(
     private dl: DataLayerService,
-    private stageService: StagesService,
-    private router: Router
+    private stageService: StagesService
   ) { }
   ngOnInit() {
     this.stageForm = new FormGroup({
@@ -39,7 +37,7 @@ export class StagesComponent implements OnInit {
     this.loadCount();
   }
 
-
+  
   loadStages(): void {
     this.stageService.getStages().subscribe({
       next: (stages: Stages[]) => {
@@ -203,7 +201,7 @@ export class StagesComponent implements OnInit {
       alert('Please fill in all required fields.');
     }
   }
-
+  
   loadCount(): void {
     this.stageService.getCount().subscribe({
       next: (data: number) => {
@@ -216,7 +214,7 @@ export class StagesComponent implements OnInit {
   }
 
 
-  delete(id: any) {
+  delete(id:any){
     Swal.fire({
       title: 'are you sur ?',
       text: "Delete this Internship ?",
@@ -227,8 +225,8 @@ export class StagesComponent implements OnInit {
       confirmButtonText: 'Yes Delete!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.stageService.deleteStage(id).subscribe((res: any) => {
-          if (res.message) {
+        this.stageService.deleteStage(id).subscribe((res:any) =>{
+          if (res.message){
             Swal.fire({
               icon: 'success',
               title: 'Success...',
@@ -236,7 +234,7 @@ export class StagesComponent implements OnInit {
             })
             this.ngOnInit();
           }
-          else {
+          else{
             Swal.fire({
               icon: 'error',
               title: 'Oops...',
@@ -244,23 +242,17 @@ export class StagesComponent implements OnInit {
             })
           }
         },
-          err => {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Error in deleting this  Internship',
-              text: err.error.message,
-            })
-          }
+        err =>{
+          Swal.fire({
+            icon: 'warning',
+            title: 'Error in deleting this  Internship',
+            text: err.error.message,
+          })
+        }
         )
       }
       this.loadStages();
     }
     )
   }
-
-  view(id: any) {
-    this.router.navigate(['/stages/details', id])
-  }
-
-
 }

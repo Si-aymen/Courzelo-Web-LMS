@@ -22,6 +22,7 @@ import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
 import {CreateQuizComponent} from './Quiz/create-quiz/create-quiz.component';
 import { TakeQuizComponent } from './Quiz/take-quiz/take-quiz.component';
 import { QuizResultComponent } from './Quiz/quiz-result/quiz-result.component';
+import { EditQuizComponent } from './Quiz/edit-quiz/edit-quiz.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -40,6 +41,9 @@ import { QuizResultComponent } from './Quiz/quiz-result/quiz-result.component';
   ],
 
 
-  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, CreateQuizComponent, TakeQuizComponent, QuizResultComponent],
+  declarations: [BasicFormComponent, TagInputsComponent, AppImgCropperComponent, WizardComponent, InputMaskComponent, InputGroupsComponent, FormLayoutsComponent, CreateQuizComponent, TakeQuizComponent, QuizResultComponent, EditQuizComponent],
+  exports: [
+    EditQuizComponent
+  ]
 })
 export class AppFormsModule { }

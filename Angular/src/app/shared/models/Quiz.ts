@@ -11,10 +11,13 @@ export class Quiz {
     questions: Question[] = [];
     isSelected: boolean;
     score: number;
-    Status: status;
+    status: status;
     duration: number;
     maxAttempts: number;
     category: string;
+    course: string;
+    showSummary ? = false;
+    finalScore ? = 0;
 }
 export class QuizSubmission {
     quizID: string;
