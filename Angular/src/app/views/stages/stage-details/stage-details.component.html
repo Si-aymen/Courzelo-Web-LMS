@@ -1,0 +1,55 @@
+<div class="col-md-6" *ngIf="stage$ | async as stage; else loading" class="card m-4 p-4" id="print-area">
+  <div class="card bg-dark text-white o-hidden mb-4">
+    <img class="card-img" src="./assets/images/photo-wide-2.jpg" alt="Card image">
+    <div class="card-img-overlay">
+      <h5 class="card-title text-white">{{ stage.name }}</h5>
+
+      <div class="row mb-3">
+        <div class="col-md-3"><strong>Status:</strong></div>
+        <div class="col-md-9">
+          <span class="badge badge-pill px-3 py-1" [ngClass]="{
+            'badge-success': stage.status === 'ACTIF',
+            'badge-warning': stage.status === 'IN_PROGRESS' || stage.status === 'PAUSED',
+            'badge-danger': stage.status === 'NOT_SUBMITTED' || stage.status === 'CANCELED'
+          }">
+            {{ stage.status }}
+          </span>
+        </div>
+      </div>
+      <p class="card-text"> {{ stage.description }} </p>
+      <p class="card-text">Last updated 3 mins ago</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Name : {{ stage.name }}</h5>
+      <h5 class="card-title"> location : {{ stage.location }}</h5>
+      <h5 class="card-title">Type : {{ stage.type }}</h5>
+      <h5 class="card-title">Domain : {{ stage.domain }}</h5>
+      <h5 class="card-title">Duration : {{ stage.duration }}</h5>
+      <h5 class="card-title">Entreprise name : {{ stage.entName }}</h5>
+      <p class="card-text">{{ stage.description }}</p>
+      <a href="#" class="card-link">Card link</a>
+      <a href="#" class="card-link">Another link</a>
+      
+  <div class="mt-4">
+    <button class="btn btn-primary mr-2" (click)="goBack()">Back</button>
+    <button class="btn btn-warning mr-2" (click)="edit(stage)">Edit</button>
+    <button class="btn btn-danger mr-2" (click)="delete(stage.id)">Delete</button>
+    <button class="btn btn-info mr-2" (click)="assign(stage)">User Assign</button>
+    <button class="btn btn-info mr-2" (click)="print()">Print Internship Agreement</button>
+  </div>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center align-items-center" style="height: 300px">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>
