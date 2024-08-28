@@ -24,6 +24,10 @@ export class StagesService {
     return this.http.get<Stages[]>(`${this.baseUrl}/GetAll`);
   }
 
+  getStageByID(id: string): Observable<Stages> {
+    return this.http.get<Stages>(`${this.baseUrl}/GetById/stages/${id}`);
+  }
+
   getCount(): Observable<number>{
     return this.http.get<number>(`${this.baseUrl}/count/stages`);
   }

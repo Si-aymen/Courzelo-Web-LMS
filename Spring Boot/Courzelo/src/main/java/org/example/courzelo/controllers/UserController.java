@@ -26,45 +26,73 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/profile")
-    public ResponseEntity<StatusMessageResponse> updateUserProfile(@RequestBody ProfileInformationRequest profileInformationRequest, Principal principal  ) {
-    return userService.updateUserProfile(profileInformationRequest, principal);
+    public ResponseEntity<StatusMessageResponse> updateUserProfile(@RequestBody ProfileInformationRequest profileInformationRequest, Principal principal) {
+        return userService.updateUserProfile(profileInformationRequest, principal);
     }
+
     @PostMapping("/image")
     public ResponseEntity<StatusMessageResponse> uploadProfileImage(@RequestParam("file") MultipartFile file, Principal principal) {
         return userService.uploadProfileImage(file, principal);
     }
+
     @GetMapping("/image")
     public ResponseEntity<byte[]> getProfileImage(Principal principal, @RequestParam String email) {
         return userService.getProfileImage(principal, email);
     }
+
     @GetMapping("/profile")
     public ResponseEntity<LoginResponse> getUserProfile(Principal principal) {
         return userService.getUserProfile(principal.getName());
     }
+
     @GetMapping("/profile/{email}")
     public ResponseEntity<LoginResponse> getUserProfileByEmail(Principal principal, @PathVariable String email) {
         return userService.getUserProfileByEmail(principal, email);
     }
+
     @PostMapping("/updatePassword")
-    public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest , Principal principal) {
+    public ResponseEntity<StatusMessageResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest, Principal principal) {
         return userService.updatePassword(updatePasswordRequest, principal);
     }
+
     @PostMapping("/reset-password")
     @PreAuthorize("permitAll")
     public ResponseEntity<StatusMessageResponse> resetPassword(@RequestBody UpdatePasswordRequest updatePasswordRequest, @RequestParam String code) {
         return userService.resetPassword(updatePasswordRequest, code);
     }
+
     @GetMapping("/qrCode")
     public ResponseEntity<QRCodeResponse> generateTwoFactorAuthQrCode(Principal principal) {
         return userService.generateTwoFactorAuthQrCode(principal.getName());
     }
+
     @PostMapping("/enableTwoFactorAuth")
-    public ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(@RequestParam String verificationCode,Principal principal) {
+    public ResponseEntity<StatusMessageResponse> enableTwoFactorAuth(@RequestParam String verificationCode, Principal principal) {
         return userService.enableTwoFactorAuth(principal.getName(), verificationCode);
     }
+
     @DeleteMapping("/disableTwoFactorAuth")
     public ResponseEntity<StatusMessageResponse> disableTwoFactorAuth(Principal principal) {
-     return   userService.disableTwoFactorAuth(principal.getName());
+        return userService.disableTwoFactorAuth(principal.getName());
+    }
+
+    @PostMapping("/{email}/skills")
+    public ResponseEntity<StatusMessageResponse> addSkillToUser(
+            @PathVariable String email,
+            @RequestParam String skill) {
+        return userService.addSkill(email, skill);
+    }
+
+    @GetMapping("/{email}/skills")
+    public ResponseEntity<?> getUserSkills(@PathVariable String email) {
+        return userService.getSkills(email);
+    }
+
+    @DeleteMapping("/{email}/skills")
+    public ResponseEntity<?> removeSkillFromUser(
+            @PathVariable String email,
+            @RequestParam String skill) {
+        return userService.removeSkill(email, skill);
     }
 
 }

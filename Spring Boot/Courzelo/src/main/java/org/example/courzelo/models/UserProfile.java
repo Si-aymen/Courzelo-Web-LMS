@@ -18,4 +18,7 @@ public class UserProfile {
     private String country;
     private String title;
     private String bio;
+
+    private List<String> skills = new ArrayList<>();
+
 }

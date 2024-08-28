@@ -70,6 +70,14 @@ const userRoutes: Routes = [
       loadChildren: () => import('./views/pages/pages.module').then(m => m.PagesModule)
     },
     {
+      path: 'transports',
+      loadChildren: () => import('./views/transports/transports.module').then(m => m.TransportsModule)
+    },
+    {
+      path: 'stages',
+      loadChildren: () => import('./views/stages/stages.module').then(m => m.StagesModule)
+    },
+    {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
 
