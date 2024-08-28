@@ -83,8 +83,7 @@ export class NavigationService {
                     { icon: 'i-Clock-4', name: 'Version 2', state: '/dashboard/v2', type: 'link' },
                     { icon: 'i-Over-Time', name: 'Version 3', state: '/dashboard/v3', type: 'link' },
                     { icon: 'i-Clock', name: 'Version 4', state: '/dashboard/v4', type: 'link' },
-                    { icon: 'i-Jeep', name: 'Transportation', state: '/dashboard/transports', type: 'link' },
-                    { icon: 'i-Add-Window', name: 'Stages', state: '/dashboard/stages', type: 'link' },
+
                 ]
             },
             {
@@ -113,6 +112,24 @@ export class NavigationService {
                     { icon: 'i-Speach-Bubble-3', name: 'Popover', state: '/uikits/popover', type: 'link' },
                     { icon: 'i-Like', name: 'Rating', state: '/uikits/rating', type: 'link' },
                     { icon: 'i-Loading-3', name: 'Loaders', state: '/uikits/loaders', type: 'link' },
+                ]
+            },
+            {
+                name: 'Internships',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+                type: 'dropDown',
+                icon: 'i-Computer-Secure',
+                sub: [
+                    { icon: 'i-Add-File', name: 'Internship', state: '/stages/stages', type: 'link' }
+                ]
+            },
+            {
+                name: 'Transportation',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+                type: 'dropDown',
+                icon: 'i-Jeep',
+                sub: [
+                    { icon: 'i-Jeep', name: 'Transportation', state: '/transports/transports', type: 'link' }
                 ]
             },
             {
