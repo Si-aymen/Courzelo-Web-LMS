@@ -1,8 +1,8 @@
 package org.example.courzelo.services.Project;
 
 
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.models.ProjectEntities.Validate;
+import org.example.courzelo.models.ProjectEntities.project.Project;
+import org.example.courzelo.models.ProjectEntities.project.Validate;
 
 import java.util.List;
 

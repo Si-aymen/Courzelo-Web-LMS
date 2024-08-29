@@ -1,8 +1,8 @@
 package org.example.courzelo.repositories.ProjectRepo;
 
-import org.example.courzelo.models.ProjectEntities.Project;
-import org.example.courzelo.models.ProjectEntities.Status;
-import org.example.courzelo.models.ProjectEntities.Tasks;
+import org.example.courzelo.models.ProjectEntities.project.Project;
+import org.example.courzelo.models.ProjectEntities.project.Status;
+import org.example.courzelo.models.ProjectEntities.project.Tasks;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 

@@ -2,7 +2,7 @@ package org.example.courzelo.controllers.Project;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.example.courzelo.models.ProjectEntities.GroupProject;
+import org.example.courzelo.models.ProjectEntities.project.GroupProject;
 import org.example.courzelo.services.Project.GroupProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

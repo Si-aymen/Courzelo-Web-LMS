@@ -1,7 +1,7 @@
 package org.example.courzelo.services.Project;
 
-import org.example.courzelo.models.ProjectEntities.Status;
-import org.example.courzelo.models.ProjectEntities.Tasks;
+import org.example.courzelo.models.ProjectEntities.project.Status;
+import org.example.courzelo.models.ProjectEntities.project.Tasks;
 
 
 import java.util.List;

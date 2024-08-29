@@ -1,0 +1,69 @@
+<div class="breadcrumb">
+    <h1>Consult Revision</h1>
+    <ul>
+        <li><a href="">Pages</a></li>
+        <li>Consult</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="card user-profile o-hidden mb-4">
+    <div class="header-cover" style="background-image: url('assets/images/revisionnn.jpg')"></div>
+   
+    <div class="card-body">
+        <ngb-tabset class="nav-center">
+           
+            <ngb-tab title="Upload Revision">
+                <ng-template ngbTabContent>
+                    <h4>Upload revision here </h4>
+                    <hr>
+                    <div class="row justify-content-center">
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="fileInput" (change)="onFileSelected($event)">
+                            <input type="text" class="form-control" id="revisionIdInput" >
+                            <button class="btn btn-outline-secondary" type="button" (click)="uploadFile()">Upload</button>
+                          </div>
+                      </div>
+                    <hr>
+                   
+                </ng-template>
+            </ngb-tab>
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+            <ngb-tab title="Pdf">
+                <ng-template ngbTabContent>
+                   
+       
+                    <div *ngIf="files && files.length > 0" class="row">
+                        <div class="col-md-6" *ngFor="let file of files">
+                          <a href="javascript:void(0)" (click)="openPdf(file)" class="card custom-card text-white o-hidden mb-4">
+                            <img src="./assets/images/revision.png" alt="Card image" class="card-img">
+                            <div class="card-img-overlay">
+                              <h5 class="card-title text-white">{{ file.fileName }}</h5>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                      <div *ngIf="files.length === 0">
+                        <p>No files uploaded yet.</p>
+                      </div>
+                      <!-- PDF Viewer -->
+   
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>
