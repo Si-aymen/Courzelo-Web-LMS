@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Event } from '../../models/Project/Event';
+import { CalendarEvent } from 'angular-calendar';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class EventService {
         })
       );
   }
-  updateEvent(id: string, event: Event): Observable<Event> {
+  // modified here 
+  updateEvent(id: string, event: CalendarEvent): Observable<Event> {
     console.log(`Updating event with ID ${id}:`, event);
     return this.http.put<Event>(`${this.apiUrl}/updateevent/${id}`, event)
       .pipe(

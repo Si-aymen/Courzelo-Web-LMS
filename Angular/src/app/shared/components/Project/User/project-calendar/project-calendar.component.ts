@@ -6,18 +6,17 @@ import { isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { CalendarAppEvent } from 'src/app/shared/models/calendar-event.model';
-import { Event } from 'src/app/shared/models/Project/Event';
+import { Event as ProjectEvent } from 'src/app/shared/models/Project/Event'; // Renamed to avoid conflict with CalendarEvent
 import { Project } from 'src/app/shared/models/Project/Project';
 import { EventService } from 'src/app/shared/services/Project/event.service';
 import { ProjectService } from 'src/app/shared/services/Project/project.service';
 import { Utils } from 'src/app/shared/utils';
-import { CalendarAppService } from 'src/app/views/calendar/calendar-app.service';
 import { CalendarFormProjectComponent } from '../calendar-form-project/calendar-form-project.component';
 
 @Component({
   selector: 'app-project-calendar',
   templateUrl: './project-calendar.component.html',
-  styleUrls: ['./project-calendar.component.scss'] ,
+  styleUrls: ['./project-calendar.component.scss'],
   animations: [SharedAnimations]
 })
 export class ProjectCalendarComponent implements OnInit {
@@ -27,7 +26,7 @@ export class ProjectCalendarComponent implements OnInit {
 
   public activeDayIsOpen = true;
   public refresh: Subject<any> = new Subject();
-  public events: Event[] = [];
+  public events: CalendarEvent[] = []; // Use CalendarEvent type
   private actions: CalendarEventAction[];
   private projectId: string; // To store the project ID
   public project: Project; // To store the project details
@@ -41,13 +40,13 @@ export class ProjectCalendarComponent implements OnInit {
     this.actions = [
       {
         label: '<i class="i-Edit m-1 text-secondary"></i>',
-        onClick: ({ event }: { event: Event }): void => {
+        onClick: ({ event }: { event: CalendarEvent }): void => { // Changed type to CalendarEvent
           this.handleEvent('edit', event);
         }
       },
       {
         label: '<i class="i-Close m-1 text-danger"></i>',
-        onClick: ({ event }: { event: Event }): void => {
+        onClick: ({ event }: { event: CalendarEvent }): void => { // Changed type to CalendarEvent
           this.removeEvent(event);
         }
       }
@@ -75,10 +74,10 @@ export class ProjectCalendarComponent implements OnInit {
 
       // Fetch events related to the project
       this.eventService.getEventsByProjectId(this.projectId).subscribe(
-        (events: any[]) => {
+        (events: ProjectEvent[]) => { // Changed type to ProjectEvent
           // Combine project details and events
           const calendarEvents = this.createCalendarEventsFromProject(project);
-          this.events = this.initEvents([...calendarEvents, ...this.transformEventsToCalendarEvents(events)]);
+          this.events = [...calendarEvents, ...this.transformEventsToCalendarEvents(events)];
           this.refresh.next();
         },
         (error) => {
@@ -90,13 +89,13 @@ export class ProjectCalendarComponent implements OnInit {
     });
   }
 
-  private transformEventsToCalendarEvents(events: Event[]) {
+  private transformEventsToCalendarEvents(events: ProjectEvent[]): CalendarEvent[] { // Changed return type to CalendarEvent[]
     return events.map(event => ({
       start: new Date(event.start),
       end: new Date(event.end),
       title: event.title,
       color: event.color,
-      actions: event.actions,
+      actions: this.actions,
       allDay: event.allDay,
       cssClass: event.cssClass,
       resizable: event.resizable,
@@ -105,29 +104,30 @@ export class ProjectCalendarComponent implements OnInit {
     }));
   }
 
-  private initEvents(events): Event[] {
-    return events.map(event => {
-      event.actions = this.actions;
-      return new Event(event);
-    });
-  }
-
-  private createCalendarEventsFromProject(project: Project): Event[] {
+  private createCalendarEventsFromProject(project: Project): CalendarEvent[] { // Changed return type to CalendarEvent[]
     return [
-      new Event({
+      {
         id: '', // Provide an appropriate id or leave empty if it’s a dummy event
-        projectId: project.id.toString(),
-        title: project.name,
         start: new Date(project.datedebut),
         end: new Date(project.deadline),
+        title: project.name,
         color: { primary: '#1e90ff', secondary: '#D1E8FF' },
         actions: this.actions,
-        notes: ''
-      })
+        allDay: true,
+        draggable: false,
+        resizable: {
+          beforeStart: false,
+          afterEnd: false
+        },
+        meta: {
+          projectId: project.id.toString(),
+          notes: ''
+        }
+      }
     ];
   }
 
-  public removeEvent(event: Event): void {
+  public removeEvent(event: CalendarEvent): void { // Changed type to CalendarEvent
     this.modalService.open(this.eventDeleteConfirm, { ariaLabelledBy: 'modal-basic-title', centered: true })
       .result.then((result) => {
         if (result === 'Ok') {
@@ -136,7 +136,7 @@ export class ProjectCalendarComponent implements OnInit {
             console.error('No event ID provided');
             return;
           }
-          this.eventService.deleteEvent(event.id).subscribe(
+          this.eventService.deleteEvent(event.id.toString()).subscribe(
             () => {
               this.events = this.events.filter(e => e.id !== event.id);
               this.refresh.next();
@@ -177,11 +177,11 @@ export class ProjectCalendarComponent implements OnInit {
 
         this.eventService.createEvent(this.projectId, responseEvent).subscribe(
           (createdEvent) => {
-            this.events.push(new Event({
+            this.events.push({
               ...createdEvent,
               actions: this.actions,
               color: { primary: '#1e90ff', secondary: '#D1E8FF' }
-            }));
+            });
             this.refresh.next();
           },
           (error) => {
@@ -194,7 +194,7 @@ export class ProjectCalendarComponent implements OnInit {
       });
   }
 
-  public handleEvent(action: string, event: Event): void {
+  public handleEvent(action: string, event: CalendarEvent): void { // Changed type to CalendarEvent
     console.log('Handling event:', event); // Log event details
   
     // Open the modal for editing or viewing event details
@@ -234,22 +234,24 @@ export class ProjectCalendarComponent implements OnInit {
   }
   
 
-  private updateEvent(event: Event): void {
+  //function dosent work
+
+  private updateEvent(event: CalendarEvent): void { // Changed type to CalendarEvent
     if (!event.id) {
       console.error('No event ID provided for update');
       return;
     }
   
     console.log('Updating event:', event); // Log event being updated
-    this.eventService.updateEvent(event.id, event).subscribe(
+    this.eventService.updateEvent(event.id.toString(), event).subscribe(
       (updatedEvent) => {
         const index = this.events.findIndex(e => e.id === event.id);
         if (index !== -1) {
-          this.events[index] = new Event({
+          this.events[index] = {
             ...updatedEvent,
             actions: this.actions,
             color: { primary: '#1e90ff', secondary: '#D1E8FF' }
-          });
+          };
           this.refresh.next();
           console.log('Event updated successfully:', this.events);
         } else {
@@ -261,7 +263,8 @@ export class ProjectCalendarComponent implements OnInit {
       }
     );
   }
-  public dayClicked({ date, events }: { date: Date, events: Event[] }): void {
+
+  public dayClicked({ date, events }: { date: Date, events: CalendarEvent[] }): void { // Changed type to CalendarEvent[]
     if (isSameMonth(date, this.viewDate)) {
       if (
         (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
